@@ -1,0 +1,152 @@
+[
+    {
+      "id": 1,
+      "name": "Fever",
+      "description": "Elevated body temperature above the normal range",
+      "associatedSystems": ["Immune"]
+    },
+    {
+      "id": 2,
+      "name": "Fatigue",
+      "description": "Feeling of tiredness or lack of energy",
+      "associatedSystems": ["General"]
+    },
+    {
+      "id": 3,
+      "name": "Headache",
+      "description": "Pain in the head or upper neck",
+      "associatedSystems": ["Neurological"]
+    },
+    {
+      "id": 4,
+      "name": "Cough",
+      "description": "Sudden expulsion of air from the lungs",
+      "associatedSystems": ["Respiratory"]
+    },
+    {
+      "id": 5,
+      "name": "Sore Throat",
+      "description": "Pain or irritation in the throat",
+      "associatedSystems": ["Respiratory"]
+    },
+    {
+      "id": 6,
+      "name": "Runny Nose",
+      "description": "Excess discharge of fluid from the nose",
+      "associatedSystems": ["Respiratory"]
+    },
+    {
+      "id": 7,
+      "name": "Nausea",
+      "description": "Feeling of sickness with an inclination to vomit",
+      "associatedSystems": ["Digestive"]
+    },
+    {
+      "id": 8,
+      "name": "Vomiting",
+      "description": "Forceful expulsion of stomach contents through the mouth",
+      "associatedSystems": ["Digestive"]
+    },
+    {
+      "id": 9,
+      "name": "Diarrhea",
+      "description": "Loose, watery stools occurring more frequently than usual",
+      "associatedSystems": ["Digestive"]
+    },
+    {
+      "id": 10,
+      "name": "Constipation",
+      "description": "Difficult or infrequent bowel movements",
+      "associatedSystems": ["Digestive"]
+    },
+    {
+      "id": 11,
+      "name": "Abdominal Pain",
+      "description": "Pain felt between the chest and groin",
+      "associatedSystems": ["Digestive"]
+    },
+    {
+      "id": 12,
+      "name": "Chest Pain",
+      "description": "Discomfort or pain in the chest area",
+      "associatedSystems": ["Cardiovascular", "Respiratory"]
+    },
+    {
+      "id": 13,
+      "name": "Shortness of Breath",
+      "description": "Difficulty breathing or feeling breathless",
+      "associatedSystems": ["Respiratory", "Cardiovascular"]
+    },
+    {
+      "id": 14,
+      "name": "Dizziness",
+      "description": "Feeling faint, woozy, or unsteady",
+      "associatedSystems": ["Neurological", "Cardiovascular"]
+    },
+    {
+      "id": 15,
+      "name": "Muscle Aches",
+      "description": "Pain or soreness in muscles",
+      "associatedSystems": ["Musculoskeletal"]
+    },
+    {
+      "id": 16,
+      "name": "Joint Pain",
+      "description": "Discomfort or pain in joints",
+      "associatedSystems": ["Musculoskeletal"]
+    },
+    {
+      "id": 17,
+      "name": "Skin Rash",
+      "description": "Visible change in skin color or texture",
+      "associatedSystems": ["Integumentary"]
+    },
+    {
+      "id": 18,
+      "name": "Itching",
+      "description": "Irritating sensation causing desire to scratch",
+      "associatedSystems": ["Integumentary", "Immune"]
+    },
+    {
+      "id": 19,
+      "name": "Swelling",
+      "description": "Enlargement of a part of the body",
+      "associatedSystems": ["Various"]
+    },
+    {
+      "id": 20,
+      "name": "Loss of Appetite",
+      "description": "Reduced desire to eat",
+      "associatedSystems": ["Digestive", "General"]
+    },
+    {
+      "id": 21,
+      "name": "Weight Loss",
+      "description": "Unintentional decrease in body weight",
+      "associatedSystems": ["General"]
+    },
+    {
+      "id": 22,
+      "name": "Weight Gain",
+      "description": "Unintentional increase in body weight",
+      "associatedSystems": ["General", "Endocrine"]
+    },
+    {
+      "id": 23,
+      "name": "Blurred Vision",
+      "description": "Lack of sharpness of vision",
+      "associatedSystems": ["Ocular"]
+    },
+    {
+      "id": 24,
+      "name": "Confusion",
+      "description": "Impaired orientation or cognitive function",
+      "associatedSystems": ["Neurological"]
+    },
+    {
+      "id": 25,
+      "name": "Anxiety",
+      "description": "Feeling of worry, nervousness, or unease",
+      "associatedSystems": ["Psychological"]
+    }
+  ]

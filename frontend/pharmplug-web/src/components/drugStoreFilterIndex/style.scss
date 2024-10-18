@@ -1,0 +1,52 @@
+.drug-store-filter-index {
+  padding: 1em 3em;
+  background: linear-gradient(90deg, #271ac1 0%, #25a7e0 100%);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  .content-div {
+    width: 40%;
+    p {
+      color: white;
+      font-size: 14px;
+      margin-bottom: 1em;
+      a {
+        text-decoration: none;
+        color: white;
+      }
+      span {
+        font-weight: 600;
+      }
+    }
+    h3 {
+      font-size: 24px;
+      line-height: 28.8px;
+      color: white;
+      font-weight: 500;
+    }
+  }
+  .filter-div {
+    width: 55%;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .drug-store-filter-index {
+    padding: 0.8em 1.2em;
+    .content-div {
+      width: 100%;
+      p {
+        display: none;
+      }
+      h3 {
+        font-size: 20px;
+        line-height: 22px;
+        margin-bottom: 0.7em;
+      }
+    }
+    .filter-div {
+      width: 100%;
+      overflow-x: auto;
+    }
+  }
+}

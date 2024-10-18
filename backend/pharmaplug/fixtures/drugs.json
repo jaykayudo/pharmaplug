@@ -1,0 +1,62 @@
+[
+    {
+        "name": "Aspirin",
+        "form": "tablet",
+        "dosage": "500 mg",
+        "price": 5.99
+    },
+    {
+        "name": "Lisinopril",
+        "form": "tablet",
+        "dosage": "10 mg",
+        "price": 7.49
+    },
+    {
+        "name": "Metformin",
+        "form": "tablet",
+        "dosage": "500 mg",
+        "price": 9.99
+    },
+    {
+        "name": "Atorvastatin",
+        "form": "tablet",
+        "dosage": "20 mg",
+        "price": 11.49
+    },
+    {
+        "name": "Amoxicillin",
+        "form": "capsule",
+        "dosage": "500 mg",
+        "price": 4.50
+    },
+    {
+        "name": "Sertraline",
+        "form": "tablet",
+        "dosage": "50 mg",
+        "price": 8.25
+    },
+    {
+        "name": "Omeprazole",
+        "form": "capsule",
+        "dosage": "20 mg",
+        "price": 6.75
+    },
+    {
+        "name": "Simvastatin",
+        "form": "tablet",
+        "dosage": "40 mg",
+        "price": 10.00
+    },
+    {
+        "name": "Levothyroxine",
+        "form": "tablet",
+        "dosage": "100 mcg",
+        "price": 12.30
+    },
+    {
+        "name": "Ibuprofen",
+        "form": "tablet",
+        "dosage": "200 mg",
+        "price": 3.99
+    }
+]

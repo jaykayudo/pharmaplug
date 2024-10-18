@@ -1,0 +1,104 @@
+.pharmaplug-nav-cover {
+  display: flex;
+  width: 100vw;
+  overflow: hidden;
+  padding: 0 1.25em;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0px 4px 10px 0px #cccccc1a;
+
+  .left-nav {
+    .toggle-div {
+      display: none;
+    }
+  }
+  .right-nav {
+    display: flex;
+    justify-content: flex-end;
+    .nav-link {
+      display: inline-block;
+      padding: 1.25em;
+      text-decoration: none;
+      color: var(--text-color);
+
+      &:hover {
+        color: var(--text-hover-color);
+      }
+    }
+  }
+}
+
+.content-container {
+  width: 100vw;
+  min-height: 80vh;
+  overflow-x: hidden;
+}
+
+.footer {
+  background: #034060;
+  padding: 4em 2em;
+  .footer-top-area {
+    display: flex;
+    flex-wrap: wrap;
+    padding-bottom: 3em;
+    ul {
+      list-style-type: none;
+      width: 50%;
+      li {
+        margin-bottom: 1em;
+        color: white;
+      }
+      li:first-child {
+        margin-bottom: 1.5em;
+      }
+    }
+  }
+  .footer-bottom-area {
+    padding: 2.5em 1.5em;
+    border-top: 1px solid #ffffff;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    .footer-nav-link {
+      margin-bottom: 0.5em;
+    }
+  }
+  .footer-nav-link {
+    color: white;
+    text-decoration: none;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .pharmaplug-nav-cover {
+    display: block;
+    .left-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .toggle-div {
+        display: block;
+        .toggle-button {
+          outline: none;
+          border: none;
+          background: transparent;
+        }
+      }
+    }
+    .right-nav {
+      display: none;
+      width: 100%;
+      &.show {
+        display: block;
+        .nav-link {
+          display: block;
+        }
+      }
+    }
+  }
+}

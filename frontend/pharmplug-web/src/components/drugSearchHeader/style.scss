@@ -1,0 +1,62 @@
+.drug-search-container {
+  padding: 1.5em 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  .content-side {
+    width: 40%;
+    h3 {
+      font-size: 32px;
+      line-height: 38.4px;
+      font-weight: 500;
+    }
+    p {
+      font-size: 14px;
+      margin-top: 0.25em;
+    }
+  }
+  .search-alt {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: white;
+    color: black;
+    cursor: pointer;
+    display: none;
+  }
+  .search-side {
+    width: 40%;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .drug-search-container {
+    padding: 1em 0;
+    .content-side {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      h3 {
+        font-size: 28px;
+        line-height: 30px;
+      }
+      p {
+        display: none;
+      }
+    }
+    .search-alt {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .search-side {
+      display: none;
+    }
+    .search-side.show {
+      width: 100%;
+      display: block;
+      margin-top: 10px;
+    }
+  }
+}

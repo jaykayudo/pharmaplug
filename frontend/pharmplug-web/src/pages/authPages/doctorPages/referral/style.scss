@@ -1,0 +1,23 @@
+.referral-cover {
+  padding: 1.2em 3em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.small-icon-box {
+  width: 38px;
+  height: 38px;
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #145b7a;
+  color: #145b7a;
+}
+
+@media screen and (max-width: 600px) {
+  .referral-cover {
+    padding: 1.2em 1em;
+  }
+}

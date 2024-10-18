@@ -1,0 +1,32 @@
+.drug-top-header {
+  padding: 2em 0;
+  h3 {
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 38.4px;
+  }
+  p {
+    font-size: 14px;
+    margin-top: 1em;
+  }
+}
+
+.sickness-box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding-top: 1.2em;
+  .sickness-div {
+    width: 49.5%;
+    margin-bottom: 0.75em;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .sickness-box {
+    .sickness-div {
+      width: 100%;
+      margin-bottom: 0.75em;
+    }
+  }
+}

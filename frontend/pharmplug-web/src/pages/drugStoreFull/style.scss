@@ -1,0 +1,21 @@
+.sickness-link-header {
+  padding: 1.5em 1em;
+  h2 {
+    font-size: 36px;
+    font-weight: 600;
+    text-transform: capitalize;
+  }
+}
+.sickness-link-cover {
+  padding: 1em 1em;
+  margin-bottom: 0.8em;
+  border-bottom: 0.3px solid #1e1e1e41;
+  .sickness-link {
+    color: #1e1e1e;
+    font-size: 16px;
+    font-family: 'Euclid Circular A', 'Montserrat', sans-serif;
+    text-decoration: underline;
+    line-height: 23.2px;
+    text-transform: capitalize;
+  }
+}

@@ -1,0 +1,25 @@
+services:
+  backend:
+    container_name: pharmaplug_backend
+    build:
+      context: ./
+      dockerfile: ./backend/pharmaplug/dockerfile
+    volumes:
+      - ./backend/pharmaplug:/home/pharmaplug_backend/src
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./backend/pharmaplug/db.sqlite3:/home/pharmaplug_backend/src/db.sqlite3
+    ports:
+      - "127.0.0.1:8000:8000"
+
+  web:
+    container_name: pharmaplug_web
+    build:
+      context: ./
+      dockerfile: ./frontend/pharmplug-web/dockerfile
+    volumes:
+      - ./frontend/pharmplug-web:/home/pharmaplug_frontend/src
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "3000:3000"
+
+  

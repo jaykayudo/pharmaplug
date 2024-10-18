@@ -1,0 +1,12 @@
+FROM node:18.19.0-bullseye-slim
+
+WORKDIR /home/pharmaplug_frontend/src
+
+COPY frontend/pharmplug-web/package.json frontend/pharmplug-web/package-lock.json ./
+RUN npm install
+
+COPY frontend/pharmplug-web .
+
+EXPOSE 3000
+
+CMD ["npm", "run", "dev"]

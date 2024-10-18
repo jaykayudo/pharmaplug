@@ -1,0 +1,38 @@
+.history-cover {
+  .history-box {
+    border: 1px solid #f0f2f5;
+    padding: 1.2em;
+    border-radius: 10px;
+  }
+}
+.tab-buttons {
+  margin-bottom: 2em;
+  button {
+    display: inline-block;
+    border: 1px solid #e4e7ec;
+    color: #1d2739;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    background-color: white;
+    padding: 1em;
+    transition: 0.5s;
+    &.active {
+      background-color: #f0f2f5;
+      color: #145b7a;
+    }
+    &:hover {
+      background-color: #f0f2f5;
+      color: #145b7a;
+    }
+    &:nth-child(1) {
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+    }
+    &:last-child {
+      border-bottom-right-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+  }
+}

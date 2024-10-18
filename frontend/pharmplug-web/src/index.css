@@ -1,0 +1,214 @@
+:root {
+  --text-color: #1e1e1e;
+  --text-hover-color: #145b7a;
+  --home-btn-bg: #145b7a;
+  --link-color: #145b7a;
+  --link-button-bg: #2daa5f;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Montserrat', sans-serif;
+}
+html {
+  width: 100vw;
+  overflow-x: hidden;
+}
+
+.container {
+  width: 90%;
+  margin: auto;
+}
+
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.flex-end {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.align-center {
+  align-items: center;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-white {
+  color: white;
+}
+
+.link {
+  color: var(--link-color);
+  text-decoration: none;
+  font-size: 16px;
+}
+.green-link {
+  color: var(--link-button-bg);
+  text-decoration: none;
+  font-size: 16px;
+}
+.drugs-div {
+  padding: 1.5em 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+.drugs-div .item-card-cover {
+  width: 30%;
+}
+
+.custom-check {
+  appearance: none;
+  background: #fff;
+  vertical-align: middle;
+  position: relative;
+}
+.custom-check::before {
+  content: '';
+  width: 16px;
+  height: 16px;
+  border: 1px solid #34d173;
+  border-radius: 8px;
+  position: absolute;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 1;
+}
+.custom-check::after {
+  content: '';
+  background-image: url('./assets/check.svg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  z-index: 1;
+}
+.custom-check:checked::after {
+  visibility: visible;
+}
+
+.auth-full-page {
+  width: 100%;
+  height: 95vh;
+  background-color: #145b7ae5;
+  background-image: url('./assets/authBG.jpeg');
+  background-size: cover;
+  background-blend-mode: multiply;
+  background-repeat: no-repeat;
+  padding-top: 2em;
+  background-position: center;
+}
+
+.form-box {
+  width: 40em;
+  padding: 6em;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: white;
+  border-radius: 10px;
+}
+
+.auth-form-group {
+  width: 100%;
+  margin-bottom: 2em;
+}
+.mb-05em {
+  margin-bottom: 0.5em;
+}
+.mb-1em {
+  margin-bottom: 1em;
+}
+.mb-2em {
+  margin-bottom: 2em;
+}
+.mb-3em {
+  margin-bottom: 3em;
+}
+.mb-4em {
+  margin-bottom: 4em;
+}
+
+.auth-full-page2 {
+  display: flex;
+  width: 100%;
+  height: 95vh;
+  background-position: center;
+}
+
+.auth-full-page2 > .image-div {
+  width: 40%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  align-items: flex-end;
+  padding: 4em;
+}
+
+.auth-full-page2 > .main-page-div {
+  width: 60%;
+  height: 100%;
+  padding: 4em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media screen and (max-width: 600px) {
+  .form-box {
+    width: 90%;
+    padding: 2em;
+  }
+  .mb-1em {
+    margin-bottom: 1em;
+  }
+  .mb-2em {
+    margin-bottom: 1.5em;
+  }
+  .mb-3em {
+    margin-bottom: 2em;
+  }
+  .mb-4em {
+    margin-bottom: 2.5em;
+  }
+  .auth-form-group {
+    width: 100%;
+    margin-bottom: 1.5em;
+  }
+  .auth-full-page2 > .image-div {
+    display: none;
+  }
+  .auth-full-page2 > .main-page-div {
+    width: 100%;
+    padding: 1.5em 0.8em;
+  }
+  .drugs-div .item-card-cover {
+    width: 48%;
+  }
+}

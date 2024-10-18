@@ -1,0 +1,77 @@
+[
+    {
+      "id": 1,
+      "name": "General Practice",
+      "description": "Provides primary care for patients of all ages"
+    },
+    {
+      "id": 2,
+      "name": "Internal Medicine",
+      "description": "Specializes in adult medical conditions"
+    },
+    {
+      "id": 3,
+      "name": "Pediatrics",
+      "description": "Focuses on medical care for infants, children, and adolescents"
+    },
+    {
+      "id": 4,
+      "name": "Obstetrics and Gynecology",
+      "description": "Specializes in women's reproductive health and childbirth"
+    },
+    {
+      "id": 5,
+      "name": "Surgery",
+      "description": "Performs surgical procedures to treat injuries, diseases, and deformities"
+    },
+    {
+      "id": 6,
+      "name": "Psychiatry",
+      "description": "Diagnoses and treats mental health disorders"
+    },
+    {
+      "id": 7,
+      "name": "Cardiology",
+      "description": "Specializes in disorders of the heart and blood vessels"
+    },
+    {
+      "id": 8,
+      "name": "Dermatology",
+      "description": "Focuses on diseases of the skin, hair, and nails"
+    },
+    {
+      "id": 9,
+      "name": "Neurology",
+      "description": "Deals with disorders of the nervous system"
+    },
+    {
+      "id": 10,
+      "name": "Orthopedics",
+      "description": "Specializes in conditions affecting the musculoskeletal system"
+    },
+    {
+      "id": 11,
+      "name": "Oncology",
+      "description": "Focuses on the diagnosis and treatment of cancer"
+    },
+    {
+      "id": 12,
+      "name": "Radiology",
+      "description": "Specializes in medical imaging to diagnose and treat diseases"
+    },
+    {
+      "id": 13,
+      "name": "Anesthesiology",
+      "description": "Administers anesthesia and manages pain during surgical procedures"
+    },
+    {
+      "id": 14,
+      "name": "Ophthalmology",
+      "description": "Deals with diseases and surgery of the visual pathways"
+    },
+    {
+      "id": 15,
+      "name": "Urology",
+      "description": "Focuses on diseases of the urinary tract and male reproductive system"
+    }
+  ]

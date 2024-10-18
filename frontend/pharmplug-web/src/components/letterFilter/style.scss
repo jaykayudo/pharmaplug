@@ -1,0 +1,37 @@
+.letter-filter-cover {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+  .letter-filter-button {
+    display: flex;
+    outline: none;
+    width: 7.4%;
+    height: 50px;
+    font-size: 16px;
+    text-transform: capitalize;
+    background: #ffffff1a;
+    color: white;
+    border: 1px solid #ffffff80;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1em;
+    border-radius: 10px;
+    cursor: pointer;
+    &.active {
+      background: #ffffff;
+      color: black;
+    }
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .letter-filter-cover {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    .letter-filter-button {
+      padding: 0.85em 1em;
+      margin-right: 10px;
+    }
+  }
+}
