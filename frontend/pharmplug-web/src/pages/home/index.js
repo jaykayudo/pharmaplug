@@ -1,5 +1,5 @@
 import './style.scss'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   FaArrowAltCircleRight,
@@ -11,9 +11,12 @@ import { HomeButton } from '../../components/button/index.js'
 import HealthTipContainer from '../../components/healthTipsContainer/index.js'
 import assets from '../../assets/index.js'
 import Path from '../../navigations/constants.js'
+import { useGetAPI } from '../../services/serviceHooks.js'
+import { endpoints } from '../../services/constants.js'
 
 const Home = () => {
   const [activeSlideContent, setActiveSlideContent] = useState(0)
+  const [healthData, setHealthData] = useState([]);
   const slideContent = [
     {
       header: 'Let us get well together',
@@ -42,6 +45,13 @@ const Home = () => {
       prevstate < slideContent.length - 1 ? prevstate + 1 : 0,
     )
   }
+  const fetchHealthData = (data) => {
+    setHealthData(data)
+  }
+  const healthDataAPI = useGetAPI(endpoints.stories, null, fetchHealthData)
+  useEffect(()=>{
+    healthDataAPI.sendRequest()
+  },[])
   return (
     <>
       <section className="first-section">
@@ -164,6 +174,9 @@ const Home = () => {
         </div>
       </section>
       <section className="fourth-section">
+        <div className='container'>
+
+        
         <div className="content-div">
           <h1>We deliver your quality drugs at the perfect time</h1>
           <p>
@@ -180,6 +193,7 @@ const Home = () => {
           <img src={assets.samsung} alt="samsung" />
           <img src={assets.google} alt="google" />
         </div>
+        </div>
       </section>
       <section className="mb-1em">
         <div className="container">
@@ -192,25 +206,3 @@ const Home = () => {
 
 export default Home
 
-const healthData = [
-  {
-    title: 'Health tip: with the main photo and the headline ...',
-    date: '20th June 2024',
-    image: assets.tip1,
-  },
-  {
-    title: 'Health tip: with the main photo and the headline ...',
-    date: '20th June 2024',
-    image: assets.tip2,
-  },
-  {
-    title: 'Health tip: with the main photo and the headline ...',
-    date: '20th June 2024',
-    image: assets.tip3,
-  },
-  {
-    title: 'Health tip: with the main photo and the headline ...',
-    date: '20th June 2024',
-    image: assets.tip4,
-  },
-]

@@ -19,15 +19,21 @@ const Cart = () => {
   const cartContext = useContext(CartContext)
   const { cart } = cartContext
   const [checkedDelete, setCheckDelete] = useState([])
-  const increaseQuantity = (id) => {}
+  const increaseQuantity = (id) => {
+    cartContext.increaseQuantity(id)
+  }
+  const decreaseQuantity = (id) => {
+    cartContext.decreaseQuantity(id)
+  }
   const analyseDeleteAll = () => {
     if (deleteAllCheckRef.current.checked) {
       setCheckDelete(cart.cart_items?.map((value) => value.id))
     } else {
       setCheckDelete([])
     }
+    console.log(checkedDelete)
   }
-  const decreaseQuantity = (id) => {}
+  
   const onCheckClick = (flag, id) => {
     if (flag) {
       setCheckDelete((prevState) => {
@@ -86,11 +92,12 @@ const Cart = () => {
                   <div className="cart-item-cover-main">
                     <CartItem
                       key={idx}
+                      id={value.id}
                       data={value.product}
                       quantity = {value.quantity}
                       onCheckClick={onCheckClick}
-                      onQuantityDecrease={() => increaseQuantity(value.id)}
-                      onQuantityIncrease={() => decreaseQuantity(value.id)}
+                      onQuantityDecrease={() => decreaseQuantity(value.id)}
+                      onQuantityIncrease={() => increaseQuantity(value.id)}
                       checkedDeleteList={checkedDelete}
                     />
                     <MiniAccordion header={'see all alternatives'}>

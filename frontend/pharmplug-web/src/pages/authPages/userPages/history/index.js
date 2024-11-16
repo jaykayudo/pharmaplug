@@ -1,8 +1,10 @@
 import './style.scss'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import { useGetAPI, usePostAPI } from '../../../../services/serviceHooks.js'
 import { endpoints } from '../../../../services/constants.js'
+import { FaRegClock } from 'react-icons/fa'
+import { IoLocationOutline } from 'react-icons/io5'
 
 import { AuthContext } from '../../../../context/authContext.js'
 import { useSearchParams } from 'react-router-dom'
@@ -10,6 +12,8 @@ import { LargeAccordion } from '../../../../components/accordion/index.js'
 import { MiniItemCard } from '../../../../components/card/index.js'
 import { Loader } from '../../../../components/loader/index.js'
 import EmptyData from '../../../../components/empty/index.js'
+import { consultationStatus } from '../../../../utils/enums.js'
+import { NormalButton } from '../../../../components/button/index.js'
 
 const History = () => {
   const authContext = useContext(AuthContext)
@@ -29,6 +33,10 @@ const History = () => {
     fetchConsultations,
   )
   const orderAPI = useGetAPI(endpoints.orderHistory, null, fetchOrders)
+  useEffect(()=>{
+    orderAPI.sendRequest()
+    consultationAPI.sendRequest()
+  },[])
   return (
     <div className="history-cover">
       <div className="mb-3em">
@@ -87,21 +95,49 @@ const History = () => {
                 <>
                   {consultationList.length === 0 && <EmptyData />}
                   <div className="consultation-box">
-                    {consultationList.map((value, idx) => (
-                      <LargeAccordion
-                        header1={`Consultation with Dr. ${value.doctor.user.first_name}`}
-                      >
-                        <div>
-                          <h3>Date: {value.date}</h3>
-                          <h3>Start Time: {value.start_time}</h3>
-                          <h3>End Time: {value.end_time}</h3>
+                    {consultationList.map((value, idx) => {
+                      return(
+                      
+                      <div className="light-border-gray curved-box mb-1em">
+                      <div className="p-1">
+                        <div className="flex gap-20">
+                          <img src={value.doctor.image} className="little-rounded-image" />
                           <div>
-                            <h3>Note</h3>
-                            <p>{value.note}</p>
+                            <h3 className="mb-1em">
+                              Dr. {value.doctor.user.first_name} {value.doctor.user.last_name}
+                            </h3>
+                            <p className="mb-05em">
+                              {value.doctor.field.name}
+                            </p>
+                            <p className="text-gray font-14 mb-05em">
+                              <FaRegClock />{' '}
+                              <span>
+                                {value.start_time} - {value.end_time} <br />
+                                 {new Date(value.day).toDateString()}
+                              </span>
+                            </p>
+                            <p className="text-gray font-14 mb-05em">
+                              <IoLocationOutline />{' '}
+                              <span>
+                                {value.location ? (
+                                  value.location
+                                ): (
+                                  "Not set"
+                                )}
+                              </span>
+                            </p>
+                          </div>
+                          <div>
+                            {value.status == 1 && (<p className='font-14'>Awaiting Doctor Confirmation</p>)}
+                            {value.status == 2 && (<NormalButton>Pay</NormalButton>)}
+                            {value.status > 2 && (
+                              <p className='font-14'>{consultationStatus[value.status]}</p>
+                            )}
                           </div>
                         </div>
-                      </LargeAccordion>
-                    ))}
+                      </div>
+                    </div>
+                    )})}
                   </div>
                 </>
               )}

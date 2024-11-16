@@ -14,6 +14,10 @@ from . import serializers, models, service, utils
 class FeaturedStoryAPIView(generics.ListAPIView):
     serializer_class = serializers.StorySerializer
 
+    @method_decorator(cache_page(60 * 60 * 1))
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
     def get_queryset(self):
         return models.Story.objects.all().order_by("-updated_at")[:4]
 
@@ -47,7 +51,41 @@ class DoctorListAPIView(generics.ListAPIView):
 
 class DoctorDetailsAPIView(generics.RetrieveAPIView):
     serializer_class = serializers.DoctorSerializer
+    queryset = models.Doctor.objects.filter(user__is_active = True)
 
+class DoctorCheckScheduleAPIView(generics.GenericAPIView):
+    serializer_class = serializers.DoctorVerifySchedule
+    def get(self, request, pk):
+        doctor = generics.get_object_or_404(
+            models.Doctor,
+            pk = pk
+        )
+        serializer = self.serializer_class(
+            data = request.query_params,
+            context = {
+                "doctor": doctor
+            }
+        )
+        serializer.is_valid(raise_exception=True)
+        data = serializer.save()
+        return Response(data)
+
+class DoctorConsultFeeAPIView(generics.GenericAPIView):
+    serializer_class = serializers.DoctorConsultFeeSerializer
+    def get(self, request, pk):
+        doctor = generics.get_object_or_404(
+            models.Doctor,
+            pk = pk
+        )
+        serializer = self.serializer_class(
+            data = request.query_params,
+            context = {
+                "doctor": doctor
+            }
+        )
+        serializer.is_valid(raise_exception=True)
+        data = serializer.save()
+        return Response(data)
 
 class CommonSicknessListAPIView(generics.ListAPIView):
     serializer_class = serializers.SicknessSerializer
@@ -123,12 +161,30 @@ class AddToCartAPIView(generics.GenericAPIView):
 class DeleteFromCartAPIView(generics.GenericAPIView):
     serializer_class = serializers.DeleteFromCartSerializer
 
-    def delete(self, request):
+    def post(self, request):
+        print(request.data)
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+class CartIncreaseQuantityAPIView(generics.GenericAPIView):
+    serializer_class = serializers.CartIncreaseQuantitySerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_204_NO_CONTENT) 
+
+class CartDecreaseQuantityAPIView(generics.GenericAPIView):
+    serializer_class = serializers.CartDecreaseQuantitySerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_204_NO_CONTENT) 
 
 class RetrieveDoctorScheduleAPIView(generics.GenericAPIView):
     pass
@@ -195,7 +251,9 @@ class DoctorRegisterAPIView(generics.GenericAPIView):
     serializer_class = serializers.DoctorUserCreateSerializer
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.serializer_class(data=request.data, context = {
+            "request": request
+        })
         serializer.is_valid(raise_exception=True)
         data = serializer.save()
         return Response(data)
@@ -321,10 +379,15 @@ class BookConsultationAPIView(generics.GenericAPIView):
     serializer_class = serializers.ConsultationCreateSerializer
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.serializer_class(
+            data=request.data,
+            context = {
+                "user": request.user
+            }
+        )
         serializer.is_valid(raise_exception=True)
         data = serializer.save()
-        return Response(data)
+        return Response(serializer.data)
 
 
 class OrderHistoryAPIView(generics.ListAPIView):

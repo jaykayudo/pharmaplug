@@ -7,6 +7,8 @@ export const CartContext = createContext({
   cartId: undefined,
   addToCart: (id) => {},
   removeFromCart: (ids) => {},
+  increaseQuantity: (id) => {},
+  decreaseQuantity: (id) => {},
   cart: {
     cart_items: [],
   },
@@ -30,7 +32,7 @@ const CartContextProvider = ({ children }) => {
     if (ids.length === 0) return
     const formObj = new FormData()
     formObj.append('cart', cartId)
-    for (const obj of checkedDelete) {
+    for (const obj of ids) {
       formObj.append('cart_items', obj)
     }
     CartDeleteAPI.sendRequest(formObj)
@@ -54,12 +56,26 @@ const CartContextProvider = ({ children }) => {
     }else{
       CartAPI.sendRequest()
     }
-    
-    
+  }
+  const decreaseQuantity = (id) =>{
+    if(!cartId) return
+    CartDecreaseAPI.sendRequest({
+      cart: cartId,
+      item: id
+    })
+  }
+  const increaseQuantity = (id) =>{
+    if(!cartId) return
+    CartIncreaseAPI.sendRequest({
+      cart: cartId,
+      item: id
+    })
   }
   const CartAPI = useGetAPI(endpoints.cart(cartId), null, fetchCartItems)
   const CartDeleteAPI = usePostAPI(endpoints.removeFromCart, null, reloadCart)
   const CartAddAPI = usePostAPI(endpoints.addToCart, null, reloadCart)
+  const CartIncreaseAPI = usePostAPI(endpoints.cartQuantityIncrease, null, reloadCart)
+  const CartDecreaseAPI = usePostAPI(endpoints.cartQuantityDecrease, null, reloadCart)
   useEffect(() => {
     // search local storage for the cart id
     const tempStore = localStorage.getItem('cartId')
@@ -79,6 +95,8 @@ const CartContextProvider = ({ children }) => {
         addToCart,
         removeFromCart,
         addAlternatives,
+        increaseQuantity,
+        decreaseQuantity,
         cart,
         loading: CartAPI.loading,
       }}

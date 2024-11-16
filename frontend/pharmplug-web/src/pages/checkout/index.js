@@ -3,7 +3,7 @@ import { NormalButton } from '../../components/button/index.js'
 import { LargeAccordion } from '../../components/accordion/index.js'
 import { NormalInput, NormalSelect } from '../../components/input/index.js'
 import { MiniCartItem } from '../../components/cartItem/index.js'
-import assets from '../../assets/index.js'
+import Path from "../../navigations/constants.js"
 
 import { useContext, useEffect, useState } from 'react'
 import { usePostAPI } from '../../services/serviceHooks.js'
@@ -17,8 +17,13 @@ import {
 } from '../../utils/validation.js'
 import { lgaList } from '../../utils/lga.js'
 
+import { usePaystackPayment } from 'react-paystack'; 
+import { useNavigate } from 'react-router-dom'
+import SiteLoader from '../../components/loader/index.js'
+
 const Checkout = () => {
   const cartContext = useContext(CartContext)
+  const navigate = useNavigate()
   const { cart } = cartContext
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
@@ -28,13 +33,64 @@ const Checkout = () => {
   const [address, setAddress] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('')
   const [deliveryMethod, setDeliveryMethod] = useState('')
+  const [loader, setLoader] = useState(false)
+
+  const [paymentConfig, setPaymentConfig] = useState({});
+  const [orderId, setOrderID] = useState(null)
+
+  const initializePayment = usePaystackPayment(paymentConfig)
 
   const [lgas, setLgas] = useState([])
   let subtotal = 0
   cart.cart_items.forEach((value) => {
     subtotal += value.price
   })
-  const onSuccessCallback = (data) => {}
+  const onPaymentSuccess = (ref) =>{
+    console.log("Success")
+    orderVerifyAPI.sendRequest(
+      {
+        order: orderId
+      }
+    )
+    message.loading({
+      content: "Verifying Transaction",
+      duration: 5,
+      key: "updatable"
+    })
+  }
+  const onPaymentClose = () =>{
+    message.error({
+      content: "Payment Cancelled",
+      duration: 2
+    })
+  }
+  const onSuccessCallback = (data) => {
+    if(data.payment_method == 1){
+      setOrderID(data.order)
+      setPaymentConfig({
+        reference: data.ref,
+        amount: Number(data.amount) * 100,
+        publicKey: data.key,
+        email: data.email
+      })
+    }else{
+      message.success(
+        {
+          content: "Order Placed Successfully",
+          duration: 2
+        }
+      )
+    }
+    
+  }
+  const onOrderVerify = (data) =>{
+    message.success({
+      content: "Order Paid successfully",
+      duration: 5,
+      key: "updatable"
+    })
+    navigate(Path.cart)
+  }
   const toggleLGA = (e) => {
     const value = e.target.value
     setState(value)
@@ -62,7 +118,7 @@ const Checkout = () => {
         return
       }
     }
-    if (!state || !paymentMethod || !region || !deliveryMethod) {
+    if (!state || !paymentMethod || !region) {
       message.error({
         content: 'All fields is required',
         duration: 2,
@@ -70,12 +126,13 @@ const Checkout = () => {
       return
     }
     const data = {
+      full_name: fullName,
       email,
-      phoneNumber,
+      phone_number: phoneNumber,
       state,
       region,
       address,
-      paymentMethod,
+      payment_method: paymentMethod,
       deliveryMethod,
       cart: cartContext.cartId,
     }
@@ -86,9 +143,21 @@ const Checkout = () => {
     null,
     onSuccessCallback,
   )
+  const orderVerifyAPI = usePostAPI(
+    endpoints.orderVerify,
+    setLoader,
+    onOrderVerify
+  )
   useEffect(() => {}, [])
+  useEffect(()=>{
+    if(paymentConfig.reference && paymentConfig.amount){
+      initializePayment(onPaymentSuccess, onPaymentClose)
+    }
+  },[paymentConfig])
   return (
+    
     <div className="checkout-page-cover">
+      {loader && <SiteLoader />}
       <div className="breadcrump-header-top">
         <p>
           <span></span>
@@ -274,6 +343,11 @@ const Checkout = () => {
                         type="radio"
                         name="payment-method"
                         value={'card'}
+                        onChange={(e)=>{
+                          if(e.target.checked){
+                            setPaymentMethod(1)
+                          }
+                        }}
                       />
                     </div>
                     <div>
@@ -288,22 +362,12 @@ const Checkout = () => {
                       <input
                         type="radio"
                         name="payment-method"
-                        value={'bank'}
-                      />
-                    </div>
-                    <div>
-                      <h3>Pay with bank transfer</h3>
-                      <p>
-                        You will be redirected at checkout to complete payment
-                      </p>
-                    </div>
-                  </div>
-                  <div className="select-section">
-                    <div>
-                      <input
-                        type="radio"
-                        name="payment-method"
                         value={'delivery'}
+                        onChange={(e)=>{
+                          if(e.target.checked){
+                            setPaymentMethod(0)
+                          }
+                        }}
                       />
                     </div>
                     <div>
