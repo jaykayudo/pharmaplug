@@ -10,7 +10,7 @@ import LoginNavigator from './LoginNavigation'
 const AuthStack = createStackNavigator()
 
 const AuthNavigator = () => {
-//   const theme = useContext(ThemeContext).theme
+  //   const theme = useContext(ThemeContext).theme
   const MyTheme = {
     ...DefaultTheme,
     // dark: theme.currentTheme === 'dark',
@@ -27,9 +27,9 @@ const AuthNavigator = () => {
           headerShown: false,
         }}
       >
-          <AuthStack.Screen name="Landing" component={Landing} /> 
+        <AuthStack.Screen name="Landing" component={Landing} />
         <AuthStack.Screen name="Login" component={LoginNavigator} />
-        <AuthStack.Screen name="SignUp" component={RegisterNavigator} /> 
+        <AuthStack.Screen name="SignUp" component={RegisterNavigator} />
       </AuthStack.Navigator>
     </NavigationContainer>
   )

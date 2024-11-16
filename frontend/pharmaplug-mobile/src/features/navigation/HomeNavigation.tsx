@@ -1,6 +1,5 @@
 import { createStackNavigator } from '@react-navigation/stack'
 
-
 const HomeStack = createStackNavigator()
 const HomeNavigator = () => {
   return (
