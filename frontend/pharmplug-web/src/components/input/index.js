@@ -31,13 +31,13 @@ export const SearchInput = ({
   )
 }
 
-export const NormalInput = ({
+export const NormalInput = forwardRef(({
   label,
   value,
   onChange,
   type = 'text',
   ...props
-}) => {
+}, ref) => {
   return (
     <div className="form-group">
       <label className="form-label">{label}</label>
@@ -46,11 +46,12 @@ export const NormalInput = ({
         value={value}
         onChange={onChange}
         className="form-input"
+        ref={ref}
         {...props}
       />
     </div>
   )
-}
+});
 
 export const NormalSelect = forwardRef(({
   label = 'Select an Option',

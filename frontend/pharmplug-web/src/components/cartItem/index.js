@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react'
 import { FaMinus, FaPlus } from 'react-icons/fa'
 
 const CartItem = ({
+  id,
   data,
   quantity,
   onQuantityIncrease,
@@ -15,7 +16,7 @@ const CartItem = ({
     onCheckClick(checkBoxRef.current.checked, data.id)
   }
   useEffect(() => {
-    if (checkedDeleteList.includes(data.id)) {
+    if (checkedDeleteList.includes(id)) {
       checkBoxRef.current.checked = true
     } else {
       checkBoxRef.current.checked = false
@@ -45,12 +46,12 @@ const CartItem = ({
       <div className="item-price-cover">
         <h3>₦ {data.price}</h3>
         <div className="counter">
-          <button onClick={onQuantityDecrease}>
-            <FaPlus size={15} />
+          <button onClick={onQuantityDecrease} disabled={quantity === 1}>
+            <FaMinus size={15} />
           </button>
           <p>{quantity}</p>
           <button onClick={onQuantityIncrease}>
-            <FaMinus size={15} />
+            <FaPlus size={15} />
           </button>
         </div>
       </div>
@@ -63,7 +64,7 @@ export default CartItem
 export const MiniCartItem = ({ data, quantity }) => {
   return (
     <div className="mini-cart-item-cover">
-      <div className="flex" style={{ width: '85%' }}>
+      <div className="flex" style={{ width: '80%' }}>
         <div className="image-div">
           <img src={data.image} />
         </div>
@@ -72,8 +73,8 @@ export const MiniCartItem = ({ data, quantity }) => {
           <p>Qty: {quantity}</p>
         </div>
       </div>
-      <div style={{ width: '15%' }}>
-        <h3 style={{ textAlign: 'right' }}>₦ {data.price}</h3>
+      <div style={{ width: '20%' }}>
+        <h3 style={{ textAlign: 'right' }}>₦ {data.price * quantity}</h3>
       </div>
     </div>
   )

@@ -61,7 +61,7 @@
     width: 70%;
     left: 0px;
     bottom: 0px;
-    padding: 0 1.25em;
+    padding: 0 2em;
     display: flex;
     align-items: center;
     background-color: #ffffff;
@@ -203,7 +203,6 @@
   display: flex;
   align-items: center;
   background: #cccccc1a;
-  padding: 2em 3.5em;
   .content-div {
     width: 50%;
     margin-right: 1.25em;
@@ -246,8 +245,9 @@
             line-height: 33px;
           }
           p {
-            font-size: 16px;
+            font-size: 14px;
             margin-bottom: 10px;
+            text-align: justify;
           }
         }
       }
@@ -269,29 +269,31 @@
       width: 100%;
     }
     .content-div {
+      display: block;
       width: 100%;
+      padding: 0.3em 1em;
       div {
-        width: 80%;
-        display: flex;
-        justify-content: space-around;
-        align-items: flex-start;
-        flex-direction: column;
+        width: 100%;
+        display: block;
         h1 {
           font-size: 32px;
           font-weight: 500;
           margin-bottom: 0.7em;
           line-height: 30px;
+          text-align: justify;
         }
         p {
           font-size: 14px;
           line-height: 19.88px;
           margin-bottom: 1.25em;
           margin-top: 1.25em;
+          text-align: justify;
         }
       }
     }
   }
   .third-section {
+    padding: 1em;
     h1 {
       font-size: 32px;
       font-weight: 400;
@@ -311,7 +313,7 @@
       }
     }
     .content-div {
-      padding: 1.5em 0.7em;
+      padding: 0;
       div {
         padding: 1em;
         margin: 0 0.4em;
@@ -335,7 +337,6 @@
   .fourth-section {
     height: 70vh;
     flex-wrap: wrap;
-    padding: 1em 1em;
     .content-div {
       width: 100%;
       margin-right: 0;
@@ -343,11 +344,13 @@
         font-weight: 500;
         font-size: 32px;
         line-height: 30px;
+        text-align: justify;
       }
       p {
         font-size: 14px;
         color: #1e1e1e;
         line-height: 19px;
+        text-align: justify;
       }
     }
     .partner-div {

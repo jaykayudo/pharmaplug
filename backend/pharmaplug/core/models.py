@@ -15,6 +15,7 @@ from django.core.signing import TimestampSigner, SignatureExpired, BadSignature
 from django.utils.crypto import get_random_string
 
 from .validators import phone_number_validator
+from .payment import Paystack
 
 
 class Days(models.IntegerChoices):
@@ -287,6 +288,7 @@ class Consultation(BaseModel):
     status = models.IntegerField(
         default=ConsultationStatus.PENDING, choices=ConsultationStatus.choices
     )
+    details = models.TextField(null = True, blank = True)
     transaction = models.ForeignKey(
         "Transaction", null=True, blank=True, on_delete=models.SET_NULL
     )
@@ -324,6 +326,11 @@ class Transaction(BaseModel):
     def change_status(self, status: TransactionStatus):
         self.status = status
         self.save()
+    
+    def initailize(self, **kwargs):
+        domain = kwargs.get("domain","")
+        success_url = f"{domain}/tx/{self.ref}/verify/"
+        data = Paystack().initalize_payment(self.user.email, self.amount)
 
     def save(self, *args, **kwargs):
         while not self.ref:
@@ -453,9 +460,9 @@ class Order(BaseModel):
             self.order_id = (max_id or 0) + 1
         return super().save(*args, **kwargs)
 
-
+  
 class OrderItem(BaseModel):
-    order = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="orderitems")
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="orderitems")
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
 

@@ -14,8 +14,8 @@
 .git/
 .github/
 .env.ci
-.env
-.env.example
+# .env
+# .env.example
 .sass-cache
 .vagrant/
 __pycache__

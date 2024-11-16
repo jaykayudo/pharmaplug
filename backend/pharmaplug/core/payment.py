@@ -26,7 +26,7 @@ class Paystack:
     ):
         payload = {
             "email": email,
-            "amount": int(amount) * 100,
+            "amount": int(amount * 100),
             "callback_url": success_url,
         }
         if ref:

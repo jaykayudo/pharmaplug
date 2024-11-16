@@ -2,6 +2,7 @@ from django.db import transaction as db_transaction
 from django.contrib.auth import password_validation, login
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.conf import settings
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 from rest_framework import serializers, generics
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -245,7 +246,7 @@ class ForgotPasswordSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         try:
-            user = models.User.objects.get(email=attrs["emai"])
+            user = models.User.objects.get(email=attrs["email"])
         except models.User.DoesNotExist:
             raise serializers.ValidationError(
                 {"details": "User with email does not exist"}, code=404
@@ -262,7 +263,7 @@ class ForgotPasswordSerializer(serializers.Serializer):
             "Password Reset",
             (
                 f"You have requested to reset your password."
-                "Use this code to reset it {code}"
+                f"Use this code to reset it {code}"
                 "If this is not you, ignore this email or contact support"
             ),
             settings.DEFAULT_FROM_EMAIL,
@@ -368,10 +369,36 @@ class DoctorCategorySerializer(serializers.ModelSerializer):
 
 class DoctorSerializer(serializers.ModelSerializer):
     user = SimpleUserSerializer()
-
+    field = DoctorCategorySerializer()
     class Meta:
         model = models.Doctor
         fields = "__all__"
+
+class DoctorVerifySchedule(serializers.Serializer):
+    date = serializers.DateField()
+    time = serializers.TimeField()
+    duration = serializers.IntegerField(default = 1)
+    def save(self):
+        check = service.CoreService.check_doctor_available(
+            self.context["doctor"],
+            self.validated_data["date"],
+            self.validated_data["time"],
+            self.validated_data["duration"]
+        )
+        return check
+    
+class DoctorConsultFeeSerializer(serializers.Serializer):
+    date = serializers.DateField()
+    time = serializers.TimeField()
+    duration = serializers.IntegerField(default = 1)
+    def save(self):
+        fee = service.CoreService.calculate_consult_fee(
+            self.context["doctor"],
+            self.validated_data["time"],
+            self.validated_data["duration"]
+        )
+        return fee
+    
 
 
 class SimpleProductSerialier(serializers.ModelSerializer):
@@ -496,6 +523,50 @@ class DeleteFromCartSerializer(serializers.Serializer):
         for item in self.context["cart_item"]:
             item.delete()
 
+class CartIncreaseQuantitySerializer(serializers.Serializer):
+    cart = serializers.UUIDField()
+    item = serializers.UUIDField()
+    quantity = serializers.IntegerField(default = 1, validators = [MinValueValidator(1), MaxValueValidator(100)])
+
+    def validate(self, attrs):
+        cart = generics.get_object_or_404(
+            models.Cart, id=attrs["cart"], status=models.CartStatus.OPEN
+        )
+        self.context["cart"] = cart
+        item = generics.get_object_or_404(
+            models.CartItem, cart = cart, id = attrs["item"]
+        )
+        self.context["item"] = item
+        return attrs
+    
+    def save(self):
+        item = self.context["item"]
+        item.quantity += self.validated_data["quantity"]
+        item.save()
+
+class CartDecreaseQuantitySerializer(serializers.Serializer):
+    cart = serializers.UUIDField()
+    item = serializers.UUIDField()
+    quantity = serializers.IntegerField(default = 1, validators = [MinValueValidator(1), MaxValueValidator(100)])
+
+    def validate(self, attrs):
+        cart = generics.get_object_or_404(
+            models.Cart, id=attrs["cart"], status=models.CartStatus.OPEN
+        )
+        self.context["cart"] = cart
+        item = generics.get_object_or_404(
+            models.CartItem, cart = cart, id = attrs["item"]
+        )
+        self.context["item"] = item
+        return attrs
+    
+    def save(self):
+        item = self.context["item"]
+        if item.quantity > 1:
+            item.quantity -= self.validated_data["quantity"]
+            item.save() 
+    
+
 
 class MergeCartSerializer(serializers.Serializer):
     cart = serializers.UUIDField()
@@ -513,7 +584,7 @@ class MergeCartSerializer(serializers.Serializer):
         if carts.exists():
             user_cart = carts.first()
             # shift all the cart cart_items to the user cart
-            models.CartItem.objects.filter(cart=user).update(cart=user_cart)
+            models.CartItem.objects.filter(cart=cart).update(cart=user_cart)
             # delete the cart as it is an orphan cart :)
             cart.delete()
             return user_cart.id_as_str
@@ -546,8 +617,8 @@ class CheckoutSerializer(serializers.Serializer):
         data = service.CoreService.create_order(
             **self.validated_data, cart=cart, user=user
         )
-        serialized_data = OrderSerializer(data).data
-        return serialized_data
+        
+        return data
 
 
 class OrderPaymentVerfiySerializer(serializers.Serializer):
@@ -582,19 +653,46 @@ class OrderPaymentVerfiySerializer(serializers.Serializer):
 class ConsultationSerializer(serializers.ModelSerializer):
     user = SimpleUserSerializer()
     doctor = DoctorSerializer()
+    location = serializers.SerializerMethodField()
 
     class Meta:
         model = models.Consultation
-        fields = "__all__"
+        exclude = ["transaction"]
+    
+    def get_location(self, obj):
+        if obj.status == models.ConsultationStatus.PAID:
+            return obj.details
+        
+        return None
 
 
 class ConsultationCreateSerializer(serializers.ModelSerializer):
+    duration = serializers.IntegerField(default = 1)
     class Meta:
         model = models.Consultation
-        fields = ["doctor", "date", "time", "note"]
+        fields = ["doctor", "day", "start_time", "note", "duration"]
 
     def validate(self, attrs):
+        check = service.CoreService.check_doctor_available(
+            attrs['doctor'],
+            attrs["day"],
+            attrs["start_time"],
+            attrs['duration']
+        )
+        if not check:
+            raise exceptions.DoctorNotAvailable
         return attrs
+    @db_transaction.atomic
+    def create(self, validated_data):
+        consult = service.CoreService.book_consult(
+            validated_data["doctor"],
+            validated_data["day"],
+            validated_data["start_time"],
+            validated_data["duration"],
+            validated_data["note"],
+            self.context["user"]
+        )
+        return consult
 
 
 class ConsultationPaySerializer(serializers.Serializer):
