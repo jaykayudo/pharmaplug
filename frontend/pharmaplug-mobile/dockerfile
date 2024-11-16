@@ -1,0 +1,12 @@
+FROM node:18.19.0-bullseye-slim
+
+WORKDIR /home/pharmaplug_mobile/src
+
+COPY frontend/pharmplug-mobile/package.json frontend/pharmplug-mobile/package-lock.json ./
+RUN npm install
+
+COPY frontend/pharmplug-mobile .
+
+EXPOSE 3000
+
+CMD ["npm", "start"]

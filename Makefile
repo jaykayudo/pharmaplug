@@ -12,8 +12,11 @@ down:
 
 fullstart:
 	@cp .env.example .env
-	@docker compose up --build
+	@docker compose build
+	@docker compose up -d
 	@docker compose run --rm backend python manage.py preload_app
+	@cat README.md
+	@docker attach pharmaplug/pharmaplug_mobile
 
 backend-command:
 	@docker compose run --rm backend ${command}
