@@ -2,16 +2,19 @@ import { useContext } from 'react'
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { Feather } from '@expo/vector-icons'
+import { SvgXml } from 'react-native-svg'
 import Foundation from '@expo/vector-icons/Foundation';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import Home from '../home/screens/home'
-import HomeNavigator from './homeNavigation'
-import ShopNavigator from './shopNavigation'
-import CartNavigation from './cartNavigation'
-import ProfileNavigator from './profileNavigation'
-import { ThemeContext } from '../../context/themecontext'
+import HomeNavigator from './HomeNavigation'
+import StoreNavigator from './StoreNavigation'
+import CartNavigator from './CartNavigation'
+import ConsultationNavigator from './ConsultationNavigation'
+import AccountNavigator from './AccountNavigation'
+
+// import { ThemeContext } from '../../context/themecontext'
+import assets from '../../../assets';
 const iconPattern = {
   Home: {
     focused: (size:number ,color:string) => (
@@ -21,17 +24,17 @@ const iconPattern = {
         <Foundation name="home" size={size} color={color} />
     ),
   },
-  "Drug Store": {
+  DrugStore: {
     focused: (size:number, color:string ) => (
       <SvgXml
-        xml={assets.shopiconactive}
+        xml={assets.drugIcon}
         width={size}
         height={size}
         color={color}
       />
     ),
     unfocused: (size:number, color:string ) => (
-      <SvgXml xml={assets.shopicon} width={size} height={size} color={color} />
+      <SvgXml xml={assets.drugIcon} width={size} height={size} color={color} />
     ),
   },
   Cart: {
@@ -59,7 +62,7 @@ const iconPattern = {
     ),
   },
 }
-const allPath = ['Home', 'Drug Store', 'Cart', 'Consultation', 'Account']
+const allPath = ['Home', 'DrugStore', 'Cart', 'Consultation', 'Account']
 
 const Tab = createBottomTabNavigator()
 const MainNavigator = () => {
@@ -90,7 +93,11 @@ const MainNavigator = () => {
           },
         })}
       >
-        <></>
+        <Tab.Screen name="Home" component={HomeNavigator} />
+        <Tab.Screen name="DrugStore" component={StoreNavigator} />
+        <Tab.Screen name="Cart" component={CartNavigator} />
+        <Tab.Screen name="Consultation" component={ConsultationNavigator} />
+        <Tab.Screen name="Account" component={AccountNavigator} />
       </Tab.Navigator>
     </NavigationContainer>
   )
