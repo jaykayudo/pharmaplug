@@ -1,6 +1,9 @@
 import { useContext } from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native'
+import Landing from '../auth/screens/Landing'
+import RegisterNavigator from './RegisterNavigation'
+import LoginNavigator from './LoginNavigation'
 
 // import { ThemeContext } from '../../context/themecontext'
 
@@ -24,9 +27,9 @@ const AuthNavigator = () => {
           headerShown: false,
         }}
       >
-        {/* <AuthStack.Screen name="Landing" component={Landing} />
+          <AuthStack.Screen name="Landing" component={Landing} /> 
         <AuthStack.Screen name="Login" component={LoginNavigator} />
-        <AuthStack.Screen name="SignUp" component={SignupNavigator} /> */}
+        <AuthStack.Screen name="SignUp" component={RegisterNavigator} /> 
       </AuthStack.Navigator>
     </NavigationContainer>
   )

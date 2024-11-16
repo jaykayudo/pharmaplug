@@ -21,5 +21,16 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - "3000:3000"
+    
+  mobile:
+    container_name: pharmaplug_mobile
+    build:
+      context: ./
+      dockerfile: ./frontend/pharmplug-mobile/dockerfile
+    volumes:
+      - ./frontend/pharmplug-mobile:/home/pharmaplug_mobile/src
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8081:8081"
 
   
