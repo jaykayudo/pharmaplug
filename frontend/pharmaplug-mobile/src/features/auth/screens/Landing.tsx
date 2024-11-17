@@ -1,5 +1,9 @@
+import { View } from "react-native"
+
 const Landing = () => {
-  return <></>
+  return (
+    <></>
+  )
 }
 
 export default Landing
