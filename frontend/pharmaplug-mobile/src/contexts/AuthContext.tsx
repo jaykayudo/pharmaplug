@@ -3,6 +3,7 @@ import React, { createContext, useEffect, useState, ReactNode } from 'react'
 import { usePostAPI } from '../services/serviceHooks'
 import { endpoints } from '../services/constants'
 import { UserType } from '../../types'
+import storage from '../infrastructure/utils/storageAsync'
 
 
 type callbackType = () => void
@@ -37,26 +38,30 @@ const AuthContextProvider: React.FC<{children: ReactNode}> = ({ children }) => {
     }
   }
   const setUserFromLocalStorage = () => {
-    const authToken = localStorage.getItem('authToken')
-    const authUser = localStorage.getItem('authUser')
-    if (authUser && authToken) {
-      try {
-        const user = JSON.parse(authUser)
-
-        if (typeof user.expiry !== 'number') return
-        const expiry = new Date(user.expiry * 1000)
-        const now = new Date()
-        if (expiry > now) {
-          logUserIn(user)
-        } else {
-          refreshToken()
+    storage
+      .load({
+        key: 'userDetails',
+        autoSync: true,
+        syncInBackground: true,
+        syncParams: {
+          extraFetchOptions: {},
+          someFlag: true,
+        },
+      })
+      .then((data) => {
+        const userDetails = data
+        if (userDetails) {
+          logUserIn(userDetails)
         }
-      } catch (e) {}
-    }
+      })
+      .catch((err) => {})
   }
   const setUserToLocalStorage = (user: UserType) => {
-    localStorage.setItem('authToken', user.access)
-    localStorage.setItem('authUser', JSON.stringify(user))
+    storage.save({
+      key: 'userDetails',
+      data: user,
+      expires: (user.expiry * 1000) - Date.now(),
+    })
   }
   const isExpired = () => {
     if (!user) return

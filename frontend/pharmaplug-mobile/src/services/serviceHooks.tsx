@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios'
 import React, { useCallback, useState } from 'react'
-import { useErrorHandler } from './serviceUtils.js'
+import { useErrorHandler } from './serviceUtils'
 
 type APIType = (
   url: string,

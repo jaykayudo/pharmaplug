@@ -1,4 +1,5 @@
 import { createStackNavigator } from '@react-navigation/stack'
+import SignUp from '../auth/screens/SignUp'
 
 const RegisterStack = createStackNavigator()
 const RegisterNavigator = () => {
@@ -8,7 +9,7 @@ const RegisterNavigator = () => {
         headerShown: false,
       }}
     >
-      <></>
+      <RegisterStack.Screen name="Register" component={SignUp} />
     </RegisterStack.Navigator>
   )
 }

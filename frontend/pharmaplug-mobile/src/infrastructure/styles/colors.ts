@@ -10,7 +10,8 @@ export const light = {
         buttonAlt: "#0678B438",
         buttonTet: "#F0F2F5",
         input: "#FDFDFD",
-        inputAlt: "#F1F3F6"
+        inputAlt: "#F1F3F6",
+        border: "#D2D6E2"
     },
     text:{
         main: "#1E1E1E",
@@ -18,5 +19,7 @@ export const light = {
         button: "#ffffff",
         buttonAlt: "#1E1E1E",
         buttonTet: "#1E1E1E",
+        white:"#ffffff",
+        black: "#030309"
     }
 }

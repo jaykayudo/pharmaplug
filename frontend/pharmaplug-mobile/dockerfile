@@ -2,10 +2,10 @@ FROM node:18.19.0-bullseye-slim
 
 WORKDIR /home/pharmaplug_mobile/src
 
-COPY frontend/pharmplug-mobile/package.json frontend/pharmplug-mobile/package-lock.json ./
+COPY frontend/pharmaplug-mobile/package.json frontend/pharmaplug-mobile/package-lock.json ./
 RUN npm install
 
-COPY frontend/pharmplug-mobile .
+COPY frontend/pharmaplug-mobile .
 
 EXPOSE 3000
 

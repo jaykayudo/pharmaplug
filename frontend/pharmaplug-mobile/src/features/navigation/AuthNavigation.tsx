@@ -13,12 +13,11 @@ const AuthNavigator = () => {
   //   const theme = useContext(ThemeContext).theme
   const MyTheme = {
     ...DefaultTheme,
-    // dark: theme.currentTheme === 'dark',
-    // colors: {
-    //   ...DefaultTheme.colors,
-    //   primary: theme.color[theme.currentTheme].ui.primary,
-    //   background: theme.color[theme.currentTheme].bg.primary,
-    // },
+    colors: {
+      ...DefaultTheme.colors,
+      // primary: theme.color[theme.currentTheme].ui.primary,
+      background: "#FFFFFF",
+    },
   }
   return (
     <NavigationContainer theme={MyTheme}>
