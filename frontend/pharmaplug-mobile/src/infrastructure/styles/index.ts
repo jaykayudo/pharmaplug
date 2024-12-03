@@ -9,7 +9,7 @@ const theme = {
   },
   color: {
     dark,
-    light
+    light,
   },
   size: {
     spacing,

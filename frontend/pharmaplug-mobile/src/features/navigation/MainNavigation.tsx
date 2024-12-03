@@ -80,7 +80,7 @@ const MainNavigator = () => {
           tabBarActiveTintColor: '#145B7A',
           headerShown: false,
           tabBarStyle: {
-            height: 60,
+            height: 80,
           },
           tabBarItemStyle: {
             color: '#555555',

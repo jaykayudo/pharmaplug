@@ -30,7 +30,7 @@ export const formatErrorData = (data) => {
 }
 
 export const formatErrorTitle = (status: 400 | 401 | 403 | 404 | 500) => {
-  let title;
+  let title
   if (Object.keys(errors).includes(`${status}`)) {
     title = `${status} - ${errors[status]}`
   } else {
@@ -53,7 +53,7 @@ export const useErrorHandler = () => {
     )
     title = formatErrorTitle(status)
 
-    Alert.alert(title,message)
+    Alert.alert(title, message)
     if (status == 401) {
     }
 

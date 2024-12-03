@@ -8,7 +8,7 @@ type APIType = (
   onSuccessCallback: CallableFunction,
   onErrorCallback?: CallableFunction,
 ) => {
-  sendRequest: CallableFunction,
+  sendRequest: CallableFunction
   loading: boolean
 }
 

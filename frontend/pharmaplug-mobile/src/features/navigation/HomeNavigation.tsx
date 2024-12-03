@@ -1,4 +1,5 @@
 import { createStackNavigator } from '@react-navigation/stack'
+import Dashboard from '../home/screens/Dashboard'
 
 const HomeStack = createStackNavigator()
 const HomeNavigator = () => {
@@ -8,7 +9,7 @@ const HomeNavigator = () => {
         headerShown: false,
       }}
     >
-      <></>
+      <HomeStack.Screen name="Dashboard" component={Dashboard} />
     </HomeStack.Navigator>
   )
 }

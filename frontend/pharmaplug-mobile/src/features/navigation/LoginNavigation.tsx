@@ -14,7 +14,10 @@ const LoginNavigator = () => {
     >
       <LoginStack.Screen name="SignIn" component={Login} />
       <LoginStack.Screen name="ForgotPassword" component={ForgotPassword} />
-      <LoginStack.Screen name="ForgotPasswordVerify" component={ForgotPasswordVerify} />
+      <LoginStack.Screen
+        name="ForgotPasswordVerify"
+        component={ForgotPasswordVerify}
+      />
       <LoginStack.Screen name="ResetPassword" component={ResetPassword} />
     </LoginStack.Navigator>
   )

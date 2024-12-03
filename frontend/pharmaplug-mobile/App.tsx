@@ -1,12 +1,19 @@
 // import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, Text } from 'react-native'
+import { SafeAreaView, Text, StatusBar } from 'react-native'
 import AppNavigation from './src/features/navigation'
 import { ThemeContextProvider } from './src/contexts/ThemeContext'
+import AuthContextProvider from './src/contexts/AuthContext'
+import CartContextProvider from './src/contexts/CartContext'
 
 export default function App() {
   return (
-  <ThemeContextProvider>
-    <AppNavigation />  
-  </ThemeContextProvider> 
-)
+    <AuthContextProvider>
+      <ThemeContextProvider>
+        <CartContextProvider>
+          <StatusBar barStyle={'dark-content'} />
+          <AppNavigation />
+        </CartContextProvider>
+      </ThemeContextProvider>
+    </AuthContextProvider>
+  )
 }
