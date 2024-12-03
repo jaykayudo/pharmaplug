@@ -16,7 +16,7 @@ const AuthNavigator = () => {
     colors: {
       ...DefaultTheme.colors,
       // primary: theme.color[theme.currentTheme].ui.primary,
-      background: "#FFFFFF",
+      background: '#FFFFFF',
     },
   }
   return (

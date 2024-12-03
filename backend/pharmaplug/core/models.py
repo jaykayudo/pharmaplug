@@ -452,7 +452,7 @@ class Order(BaseModel):
         """
         All items in the order
         """
-        return sum([item.quantity for item in self.orderitem_set.all()])
+        return sum([item.quantity for item in self.orderitems.all()])
 
     def save(self, *args, **kwargs) -> None:
         if not self.order_id:

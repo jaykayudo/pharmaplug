@@ -5,7 +5,6 @@ import { endpoints } from '../services/constants'
 import { UserType } from '../../types'
 import storage from '../infrastructure/utils/storageAsync'
 
-
 type callbackType = () => void
 
 export const AuthContext = createContext({
@@ -17,7 +16,9 @@ export const AuthContext = createContext({
   isExpired: () => {},
   refreshToken: () => {},
 })
-const AuthContextProvider: React.FC<{children: ReactNode}> = ({ children }) => {
+const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [loading, setLoading] = useState(false)
   const [user, setUser] = useState<UserType | null>(null)
@@ -25,6 +26,7 @@ const AuthContextProvider: React.FC<{children: ReactNode}> = ({ children }) => {
     setUser(user)
     axios.defaults.headers.common.Authorization = `Bearer ${user.access}`
     setUserToLocalStorage(user)
+    console.log('logging in')
     setIsLoggedIn(true)
   }
   const logUserOut = (callback: null | callbackType = null) => {
@@ -60,7 +62,7 @@ const AuthContextProvider: React.FC<{children: ReactNode}> = ({ children }) => {
     storage.save({
       key: 'userDetails',
       data: user,
-      expires: (user.expiry * 1000) - Date.now(),
+      expires: user.expiry * 1000 - Date.now(),
     })
   }
   const isExpired = () => {
@@ -79,7 +81,7 @@ const AuthContextProvider: React.FC<{children: ReactNode}> = ({ children }) => {
     const newData = { ...user, ...data, expiry: Date.now() / 1000 }
     logUserIn(newData)
   }
-  const refreshErrorCallback = (err: AxiosError ) => {
+  const refreshErrorCallback = (err: AxiosError) => {
     logUserOut()
   }
   const refreshTokenAPI = usePostAPI(

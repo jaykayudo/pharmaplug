@@ -1,4 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack'
+import DrugStore from '../drugstore/screens/DrugStore'
+import DrugList from '../druglist/screens/DrugList'
+import DrugDetails from '../druglist/screens/DrugDetails'
 
 const StoreStack = createStackNavigator()
 const StoreNavigator = () => {
@@ -8,7 +11,9 @@ const StoreNavigator = () => {
         headerShown: false,
       }}
     >
-      <></>
+      <StoreStack.Screen name="DrugStoreMain" component={DrugStore} />
+      <StoreStack.Screen name="DrugList" component={DrugList} />
+      <StoreStack.Screen name="DrugDetails" component={DrugDetails} />
     </StoreStack.Navigator>
   )
 }
