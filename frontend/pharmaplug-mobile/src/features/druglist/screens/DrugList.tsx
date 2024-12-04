@@ -36,20 +36,22 @@ const DrugList = () => {
     cartContext.addToCart(id)
     Alert.alert('Cart Add', 'Added to cart')
   }
-  const navigateToDetails = (id: string) =>{
-    navigation.navigate("DrugDetails",{id: id});
+  const navigateToDetails = (id: string) => {
+    navigation.navigate('DrugDetails', { id: id })
   }
   const fetchData = (data: object[]) => {
     setData(data)
-    console.log(data)
   }
 
   const drugsAPI = useGetAPI(endpoints.drugs(id), null, fetchData)
-  useEffect(() => {
+  const loadData = () => {
     drugsAPI.sendRequest()
+  }
+  useEffect(() => {
+    loadData()
   }, [])
   return (
-    <MainContainer title="Drug List" back>
+    <MainContainer title="Drug List" back refreshing={drugsAPI.loading}>
       <Container>
         <View style={styles.drugsCover}>
           {data.map((value, idx) => (
@@ -59,7 +61,7 @@ const DrugList = () => {
                 price={value.price}
                 image={value.image}
                 onCartAdd={() => onCartAdd(value.id)}
-                onCardPress={()=>navigateToDetails(value.id)}
+                onCardPress={() => navigateToDetails(value.id)}
               />
             </View>
           ))}

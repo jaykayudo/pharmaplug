@@ -12,6 +12,7 @@ import { ThemeMode, ThemeType } from '../../../types'
 import { useContext } from 'react'
 import { ThemeContext } from '../../contexts/ThemeContext'
 import Ionicons from '@expo/vector-icons/Ionicons'
+import { MiniAccordion } from '../accordion'
 
 type Props = {
   data: {
@@ -199,17 +200,27 @@ type DrugCardProps = {
   image: string
   name: string
   price: string
-  onCartAdd: () => void,
+  onCartAdd: () => void
   onCardPress: () => void
 }
 
-export const DrugCard = ({ image, name, price, onCartAdd, onCardPress }: DrugCardProps) => {
+export const DrugCard = ({
+  image,
+  name,
+  price,
+  onCartAdd,
+  onCardPress,
+}: DrugCardProps) => {
   const { theme, currentMode } = useContext(ThemeContext)
   const styles = getStyles(theme, currentMode)
   return (
     <TouchableOpacity style={styles.drugCardCover} onPress={onCardPress}>
       <View style={styles.drugImageContainer}>
-        <ExpoImage source={image} style={{height: "auto", width:"100%"}}  contentFit='cover' />
+        <ExpoImage
+          source={image}
+          style={{ height: 'auto', width: '100%' }}
+          contentFit="cover"
+        />
         <TouchableOpacity style={styles.drugCartButton} onPress={onCartAdd}>
           <Ionicons name="cart-outline" size={20} color="white" />
         </TouchableOpacity>
@@ -222,18 +233,94 @@ export const DrugCard = ({ image, name, price, onCartAdd, onCardPress }: DrugCar
   )
 }
 
-type CartCardProps = {
-    image: string,
-    name: string,
-    price: string
+type AltDrugProps = {
+  image: string
+  name: string
+  price: string
+  onCartAdd: () => void
 }
 
-export const CartCard = ({image, name, price}: CartCardProps) =>{
-    return (
-        <View>
-            
+type CartCardProps = {
+  image: string
+  name: string
+  price: number
+  quantity: number
+  onDelete: () => void
+  onQuantityIncrease: () => void
+  onQuantityDecrease: () => void
+  alternatives?: AltDrugProps[]
+}
+
+export const CartCard = ({
+  image,
+  name,
+  price,
+  quantity,
+  alternatives,
+  onDelete,
+  onQuantityDecrease,
+  onQuantityIncrease,
+}: CartCardProps) => {
+  const { theme, currentMode } = useContext(ThemeContext)
+  const styles = getStyles(theme, currentMode)
+
+  return (
+    <View style={styles.cartCardCover}>
+      <View style={styles.cartItemCover}>
+        <View style={styles.cartImageCover}>
+          <ExpoImage source={image} contentFit="cover" />
         </View>
-    )
+        <View>
+          <AppText style={{ fontWeight: 600 }}>{name}</AppText>
+        </View>
+        <View style={{ justifyContent: 'flex-end', flexDirection: 'row' }}>
+          <AppText style={{ fontWeight: 600 }}>₦ {price * quantity}</AppText>
+        </View>
+      </View>
+      <View style={styles.cartOptionsCover}>
+        <View style={{ width: '50%' }}>
+          <View style={styles.counterCover}>
+            <TouchableOpacity
+              style={styles.counterButton}
+              onPress={onQuantityDecrease}
+            >
+              <AppText style={{ fontSize: 20 }}>-</AppText>
+            </TouchableOpacity>
+            <AppText style={styles.counterButton}>{quantity}</AppText>
+            <TouchableOpacity
+              style={[styles.counterButton]}
+              onPress={onQuantityIncrease}
+            >
+              <AppText style={{ fontSize: 20 }}>+</AppText>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View
+          style={{
+            width: '20%',
+            justifyContent: 'flex-end',
+            flexDirection: 'row',
+          }}
+        >
+          <TouchableOpacity onPress={onDelete}>
+            <MaterialIcons name="delete" size={24} color={'#202020B2'} />
+          </TouchableOpacity>
+        </View>
+      </View>
+      {/* {alternatives && ( */}
+      <View style={styles.cartAlternativesCover}>
+        <MiniAccordion title="see all alternatives">
+          {/* <>
+                        {alternatives.map(()=>(
+
+                        ))}
+                        </> */}
+          <></>
+        </MiniAccordion>
+      </View>
+      {/* )} */}
+    </View>
+  )
 }
 
 const getStyles = (theme: ThemeType, mode: ThemeMode = 'light') =>
@@ -291,8 +378,7 @@ const getStyles = (theme: ThemeType, mode: ThemeMode = 'light') =>
     },
     drugCardCover: {
       height: 260,
-      padding: theme.size.spacing.sm
-
+      padding: theme.size.spacing.sm,
     },
     drugImageContainer: {
       height: 180,
@@ -313,6 +399,47 @@ const getStyles = (theme: ThemeType, mode: ThemeMode = 'light') =>
       position: 'absolute',
       right: 2,
       bottom: 2,
-      zIndex: 10
+      zIndex: 10,
+    },
+    cartCardCover: {
+      borderColor: '#CCCCCCB2',
+      borderWidth: 2,
+      padding: theme.size.spacing.sm,
+      borderRadius: 5,
+    },
+    cartItemCover: {
+      flexDirection: 'row',
+      gap: 10,
+      marginBottom: 20,
+    },
+    cartImageCover: {
+      width: '30%',
+      backgroundColor: '#CCCCCC4D',
+      height: 65,
+      borderRadius: 5,
+      overflow: 'hidden',
+    },
+    cartOptionsCover: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+    },
+    counterCover: {
+      flexDirection: 'row',
+      backgroundColor: '#F5F7F8',
+      borderRadius: 20,
+      borderColor: '#CCCCCCB2',
+      borderWidth: 2,
+      width: 100,
+      overflow: 'hidden',
+      alignItems: 'center',
+    },
+    counterButton: {
+      padding: 10,
+      flexGrow: 1,
+      fontSize: 18,
+    },
+    cartAlternativesCover: {
+      marginTop: 10,
     },
   })

@@ -21,6 +21,7 @@ const Dashboard = () => {
   const [healthData, setHealthData] = useState([])
   const [doctorCategories, setDoctorCategories] = useState([])
   const [upcomingConsultation, setUpcomingConsultation] = useState<any>(null)
+  const [refreshing, setRefreshing] = useState(false)
   const user = {
     name: authContext.user.first_name,
   }
@@ -76,14 +77,23 @@ const Dashboard = () => {
     null,
     fetchDashboardData,
   )
-  useEffect(() => {
+  const loadDashboardData = () => {
+    setRefreshing(true)
     dashboardAPI.sendRequest()
     healthDataAPI.sendRequest()
     sicknessesAPI.sendRequest()
     doctorCategoriesAPI.sendRequest()
+    setRefreshing(false)
+  }
+  useEffect(() => {
+    loadDashboardData()
   }, [])
   return (
-    <DashboardContainer user={user}>
+    <DashboardContainer
+      user={user}
+      onRefresh={loadDashboardData}
+      refreshing={refreshing}
+    >
       {upcomingConsultation && (
         <>
           <AppText

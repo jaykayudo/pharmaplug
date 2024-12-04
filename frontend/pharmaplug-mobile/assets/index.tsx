@@ -7,5 +7,6 @@ const assets = {
   healthImage: require('./images/image 6.png'),
   doc: require('./images/doc.png'),
   drug: require('./images/drug.png'),
+  noProduct: require('./images/noProduct.png'),
 }
 export default assets

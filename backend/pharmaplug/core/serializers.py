@@ -513,7 +513,7 @@ class DeleteFromCartSerializer(serializers.Serializer):
             models.Cart, id=attrs["cart"], status=models.CartStatus.OPEN
         )
         self.context["cart"] = cart
-        for cart_item in attrs["cart_item"]:
+        for cart_item in attrs["cart_items"]:
             item = generics.get_object_or_404(models.CartItem, cart=cart, id=cart_item)
             self.context.setdefault("cart_item", []).append(item)
         return attrs
