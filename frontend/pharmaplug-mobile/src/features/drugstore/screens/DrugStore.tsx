@@ -58,15 +58,18 @@ const DrugStore = () => {
     null,
     fetchData,
   )
-  useEffect(() => {
+  const loadData = () => {
     sendRequest()
+  }
+  useEffect(() => {
+    loadData()
   }, [])
   useEffect(() => {
     filterData(currentSelection)
   }, [data, currentSelection])
 
   return (
-    <MainContainer title="Drug Store">
+    <MainContainer title="Drug Store" refreshing={loading} onRefresh={loadData}>
       <View style={styles.filterContainer}>
         <AppText style={{ width: '45%', textAlign: 'left', fontWeight: 700 }}>
           Sort sickness name
@@ -81,7 +84,7 @@ const DrugStore = () => {
             // useNativeAndroidPickerStyle={false}
             style={{
               inputAndroid: styles.selectAndroid,
-              inputIOS: styles.selectIOS
+              inputIOS: styles.selectIOS,
             }}
             placeholder={choicesItems[0]}
           />
@@ -134,8 +137,8 @@ const getStyles = (theme: ThemeType, mode: ThemeMode) =>
       height: 20,
       color: 'black',
     },
-    selectIOS:{
-        backgroundColor:"black"
+    selectIOS: {
+      backgroundColor: 'black',
     },
     sortButton: {
       flexDirection: 'row',

@@ -26,7 +26,6 @@ const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
     setUser(user)
     axios.defaults.headers.common.Authorization = `Bearer ${user.access}`
     setUserToLocalStorage(user)
-    console.log('logging in')
     setIsLoggedIn(true)
   }
   const logUserOut = (callback: null | callbackType = null) => {

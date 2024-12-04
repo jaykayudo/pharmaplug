@@ -10,6 +10,7 @@ export const CartContext = createContext({
   removeFromCart: (ids: string[]) => {},
   increaseQuantity: (id: string) => {},
   decreaseQuantity: (id: string) => {},
+  refreshCart: () => {},
   cart: {
     cart_items: [],
   },
@@ -63,7 +64,7 @@ const CartContextProvider: React.FC<CartContextProps> = ({ children }) => {
       setCartId(data)
       storage.save({
         key: 'cartId',
-        data: data
+        data: data,
       })
     } else {
       CartAPI.sendRequest()
@@ -82,6 +83,9 @@ const CartContextProvider: React.FC<CartContextProps> = ({ children }) => {
       cart: cartId,
       item: id,
     })
+  }
+  const refreshCart = () => {
+    if (cartId) CartAPI.sendRequest()
   }
   const CartAPI = useGetAPI(endpoints.cart(cartId), null, fetchCartItems)
   const CartDeleteAPI = usePostAPI(endpoints.removeFromCart, null, reloadCart)
@@ -109,11 +113,11 @@ const CartContextProvider: React.FC<CartContextProps> = ({ children }) => {
         },
       })
       .then((data) => {
-          setCartId(data);
-        }
-      )
+        setCartId(data)
+      })
       .catch((err) => {})
   }, [])
+
   useEffect(() => {
     if (cartId) {
       CartAPI.sendRequest()
@@ -128,6 +132,7 @@ const CartContextProvider: React.FC<CartContextProps> = ({ children }) => {
         addAlternatives,
         increaseQuantity,
         decreaseQuantity,
+        refreshCart,
         cart,
         loading: CartAPI.loading,
       }}

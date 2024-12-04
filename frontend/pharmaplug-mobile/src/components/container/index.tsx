@@ -8,6 +8,7 @@ import {
   View,
   Platform,
   StatusBar,
+  RefreshControl,
 } from 'react-native'
 import { ReactNode, useContext } from 'react'
 import { ThemeType } from '../../../types'
@@ -26,9 +27,16 @@ type Props = {
     name: string
     image?: string
   }
+  refreshing?: boolean
+  onRefresh?: () => void
   children: ReactNode
 }
-export const DashboardContainer = ({ user, children }: Props) => {
+export const DashboardContainer = ({
+  user,
+  children,
+  refreshing = false,
+  onRefresh,
+}: Props) => {
   const themeContext = useContext(ThemeContext)
   const styles = getStyles(themeContext.theme, themeContext.currentMode)
   return (
@@ -73,6 +81,9 @@ export const DashboardContainer = ({ user, children }: Props) => {
       <ScrollView
         style={styles.contentContainer}
         keyboardShouldPersistTaps="handled"
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       >
         {children}
       </ScrollView>
@@ -83,6 +94,8 @@ export const DashboardContainer = ({ user, children }: Props) => {
 type MainContainerProps = {
   title: string
   children: ReactNode
+  refreshing?: boolean
+  onRefresh?: () => void
   back?: boolean
 }
 
@@ -90,6 +103,8 @@ export const MainContainer = ({
   children,
   title,
   back,
+  refreshing = false,
+  onRefresh,
 }: MainContainerProps) => {
   const themeContext = useContext(ThemeContext)
   const styles = getStyles(themeContext.theme, themeContext.currentMode)
@@ -121,6 +136,9 @@ export const MainContainer = ({
         <ScrollView
           style={styles.mainContentContainer}
           keyboardShouldPersistTaps="handled"
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         >
           {children}
         </ScrollView>

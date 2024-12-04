@@ -29,7 +29,6 @@ export const usePostAPI: APIType = (
         onSuccessCallback(req.data)
       })
       .catch((err) => {
-        console.log(err)
         errorHandler(err)
         if (onErrorCallback) onErrorCallback(err)
       })

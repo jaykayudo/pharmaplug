@@ -4,6 +4,7 @@ export const light = {
     main: '#ffffff',
     tet: '#F0F2F5',
     blue: '#145B7A',
+    alt: '#F5F7F8',
   },
   ui: {
     button: '#2DAA5F',
