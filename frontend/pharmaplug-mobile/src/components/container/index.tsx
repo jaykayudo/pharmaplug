@@ -201,7 +201,7 @@ const getStyles = (theme: ThemeType, mode: 'light' | 'dark' = 'light') =>
         height: 4,
       },
       shadowRadius: 5,
-    //   elevation: 10,
+      //   elevation: 10,
     },
     mainContentContainer: {
       minHeight: height / 1.6,

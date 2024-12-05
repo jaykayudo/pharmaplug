@@ -11,9 +11,15 @@ const ConsultationNavigator = () => {
         headerShown: false,
       }}
     >
-      <ConsultationStack.Screen name="ConsultationMain" component={Consultation} />
+      <ConsultationStack.Screen
+        name="ConsultationMain"
+        component={Consultation}
+      />
       <ConsultationStack.Screen name="DoctorList" component={DoctorList} />
-      <ConsultationStack.Screen name="DoctorDetails" component={DoctorDetails} />
+      <ConsultationStack.Screen
+        name="DoctorDetails"
+        component={DoctorDetails}
+      />
     </ConsultationStack.Navigator>
   )
 }
