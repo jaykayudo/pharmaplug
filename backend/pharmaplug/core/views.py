@@ -311,7 +311,6 @@ class DashboardDataAPIView(generics.GenericAPIView):
 
         context = {"medications": medications, "consultations": all_consultation}
         if upcoming_consultation:
-            print(upcoming_consultation)
             data = serializers.ConsultationSerializer(upcoming_consultation).data
             context["upcoming_consultation"] = data
 
@@ -350,8 +349,12 @@ class ProfileRetrieveUpdateAPIView(generics.GenericAPIView):
 
     def post(self, request):
         serializer = self.serializer_class(
-            request.user, data=request.data, partial=True
+            request.user, data=request.data, partial=True,
+            context={
+                "request": request
+            }
         )
+
         serializer.is_valid(raise_exception=True)
         data = serializer.save()
         return Response(data)

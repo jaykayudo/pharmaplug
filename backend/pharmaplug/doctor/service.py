@@ -63,7 +63,6 @@ class DoctorService:
             .values_list("created_at__month")
             .annotate(total_amount=Sum("amount"))
         )
-        print(data)
         return data
 
     @classmethod

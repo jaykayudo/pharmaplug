@@ -500,7 +500,6 @@ class AddToCartSerializer(serializers.Serializer):
         product = self.context["product"]
         user = self.context.get("user")
         data = service.CoreService.add_to_cart(cart, user, product)
-        print(data)
         return data
 
 
