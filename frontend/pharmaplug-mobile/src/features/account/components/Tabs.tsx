@@ -1,9 +1,7 @@
-import { View } from "react-native";
+import { View } from 'react-native'
 
 const Tab = () => {
-    return ( 
-        <View></View>
-     );
+  return <View></View>
 }
- 
-export default Tab;
+
+export default Tab

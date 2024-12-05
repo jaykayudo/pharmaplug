@@ -195,13 +195,13 @@ const getStyles = (theme: ThemeType, mode: 'light' | 'dark' = 'light') =>
     mainHeader: {
       padding: theme.size.spacing.md,
       flexDirection: 'row',
-      shadowColor: '#CCCCCC40',
+      shadowColor: '#000000',
       shadowOffset: {
-        width: 4,
+        width: -2,
         height: 4,
       },
       shadowRadius: 5,
-      elevation: 10,
+      //   elevation: 10,
     },
     mainContentContainer: {
       minHeight: height / 1.6,

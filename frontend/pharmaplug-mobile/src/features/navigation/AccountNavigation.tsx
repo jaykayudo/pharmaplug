@@ -11,9 +11,9 @@ const AccountNavigator = () => {
         headerShown: false,
       }}
     >
-      <AccountStack.Screen name='AccountMain' component={Account} />
-      <AccountStack.Screen name='Profile' component={Profile} />
-      <AccountStack.Screen name='History' component={History} />
+      <AccountStack.Screen name="AccountMain" component={Account} />
+      <AccountStack.Screen name="Profile" component={Profile} />
+      <AccountStack.Screen name="History" component={History} />
     </AccountStack.Navigator>
   )
 }
