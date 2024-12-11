@@ -19,12 +19,13 @@ interface ButtonProps extends TouchableOpacityProps {
 
 export const NormalButtton: React.FC<ButtonProps> = ({
   children,
+  style,
   ...props
 }) => {
   const themeContext = useContext(ThemeContext)
   const styles = getStyles(themeContext.theme, themeContext.currentMode)
   return (
-    <TouchableOpacity style={styles.button} {...props}>
+    <TouchableOpacity style={[styles.button, style]} {...props}>
       <Text style={styles.buttonText}>{children}</Text>
     </TouchableOpacity>
   )
