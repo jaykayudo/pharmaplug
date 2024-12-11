@@ -75,18 +75,21 @@ export const MiniAccordion = ({
   }
   return (
     <View>
-      <View style={styles.miniAccordionHeader}>
+      <TouchableOpacity
+        style={styles.miniAccordionHeader}
+        onPress={toggleCaret}
+      >
         <AppText style={{ color: '#1E1E1EB2', fontSize: 12, fontWeight: 500 }}>
           {title}
         </AppText>
-        <TouchableOpacity onPress={toggleCaret}>
+        <View>
           {showContent ? (
             <AntDesign name="up" size={12} color="#1E1E1EB2" />
           ) : (
             <AntDesign name="down" size={12} color="#1E1E1EB2" />
           )}
-        </TouchableOpacity>
-      </View>
+        </View>
+      </TouchableOpacity>
       <View
         style={[
           styles.miniAccordionContent,

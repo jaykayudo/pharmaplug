@@ -14,7 +14,11 @@ const ProductSummaryBox = ({ image, title, quantity, price }: Props) => {
   return (
     <View style={{ flexDirection: 'row', padding: 10, gap: 10 }}>
       <View style={{ width: 50, height: 'auto', backgroundColor: '#F5F7F8' }}>
-        <Image source={image} contentFit="contain" />
+        <Image
+          source={image}
+          contentFit="contain"
+          style={{ width: '100%', height: 50 }}
+        />
       </View>
       <View style={{ flexGrow: 1 }}>
         <AppText style={{ marginBottom: 10 }}>{title}</AppText>

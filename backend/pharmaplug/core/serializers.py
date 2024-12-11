@@ -459,10 +459,14 @@ class CartSerializer(serializers.ModelSerializer):
 
 class OrderItemSerializer(serializers.ModelSerializer):
     product = SimpleProductSerialier()
+    total_price = serializers.SerializerMethodField()
 
     class Meta:
         model = models.OrderItem
         fields = "__all__"
+
+    def get_total_price(self, obj):
+        return obj.product.price * obj.quantity
 
 
 class OrderSerializer(serializers.ModelSerializer):
