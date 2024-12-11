@@ -7,6 +7,15 @@ export const CONSULTATION_STATUS = Object.freeze({
   6: 'finished',
 })
 
+export const CONSULTATION_STATUS_ALT = Object.freeze({
+  PENDING: 1,
+  ACCEPTED: 2,
+  REJECTED: 3,
+  PAID: 4,
+  ONGOING: 5,
+  FINISHED: 6,
+})
+
 export const WALLET_TRANSACTION_TYPE = Object.freeze({
   0: 'initialized',
   1: 'verified',
@@ -15,8 +24,17 @@ export const WALLET_TRANSACTION_TYPE = Object.freeze({
 })
 
 export const ORDER_STATUS = Object.freeze({
-  10: 'open',
-  20: 'closed',
+  10: 'new',
+  20: 'cancelled',
+  30: 'paid',
+  40: 'delivered',
+})
+
+export const ORDER_STATUS_ALT = Object.freeze({
+  NEW: 10,
+  CANCELLED: 20,
+  PAID: 30,
+  DELIVERED: 40,
 })
 
 export const DOCTOR_PER_RATE = Object.freeze({
