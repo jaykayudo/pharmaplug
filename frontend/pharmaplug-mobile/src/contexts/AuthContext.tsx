@@ -32,8 +32,7 @@ const AuthContextProvider: React.FC<{ children: ReactNode }> = ({
     setIsLoggedIn(false)
     setUser(null)
     axios.defaults.headers.common.Authorization = undefined
-    localStorage.removeItem('authToken')
-    localStorage.removeItem('authUser')
+    storage.remove({ key: 'userDetails' })
     if (callback) {
       callback()
     }
