@@ -139,7 +139,7 @@ const History = () => {
             {activePage === 2 && (
               <View style={{ marginVertical: 20 }}>
                 {consults.map((value, idx) => (
-                  <View style={styles.consultCover}>
+                  <View style={styles.consultCover} key={idx}>
                     <View style={styles.consultCoverContent}>
                       <View style={{ marginVertical: 10 }}>
                         <AppText

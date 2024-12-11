@@ -9,6 +9,11 @@ import { ThemeMode, ThemeType } from '../../../../types'
 import { ThemeContext } from '../../../contexts/ThemeContext'
 import { NormalButtton } from '../../../components/button'
 import { NormalInput } from '../../../components/input'
+import {
+  DatePicker,
+  DurationPicker,
+  TimePicker,
+} from '../../../components/picker'
 
 const DoctorDetails = () => {
   const navigation = useNavigation()
@@ -27,16 +32,19 @@ const DoctorDetails = () => {
   const [doctor, setDoctor] = useState({})
   const [isVerified, setIsVerified] = useState(false)
   const [consultFee, setConsultFee] = useState('0.00')
-  const [date, setDate] = useState(null)
-  const [time, setTime] = useState(null)
+  const [date, setDate] = useState('')
+  const [time, setTime] = useState('')
   const [note, setNote] = useState('')
   const [duration, setDuration] = useState('')
   const fetchDoctor = (data) => {
-    console.log(data)
     setDoctor(data)
   }
   const successCallback = (data) => {
     Alert.alert('Success', 'Consultation Scheduled')
+    setDate('')
+    setTime('')
+    setNote('')
+    setDuration('')
   }
   const verifySchedule = (data) => {
     setIsVerified(data)
@@ -44,16 +52,18 @@ const DoctorDetails = () => {
   const getConsultFee = (data) => {
     setConsultFee(data)
   }
-  const validateTime = () => {
-    const today = new Date()
-    const formattedDateTime = today.toISOString().split('T')
-    const formattedTime = formattedDateTime[1].split(':', 2).join(':')
-    if (formattedDateTime[0] == date) {
-      if (time.current.value <= formattedTime) {
-        return false
-      }
-    }
-    return true
+  const onTimeChange = (data: string) => {
+    setTime(data)
+  }
+  const onDateChange = (data: string) => {
+    setDate(data)
+  }
+  const onDurationChange = (data: string) => {
+    setDuration(data)
+  }
+  const modifyDate = (data: string | null) => {
+    if (!data) return null
+    return data.split('/').reverse().join('-')
   }
   const submitForm = () => {
     if (!note || !date || !time || !duration) {
@@ -63,14 +73,10 @@ const DoctorDetails = () => {
       )
       return
     }
-    if (!validateTime()) {
-      Alert.alert('Validation Error', 'Time Value is invalid')
-      return
-    }
     const data = {
       note: note,
       start_time: time,
-      day: date,
+      day: modifyDate(date),
       duration: duration,
       doctor: id,
     }
@@ -96,10 +102,11 @@ const DoctorDetails = () => {
     null,
     getConsultFee,
   )
+
   useEffect(() => {
     if (time && date && duration) {
       verifyDoctorAvailabilityAPI.sendRequest({
-        date: date,
+        date: modifyDate(date),
         time: time,
         duration: duration,
       })
@@ -107,11 +114,11 @@ const DoctorDetails = () => {
       setIsVerified(false)
       setConsultFee('0.00')
     }
-  }, [duration])
+  }, [duration, date, time])
   useEffect(() => {
     if (isVerified) {
       consultFeeAPI.sendRequest({
-        date: date ?? null,
+        date: modifyDate(date),
         time: time ?? null,
         duration: duration,
       })
@@ -161,10 +168,26 @@ const DoctorDetails = () => {
             </View>
           </View>
           <View style={{ marginTop: 30 }}>
-            <AppText style={{ fontSize: 13 }}>Select Schedule</AppText>
+            <AppText style={{ fontSize: 13 }}>Select Day</AppText>
+            <View>
+              <DatePicker value={date} onChange={onDateChange} />
+            </View>
           </View>
           <View style={{ marginTop: 30 }}>
             <AppText style={{ fontSize: 13 }}>Select Time</AppText>
+            <View>
+              <TimePicker
+                value={time}
+                isToday={date === new Date().toLocaleDateString()}
+                onChange={onTimeChange}
+              />
+            </View>
+          </View>
+          <View style={{ marginTop: 30 }}>
+            <AppText style={{ fontSize: 13 }}>Select Duration</AppText>
+            <View>
+              <DurationPicker value={duration} onChange={onDurationChange} />
+            </View>
           </View>
           <View style={{ marginTop: 30 }}>
             <NormalInput
@@ -186,8 +209,20 @@ const DoctorDetails = () => {
             <AppText style={{ fontWeight: 700 }}>₦ {consultFee}</AppText>
           </View>
           <View style={{ marginVertical: 20 }}>
-            <NormalButtton onPress={submitForm} disabled={!isVerified}>
-              Proceed to book schedule
+            <NormalButtton
+              onPress={submitForm}
+              style={
+                isVerified
+                  ? {}
+                  : {
+                      backgroundColor:
+                        themeContext.theme.color[themeContext.currentMode].text
+                          .main,
+                    }
+              }
+              disabled={!isVerified}
+            >
+              {isVerified ? 'Proceed to book schedule' : 'Not available'}
             </NormalButtton>
           </View>
         </Container>

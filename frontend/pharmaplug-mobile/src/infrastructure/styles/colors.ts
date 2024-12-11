@@ -14,6 +14,7 @@ export const light = {
     inputAlt: '#F1F3F6',
     border: '#D2D6E2',
     light: '#ffffff',
+    inactive: '#CCCCCC33',
   },
   text: {
     main: '#1E1E1E',
