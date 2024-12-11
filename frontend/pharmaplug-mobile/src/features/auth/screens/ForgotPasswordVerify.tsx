@@ -9,18 +9,29 @@ import {
 } from 'react-native'
 import SafeArea from '../../../components/safearea'
 import { ThemeType } from '../../../../types'
-import { NormalInput } from '../../../components/input'
+import { CodeInput, NormalInput } from '../../../components/input'
 import { NormalButtton } from '../../../components/button'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { ThemeContext } from '../../../contexts/ThemeContext'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import { AppText } from '../../../components/text'
 
 const ForgotPasswordVerify = () => {
   const navigation = useNavigation()
+  const route = useRoute()
+  const user = route.params?.item
+  if (!user) {
+    return (
+      <View>
+        <AppText>Improper Configuration</AppText>
+      </View>
+    )
+  }
   const themeContext = useContext(ThemeContext)
   const styles = getStyles(themeContext.theme)
+  const [code, setCode] = useState('')
   const submitForm = () => {
-    navigation.navigate('ResetPassword')
+    navigation.navigate('ResetPassword', { user: user, code: code })
   }
 
   return (
@@ -42,11 +53,7 @@ const ForgotPasswordVerify = () => {
           </View>
           <View>
             <View style={{ marginBottom: 10 }}>
-              <NormalInput
-                label="Code"
-                keyboardType="number-pad"
-                inputMode="numeric"
-              />
+              <CodeInput code={code} setCode={setCode} />
             </View>
             <View style={{ marginVertical: 15 }}>
               <NormalButtton onPress={submitForm}>Submit Code</NormalButtton>
