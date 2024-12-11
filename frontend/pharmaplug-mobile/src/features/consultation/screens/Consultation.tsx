@@ -24,6 +24,9 @@ const Consultation = () => {
   const navigateToDoctorList = (id: string) => {
     navigation.navigate('DoctorList', { id: id })
   }
+  const navigateToCategory = () => {
+    navigation.navigate('ConsultCategory')
+  }
   const fetchDoctors = (data: object[]) => {
     setData(data)
   }
@@ -42,7 +45,10 @@ const Consultation = () => {
           Sort Doctor Category
         </AppText>
         <View style={styles.sortButtonCover}>
-          <TouchableOpacity style={styles.sortButton}>
+          <TouchableOpacity
+            style={styles.sortButton}
+            onPress={navigateToCategory}
+          >
             <Ionicons name="filter" size={24} color="black" />
             <AppText>Select Type</AppText>
           </TouchableOpacity>
