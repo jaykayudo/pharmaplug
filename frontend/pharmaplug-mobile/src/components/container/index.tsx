@@ -147,6 +147,46 @@ export const MainContainer = ({
   )
 }
 
+export const MainContainerScrolless = ({
+  children,
+  title,
+  back,
+  refreshing = false,
+  onRefresh,
+}: MainContainerProps) => {
+  const themeContext = useContext(ThemeContext)
+  const styles = getStyles(themeContext.theme, themeContext.currentMode)
+  const navigation = useNavigation()
+  const onBack = () => {
+    navigation.goBack()
+  }
+  return (
+    <SafeArea
+      style={{
+        backgroundColor:
+          themeContext.theme.color[themeContext.currentMode].bg.main,
+      }}
+    >
+      <StatusBar barStyle={'dark-content'} />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+        style={styles.mainCover}
+      >
+        <View style={styles.mainHeader}>
+          {back && (
+            <TouchableOpacity onPress={onBack} style={styles.backContainer}>
+              <Ionicons name="chevron-back" size={24} color="black" />
+            </TouchableOpacity>
+          )}
+          <AppText style={styles.headerText}>{title}</AppText>
+        </View>
+        <View style={styles.mainContentContainer}>{children}</View>
+      </KeyboardAvoidingView>
+    </SafeArea>
+  )
+}
+
 type ContainerProps = {
   children: ReactNode
 }
