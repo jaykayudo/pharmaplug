@@ -605,6 +605,7 @@ class CheckoutSerializer(serializers.Serializer):
     region = serializers.CharField()
     address = serializers.CharField()
     payment_method = serializers.ChoiceField(choices=models.OrderPaymentMethod)
+    delivery_method = serializers.ChoiceField(choices=models.OrderDeliveryMethod)
     cart = serializers.UUIDField()
 
     def validate(self, attrs):

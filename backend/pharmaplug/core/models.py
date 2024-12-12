@@ -32,6 +32,9 @@ class OrderPaymentMethod(models.IntegerChoices):
     ON_DELIVERY = 0, "On Delivery"
     CARD = 1, "Card"
 
+class OrderDeliveryMethod(models.IntegerChoices):
+    HOME = 0, "Home"
+    PICKUP_STATION = 1, "Pickup station"
 
 class ConsultationStatus(models.IntegerChoices):
     PENDING = 1, "Pending"
@@ -438,6 +441,7 @@ class Order(BaseModel):
     address = models.TextField()
     transaction = models.ForeignKey(Transaction, null=True, on_delete=models.SET_NULL)
     payment_method = models.IntegerField(choices=OrderPaymentMethod.choices)
+    delivery_method = models.IntegerField(choices=OrderDeliveryMethod.choices)
     receipt = models.FileField(null=True, blank=True, upload_to="order-receipts")
     paid = models.BooleanField(default=False)
     price = models.DecimalField(max_digits=15, decimal_places=2)
