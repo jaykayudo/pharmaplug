@@ -24,7 +24,8 @@ class InvalidSession(APIException):
     default_code = "invalid_session"
     default_detail = "Invalid Session"
 
+
 class DoctorNotAvailable(APIException):
     status_code = 400
-    default_code= "doctor_not_available"
+    default_code = "doctor_not_available"
     default_detail = "Doctor not available at the specified period"

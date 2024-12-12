@@ -6,6 +6,7 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   Platform,
+  Alert,
 } from 'react-native'
 import SafeArea from '../../../components/safearea'
 import { ThemeType } from '../../../../types'
@@ -15,10 +16,14 @@ import { useContext, useState } from 'react'
 import { ThemeContext } from '../../../contexts/ThemeContext'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { AppText } from '../../../components/text'
+import { usePostAPI } from '../../../services/serviceHooks'
+import { endpoints } from '../../../services/constants'
+import { LoaderContext } from '../../../contexts/LoaderContext'
 
 const ForgotPasswordVerify = () => {
   const navigation = useNavigation()
   const route = useRoute()
+  const loaderContext = useContext(LoaderContext)
   const user = route.params?.item
   if (!user) {
     return (
@@ -31,8 +36,22 @@ const ForgotPasswordVerify = () => {
   const styles = getStyles(themeContext.theme)
   const [code, setCode] = useState('')
   const submitForm = () => {
-    navigation.navigate('ResetPassword', { user: user, code: code })
+    if (code.length != 6) {
+      Alert.alert('Error', 'Fill the code')
+    }
+    sendRequest({
+      user: user,
+      code: code,
+    })
   }
+  const onSuccessCallback = (data) => {
+    navigation.navigate('ResetPassword', { item: { user: user, code: code } })
+  }
+  const { sendRequest } = usePostAPI(
+    endpoints.verifyCode,
+    loaderContext.setLoading,
+    onSuccessCallback,
+  )
 
   return (
     <SafeArea>

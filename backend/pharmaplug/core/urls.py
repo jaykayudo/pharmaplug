@@ -37,7 +37,11 @@ urlpatterns = [
         name="doctor_consult_fee",
     ),
     path("sicknesses/", views.SicknessListAPIView.as_view(), name="sicknesses"),
-    path("sicknesses/<uuid:pk>/", views.SicknessDetailsAPIView.as_view(), name="sicknesses_details"),
+    path(
+        "sicknesses/<uuid:pk>/",
+        views.SicknessDetailsAPIView.as_view(),
+        name="sicknesses_details",
+    ),
     path(
         "sicknesses/<uuid:id>/drugs/",
         views.SicknessDrugListAPIView.as_view(),
@@ -51,8 +55,16 @@ urlpatterns = [
     ),
     path("cart/add/", views.AddToCartAPIView.as_view(), name="cart_add"),
     path("cart/remove/", views.DeleteFromCartAPIView.as_view(), name="cart_remove"),
-    path("cart/increase-quantity/", views.CartIncreaseQuantityAPIView.as_view(), name="cart_increase_quantity"),
-    path("cart/decrease-quantity/", views.CartDecreaseQuantityAPIView.as_view(), name="cart_decrease_quantity"),
+    path(
+        "cart/increase-quantity/",
+        views.CartIncreaseQuantityAPIView.as_view(),
+        name="cart_increase_quantity",
+    ),
+    path(
+        "cart/decrease-quantity/",
+        views.CartDecreaseQuantityAPIView.as_view(),
+        name="cart_decrease_quantity",
+    ),
     path("cart/<uuid:pk>/", views.CartAPIView.as_view(), name="cart"),
     path("checkout/", views.CheckoutAPIView.as_view(), name="checkout"),
     path(
@@ -74,6 +86,7 @@ urlpatterns = [
         views.ForgotPasswordAPIView.as_view(),
         name="forgot_password",
     ),
+    path("verify-code/", views.CodeVerifyAPIView.as_view(), name="verify_code"),
     path(
         "reset-password/", views.ResetPasswordAPIView.as_view(), name="reset_password"
     ),

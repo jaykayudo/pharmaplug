@@ -5,31 +5,35 @@ from core import serializers as core_serializers
 
 from . import models as doctor_models, service, utils
 
+
 class CustomStringRelatedField(serializers.RelatedField):
     def to_representation(self, value):
         return str(value)
+
     def to_internal_value(self, data):
         return data
 
+
 class DoctorSerializer(serializers.ModelSerializer):
     user = core_serializers.SimpleUserSerializer()
-    field =  CustomStringRelatedField(queryset = models.DoctorCategory.objects.all())
+    field = CustomStringRelatedField(queryset=models.DoctorCategory.objects.all())
 
     class Meta:
         model = models.Doctor
         fields = "__all__"
+
     def validate(self, attrs):
         if attrs.get("field"):
-            field = generics.get_object_or_404(
-                models.DoctorCategory,
-                pk = attrs["field"]
-            )
+            field = generics.get_object_or_404(models.DoctorCategory, pk=attrs["field"])
             attrs["field"] = field
         return attrs
+
     @db_transaction.atomic
     def update(self, instance, validated_data):
         user = instance.user
-        serializer = core_serializers.SimpleUserSerializer(user, data = validated_data["user"], partial = True)
+        serializer = core_serializers.SimpleUserSerializer(
+            user, data=validated_data["user"], partial=True
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         instance.field = validated_data.get("field", instance.field)

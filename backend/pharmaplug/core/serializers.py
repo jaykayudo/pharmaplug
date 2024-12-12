@@ -17,6 +17,7 @@ class SimpleUserSerializer(serializers.ModelSerializer):
         model = models.User
         fields = ["id", "email", "first_name", "last_name"]
         read_only_fields = ["id", "email"]
+
     def to_internal_value(self, data):
         return super().to_internal_value(data)
 
@@ -272,6 +273,25 @@ class ForgotPasswordSerializer(serializers.Serializer):
         return user.id
 
 
+class CodeVerifySerializer(serializers.Serializer):
+    user = serializers.UUIDField()
+    code = serializers.CharField()
+
+    def validate(self, attrs):
+        try:
+            user = models.User.objects.get(id=attrs["user"])
+
+        except models.User.DoesNotExist:
+            raise exceptions.InvalidToken
+        otp_list = models.OTP.objects.filter(user=user)
+        if not otp_list.exists():
+            raise exceptions.InvalidSession
+        otp = otp_list.order_by("-created_at").first()
+        if not otp.verify_code(attrs["code"]):
+            raise exceptions.InvalidToken
+        return attrs
+
+
 class ResetPasswordSerializer(serializers.Serializer):
     user = serializers.UUIDField()
     code = serializers.CharField()
@@ -370,35 +390,39 @@ class DoctorCategorySerializer(serializers.ModelSerializer):
 class DoctorSerializer(serializers.ModelSerializer):
     user = SimpleUserSerializer()
     field = DoctorCategorySerializer()
+
     class Meta:
         model = models.Doctor
         fields = "__all__"
 
+
 class DoctorVerifySchedule(serializers.Serializer):
     date = serializers.DateField()
     time = serializers.TimeField()
-    duration = serializers.IntegerField(default = 1)
+    duration = serializers.IntegerField(default=1)
+
     def save(self):
         check = service.CoreService.check_doctor_available(
             self.context["doctor"],
             self.validated_data["date"],
             self.validated_data["time"],
-            self.validated_data["duration"]
+            self.validated_data["duration"],
         )
         return check
-    
+
+
 class DoctorConsultFeeSerializer(serializers.Serializer):
     date = serializers.DateField()
     time = serializers.TimeField()
-    duration = serializers.IntegerField(default = 1)
+    duration = serializers.IntegerField(default=1)
+
     def save(self):
         fee = service.CoreService.calculate_consult_fee(
             self.context["doctor"],
             self.validated_data["time"],
-            self.validated_data["duration"]
+            self.validated_data["duration"],
         )
         return fee
-    
 
 
 class SimpleProductSerialier(serializers.ModelSerializer):
@@ -526,49 +550,50 @@ class DeleteFromCartSerializer(serializers.Serializer):
         for item in self.context["cart_item"]:
             item.delete()
 
+
 class CartIncreaseQuantitySerializer(serializers.Serializer):
     cart = serializers.UUIDField()
     item = serializers.UUIDField()
-    quantity = serializers.IntegerField(default = 1, validators = [MinValueValidator(1), MaxValueValidator(100)])
+    quantity = serializers.IntegerField(
+        default=1, validators=[MinValueValidator(1), MaxValueValidator(100)]
+    )
 
     def validate(self, attrs):
         cart = generics.get_object_or_404(
             models.Cart, id=attrs["cart"], status=models.CartStatus.OPEN
         )
         self.context["cart"] = cart
-        item = generics.get_object_or_404(
-            models.CartItem, cart = cart, id = attrs["item"]
-        )
+        item = generics.get_object_or_404(models.CartItem, cart=cart, id=attrs["item"])
         self.context["item"] = item
         return attrs
-    
+
     def save(self):
         item = self.context["item"]
         item.quantity += self.validated_data["quantity"]
         item.save()
 
+
 class CartDecreaseQuantitySerializer(serializers.Serializer):
     cart = serializers.UUIDField()
     item = serializers.UUIDField()
-    quantity = serializers.IntegerField(default = 1, validators = [MinValueValidator(1), MaxValueValidator(100)])
+    quantity = serializers.IntegerField(
+        default=1, validators=[MinValueValidator(1), MaxValueValidator(100)]
+    )
 
     def validate(self, attrs):
         cart = generics.get_object_or_404(
             models.Cart, id=attrs["cart"], status=models.CartStatus.OPEN
         )
         self.context["cart"] = cart
-        item = generics.get_object_or_404(
-            models.CartItem, cart = cart, id = attrs["item"]
-        )
+        item = generics.get_object_or_404(models.CartItem, cart=cart, id=attrs["item"])
         self.context["item"] = item
         return attrs
-    
+
     def save(self):
         item = self.context["item"]
         if item.quantity > 1:
             item.quantity -= self.validated_data["quantity"]
-            item.save() 
-    
+            item.save()
 
 
 class MergeCartSerializer(serializers.Serializer):
@@ -621,7 +646,7 @@ class CheckoutSerializer(serializers.Serializer):
         data = service.CoreService.create_order(
             **self.validated_data, cart=cart, user=user
         )
-        
+
         return data
 
 
@@ -662,30 +687,29 @@ class ConsultationSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Consultation
         exclude = ["transaction"]
-    
+
     def get_location(self, obj):
         if obj.status == models.ConsultationStatus.PAID:
             return obj.details
-        
+
         return None
 
 
 class ConsultationCreateSerializer(serializers.ModelSerializer):
-    duration = serializers.IntegerField(default = 1)
+    duration = serializers.IntegerField(default=1)
+
     class Meta:
         model = models.Consultation
         fields = ["doctor", "day", "start_time", "note", "duration"]
 
     def validate(self, attrs):
         check = service.CoreService.check_doctor_available(
-            attrs['doctor'],
-            attrs["day"],
-            attrs["start_time"],
-            attrs['duration']
+            attrs["doctor"], attrs["day"], attrs["start_time"], attrs["duration"]
         )
         if not check:
             raise exceptions.DoctorNotAvailable
         return attrs
+
     @db_transaction.atomic
     def create(self, validated_data):
         consult = service.CoreService.book_consult(
@@ -694,7 +718,7 @@ class ConsultationCreateSerializer(serializers.ModelSerializer):
             validated_data["start_time"],
             validated_data["duration"],
             validated_data["note"],
-            self.context["user"]
+            self.context["user"],
         )
         return consult
 

@@ -23,8 +23,8 @@ import { AppText } from '../../../components/text'
 const ResetPassword = () => {
   const navigation = useNavigation()
   const route = useRoute()
-  const user = route.params?.user
-  const code = route.params?.code
+  const user = route.params?.item?.user
+  const code = route.params?.item?.code
   if (!user || !code) {
     return (
       <View>

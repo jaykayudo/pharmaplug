@@ -30,6 +30,7 @@ export const endpoints = {
   refreshToken: `${host}/token/refresh/`,
   changePassword: `${host}/change-password/`,
   forgotPassword: `${host}/forgot-password/`,
+  verifyCode: `${host}/verify-code/`,
   resetPassword: `${host}/reset-password/`,
   //auth user
   userDashboard: `${host}/dashboard/`,

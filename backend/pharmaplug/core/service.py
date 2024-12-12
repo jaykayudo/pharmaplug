@@ -53,8 +53,7 @@ class CoreService:
         logger.info(f"Order for user {user} with id {order.id_as_str} created")
         if payment_method == models.OrderPaymentMethod.CARD:
             transaction = models.Transaction.objects.create(
-                user = user,
-                amount = order.price + delivery_fee
+                user=user, amount=order.price + delivery_fee
             )
             order.transaction = transaction
             order.save()
@@ -64,7 +63,7 @@ class CoreService:
                 "payment_method": payment_method,
                 "amount": order.price + delivery_fee,
                 "key": settings.PAYSTACK_PUBLIC_KEY,
-                "email": order.email
+                "email": order.email,
             }
         return {
             "order": order.id_as_str,
@@ -165,44 +164,57 @@ class CoreService:
                 pass
 
     @classmethod
-    def check_doctor_available(cls, doctor: models.Doctor, date ,start_time: timezone.datetime.time, duration: int):
-        end_time = timezone.datetime.combine( timezone.datetime.today() ,start_time) + timezone.timedelta(hours=duration)
+    def check_doctor_available(
+        cls,
+        doctor: models.Doctor,
+        date,
+        start_time: timezone.datetime.time,
+        duration: int,
+    ):
+        end_time = timezone.datetime.combine(
+            timezone.datetime.today(), start_time
+        ) + timezone.timedelta(hours=duration)
         end_time = end_time.time()
         doctor_schedule = models.Consultation.objects.filter(
-            doctor = doctor,
-            day = date,
-            start_time__gte = start_time,
-            end_time__lte = end_time
+            doctor=doctor, day=date, start_time__gte=start_time, end_time__lte=end_time
         )
         if doctor_schedule.exists():
             return False
         return True
-    
+
     @classmethod
-    def calculate_consult_fee(cls, doctor: models.Doctor, time: timezone.datetime.time, duration: int):
+    def calculate_consult_fee(
+        cls, doctor: models.Doctor, time: timezone.datetime.time, duration: int
+    ):
         doctor_price = doctor.rate
         per_rate = doctor.per_rate
         if per_rate == models.DoctorPerRate.HOUR:
             return doctor_price * Decimal(duration)
         else:
             return doctor_price
-    
+
     @classmethod
     def book_consult(
-        cls, doctor: models.Doctor, date: timezone.datetime.date, 
-        start_time: timezone.datetime.time, duration:int, 
-        note:str, user: models.User
+        cls,
+        doctor: models.Doctor,
+        date: timezone.datetime.date,
+        start_time: timezone.datetime.time,
+        duration: int,
+        note: str,
+        user: models.User,
     ):
-        end_time = timezone.datetime.combine( timezone.datetime.today() ,start_time) + timezone.timedelta(hours=duration)
+        end_time = timezone.datetime.combine(
+            timezone.datetime.today(), start_time
+        ) + timezone.timedelta(hours=duration)
         end_time = end_time.time()
         cost = cls.calculate_consult_fee(doctor, start_time, duration)
         consult = models.Consultation.objects.create(
-            doctor = doctor,
-            day = date,
-            start_time = start_time,
-            end_time = end_time,
-            note = note,
-            cost = cost,
-            user = user
+            doctor=doctor,
+            day=date,
+            start_time=start_time,
+            end_time=end_time,
+            note=note,
+            cost=cost,
+            user=user,
         )
         return consult

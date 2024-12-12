@@ -69,7 +69,7 @@ export const SearchInput: React.FC<InputProps> = ({
   )
 }
 
-const CODE_LENGTH = 4
+const CODE_LENGTH = 6
 type CodeInputProps = {
   code: string
   setCode: (val: string) => void

@@ -51,41 +51,34 @@ class DoctorListAPIView(generics.ListAPIView):
 
 class DoctorDetailsAPIView(generics.RetrieveAPIView):
     serializer_class = serializers.DoctorSerializer
-    queryset = models.Doctor.objects.filter(user__is_active = True)
+    queryset = models.Doctor.objects.filter(user__is_active=True)
+
 
 class DoctorCheckScheduleAPIView(generics.GenericAPIView):
     serializer_class = serializers.DoctorVerifySchedule
+
     def get(self, request, pk):
-        doctor = generics.get_object_or_404(
-            models.Doctor,
-            pk = pk
-        )
+        doctor = generics.get_object_or_404(models.Doctor, pk=pk)
         serializer = self.serializer_class(
-            data = request.query_params,
-            context = {
-                "doctor": doctor
-            }
+            data=request.query_params, context={"doctor": doctor}
         )
         serializer.is_valid(raise_exception=True)
         data = serializer.save()
         return Response(data)
 
+
 class DoctorConsultFeeAPIView(generics.GenericAPIView):
     serializer_class = serializers.DoctorConsultFeeSerializer
+
     def get(self, request, pk):
-        doctor = generics.get_object_or_404(
-            models.Doctor,
-            pk = pk
-        )
+        doctor = generics.get_object_or_404(models.Doctor, pk=pk)
         serializer = self.serializer_class(
-            data = request.query_params,
-            context = {
-                "doctor": doctor
-            }
+            data=request.query_params, context={"doctor": doctor}
         )
         serializer.is_valid(raise_exception=True)
         data = serializer.save()
         return Response(data)
+
 
 class CommonSicknessListAPIView(generics.ListAPIView):
     serializer_class = serializers.SicknessSerializer
@@ -103,6 +96,7 @@ class SicknessListAPIView(generics.ListAPIView):
         if letter_filter:
             kwargs["name__istartwith"] = letter_filter
         return models.Sickness.objects.filter(**kwargs).order_by("name")
+
 
 class SicknessDetailsAPIView(generics.RetrieveAPIView):
     serializer_class = serializers.SicknessSerializer
@@ -168,6 +162,7 @@ class DeleteFromCartAPIView(generics.GenericAPIView):
         serializer.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 class CartIncreaseQuantityAPIView(generics.GenericAPIView):
     serializer_class = serializers.CartIncreaseQuantitySerializer
 
@@ -175,7 +170,8 @@ class CartIncreaseQuantityAPIView(generics.GenericAPIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(status=status.HTTP_204_NO_CONTENT) 
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class CartDecreaseQuantityAPIView(generics.GenericAPIView):
     serializer_class = serializers.CartDecreaseQuantitySerializer
@@ -184,7 +180,8 @@ class CartDecreaseQuantityAPIView(generics.GenericAPIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(status=status.HTTP_204_NO_CONTENT) 
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class RetrieveDoctorScheduleAPIView(generics.GenericAPIView):
     pass
@@ -221,10 +218,7 @@ class LoginAPIView(generics.GenericAPIView):
 
     def post(self, request):
         serializer = self.serializer_class(
-            data=request.data,
-            context = {
-                "request": request
-            }
+            data=request.data, context={"request": request}
         )
         serializer.is_valid(raise_exception=True)
         data = serializer.save()
@@ -236,10 +230,7 @@ class RegisterAPIView(generics.GenericAPIView):
 
     def post(self, request):
         serializer = self.serializer_class(
-            data=request.data,
-            context = {
-                "request": request
-            }
+            data=request.data, context={"request": request}
         )
         serializer.is_valid(raise_exception=True)
         data = serializer.save()
@@ -251,9 +242,9 @@ class DoctorRegisterAPIView(generics.GenericAPIView):
     serializer_class = serializers.DoctorUserCreateSerializer
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data, context = {
-            "request": request
-        })
+        serializer = self.serializer_class(
+            data=request.data, context={"request": request}
+        )
         serializer.is_valid(raise_exception=True)
         data = serializer.save()
         return Response(data)
@@ -267,6 +258,15 @@ class ForgotPasswordAPIView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         data = serializer.save()
         return Response(data)
+
+
+class CodeVerifyAPIView(generics.GenericAPIView):
+    serializer_class = serializers.CodeVerifySerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ResetPasswordAPIView(generics.GenericAPIView):
@@ -349,10 +349,7 @@ class ProfileRetrieveUpdateAPIView(generics.GenericAPIView):
 
     def post(self, request):
         serializer = self.serializer_class(
-            request.user, data=request.data, partial=True,
-            context={
-                "request": request
-            }
+            request.user, data=request.data, partial=True, context={"request": request}
         )
 
         serializer.is_valid(raise_exception=True)
@@ -383,10 +380,7 @@ class BookConsultationAPIView(generics.GenericAPIView):
 
     def post(self, request):
         serializer = self.serializer_class(
-            data=request.data,
-            context = {
-                "user": request.user
-            }
+            data=request.data, context={"user": request.user}
         )
         serializer.is_valid(raise_exception=True)
         data = serializer.save()

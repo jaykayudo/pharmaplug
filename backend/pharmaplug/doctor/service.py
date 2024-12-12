@@ -34,12 +34,12 @@ class DoctorService:
         #     )
         #     .distinct("user")
         #     .count()
-        # ) 
+        # )
         # distinct not supported in sqlite3.. NOTE: uncomment when you use postgres and remove below logic
         pending_consults = models.Consultation.objects.filter(
-            doctor = doctor, status__gt=models.ConsultationStatus.PENDING
+            doctor=doctor, status__gt=models.ConsultationStatus.PENDING
         )
-        consults= []
+        consults = []
         for consult in pending_consults:
             if consult.user_id not in consults:
                 consults.append(consult)
