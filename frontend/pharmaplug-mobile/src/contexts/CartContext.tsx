@@ -85,7 +85,9 @@ const CartContextProvider: React.FC<CartContextProps> = ({ children }) => {
     })
   }
   const refreshCart = () => {
-    if (cartId) CartAPI.sendRequest()
+    if (cartId) {
+      CartAPI.sendRequest()
+    }
   }
   const CartAPI = useGetAPI(endpoints.cart(cartId), null, fetchCartItems)
   const CartDeleteAPI = usePostAPI(endpoints.removeFromCart, null, reloadCart)

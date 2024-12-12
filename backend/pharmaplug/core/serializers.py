@@ -533,7 +533,7 @@ class AddToCartSerializer(serializers.Serializer):
 
 class DeleteFromCartSerializer(serializers.Serializer):
     cart = serializers.UUIDField()
-    cart_items = serializers.ListSerializer(child=serializers.UUIDField())
+    cart_items = serializers.ListField(child=serializers.UUIDField())
 
     def validate(self, attrs):
         cart = generics.get_object_or_404(
