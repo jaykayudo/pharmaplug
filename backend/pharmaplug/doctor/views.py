@@ -36,19 +36,18 @@ class DoctorProfileAPIView(generics.GenericAPIView):
     def get(self, request):
         data = self.serializer_class(request.user.doctor).data
         return Response(data)
-    def post(self, request):
 
+    def post(self, request):
         serializer = self.serializer_class(
-            request.user.doctor, 
-            data = request.data, 
+            request.user.doctor,
+            data=request.data,
             partial=True,
-            context = {
-                "request": request
-            }
+            context={"request": request},
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
 
 class ConsultationListAPIView(generics.ListAPIView):
     permission_classes = [IsDoctor]
@@ -59,10 +58,11 @@ class ConsultationListAPIView(generics.ListAPIView):
         consult_status = self.request.query_params.get("status")
         if consult_status:
             if consult_status.isdigit():
-                kwargs["status"] = int(consult_status) 
+                kwargs["status"] = int(consult_status)
         return core_models.Consultation.objects.filter(**kwargs).order_by(
             "status", "-created_at"
         )
+
 
 class ConsultationDetailsAPIView(generics.RetrieveAPIView):
     pagination_class = [IsDoctor]

@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('core', '0002_alter_orderitem_order'),
+        ("core", "0002_alter_orderitem_order"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='consultation',
-            name='details',
+            model_name="consultation",
+            name="details",
             field=models.TextField(blank=True, null=True),
         ),
     ]

@@ -4,16 +4,17 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('core', '0004_alter_orderitem_order'),
+        ("core", "0004_alter_orderitem_order"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='order',
-            name='delivery_method',
-            field=models.IntegerField(choices=[(0, 'Home'), (1, 'Pickup station')], default=0),
+            model_name="order",
+            name="delivery_method",
+            field=models.IntegerField(
+                choices=[(0, "Home"), (1, "Pickup station")], default=0
+            ),
             preserve_default=False,
         ),
     ]

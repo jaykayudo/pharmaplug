@@ -32,9 +32,11 @@ class OrderPaymentMethod(models.IntegerChoices):
     ON_DELIVERY = 0, "On Delivery"
     CARD = 1, "Card"
 
+
 class OrderDeliveryMethod(models.IntegerChoices):
     HOME = 0, "Home"
     PICKUP_STATION = 1, "Pickup station"
+
 
 class ConsultationStatus(models.IntegerChoices):
     PENDING = 1, "Pending"
@@ -291,7 +293,7 @@ class Consultation(BaseModel):
     status = models.IntegerField(
         default=ConsultationStatus.PENDING, choices=ConsultationStatus.choices
     )
-    details = models.TextField(null = True, blank = True)
+    details = models.TextField(null=True, blank=True)
     transaction = models.ForeignKey(
         "Transaction", null=True, blank=True, on_delete=models.SET_NULL
     )
@@ -329,9 +331,9 @@ class Transaction(BaseModel):
     def change_status(self, status: TransactionStatus):
         self.status = status
         self.save()
-    
+
     def initailize(self, **kwargs):
-        domain = kwargs.get("domain","")
+        domain = kwargs.get("domain", "")
         success_url = f"{domain}/tx/{self.ref}/verify/"
         data = Paystack().initalize_payment(self.user.email, self.amount)
 
@@ -464,9 +466,11 @@ class Order(BaseModel):
             self.order_id = (max_id or 0) + 1
         return super().save(*args, **kwargs)
 
-  
+
 class OrderItem(BaseModel):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="orderitems")
+    order = models.ForeignKey(
+        Order, on_delete=models.CASCADE, related_name="orderitems"
+    )
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
 
