@@ -85,8 +85,6 @@ const CartContextProvider: React.FC<CartContextProps> = ({ children }) => {
     })
   }
   const refreshCart = () => {
-    console.log('reloading')
-    console.log(cartId)
     if (cartId) {
       CartAPI.sendRequest()
     }
