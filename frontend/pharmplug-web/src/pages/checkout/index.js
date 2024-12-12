@@ -118,7 +118,7 @@ const Checkout = () => {
         return
       }
     }
-    if (!state || !paymentMethod || !region) {
+    if (!state || !paymentMethod || !region || !deliveryMethod) {
       message.error({
         content: 'All fields is required',
         duration: 2,
@@ -133,7 +133,7 @@ const Checkout = () => {
       region,
       address,
       payment_method: paymentMethod,
-      deliveryMethod,
+      delivery_method: deliveryMethod,
       cart: cartContext.cartId,
     }
     sendRequest(data)
@@ -306,6 +306,11 @@ const Checkout = () => {
                         type="radio"
                         name="delivery-method"
                         value={'home'}
+                        onChange={(e)=>{
+                          if(e.target.checked){
+                            setDeliveryMethod(0)
+                          }
+                        }}
                       />
                     </div>
                     <div>
@@ -321,11 +326,16 @@ const Checkout = () => {
                         type="radio"
                         name="delivery-method"
                         value={'pharmacy'}
+                        onChange={(e)=>{
+                          if(e.target.checked){
+                            setDeliveryMethod(1)
+                          }
+                        }}
                       />
                     </div>
                     <div>
-                      <h3>Pick up from pharmacy (no delivery fee)</h3>
-                      <p>You will pay at the point of delivery</p>
+                      <h3>Pick up from pickup station (no delivery fee)</h3>
+                      <p>You will pick it up from the pickup station</p>
                     </div>
                   </div>
                 </div>
