@@ -99,6 +99,17 @@ class ConsultationRescheduleAPIView(generics.GenericAPIView):
         return Response(data)
 
 
+class ConsultationRejectAPIView(generics.GenericAPIView):
+    pagination_class = [IsDoctor]
+    serializer_class = serializers.ConsultationRejectSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.save()
+        return Response(data)
+
+
 class WalletAPIVIew(generics.GenericAPIView):
     permission_classes = [IsDoctor]
     serializer_class = serializers.WalletSerializer

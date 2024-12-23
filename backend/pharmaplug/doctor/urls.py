@@ -22,6 +22,11 @@ urlpatterns = [
         name="consult_reschedule",
     ),
     path(
+        "consults/reject/",
+        views.ConsultationRejectAPIView.as_view(),
+        name="consult_reject",
+    ),
+    path(
         "dashboard-stats/",
         views.DashboardStatisticsAPIView.as_view(),
         name="dashboard_stats",

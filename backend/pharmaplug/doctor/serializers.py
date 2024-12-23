@@ -153,3 +153,29 @@ class ConsultationRescheduleSerializer(serializers.Serializer):
         core_service.NotificationService.send_consulation_rescheduled_notification(consultation)
         data = ConsultationSerializer(consultation).data
         return data
+    
+class ConsultationRejectSerializer(serializers.Serializer):
+    consultation = serializers.UUIDField()
+    reason = serializers.CharField()
+
+    def validate(self, attrs):
+        doctor = self.context["doctor"]
+        try:
+            consultation = models.Consultation.objects.get(
+                id=attrs["consultation"], doctor=doctor
+            )
+        except models.Consultation.DoesNotExist:
+            raise serializers.ValidationError(
+                {"details": "Consultation does not exist"}, code=404
+            )
+        self.context["consultation"] = consultation
+        return attrs
+
+    def save(self):
+        consultation: models.Consultation = self.context["consultation"]
+        consultation.details = self.validated_data["reason"]
+        consultation.status = models.ConsultationStatus.REJECTED
+        consultation.save()
+        core_service.NotificationService.send_consulation_rejection_notification(consultation)
+        data = ConsultationSerializer(consultation).data
+        return data
