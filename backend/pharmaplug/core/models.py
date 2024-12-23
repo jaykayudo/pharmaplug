@@ -222,16 +222,17 @@ class Notification(BaseModel):
     def __str__(self):
         return self.title
 
-    def send_email(self, is_html = False, fail_silently = True):
+    def send_email(self, is_html=False, fail_silently=True):
         mail = EmailMessage(
             self.title,
             self.content if is_html else self.html_content,
             settings.DEFAULT_FROM_EMAIL,
-            [self.user.email]
+            [self.user.email],
         )
         if is_html:
             mail.content_subtype = "html"
         mail.send(fail_silently=fail_silently)
+
 
 class Sickness(BaseModel):
     name = models.CharField(max_length=100)

@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 class CoreService:
     @classmethod
     def get_user_notifications(cls, user: models.User):
-        return models.Notification.objects.filter(user = user).order_by("-created_at")
+        return models.Notification.objects.filter(user=user).order_by("-created_at")
 
     @classmethod
     def get_alternative_drug(cls, product: models.Product):
@@ -234,20 +234,16 @@ class NotificationService:
             Welcome to pharmaplug
         """
         notification = models.Notification.objects.create(
-            user = user,
-            title = title,
-            content = message
+            user=user, title=title, content=message
         )
         notification.send_email()
 
     @classmethod
     def send_order_successful_notification(cls, order: models.Order):
         title = "Your Order has been placed"
-        content="This is to notify you that your order has been placed successfully"
+        content = "This is to notify you that your order has been placed successfully"
         notification = models.Notification.objects.create(
-            user = order.user,
-            title = title,
-            content = content
+            user=order.user, title=title, content=content
         )
         notification.send_email()
 
@@ -265,24 +261,22 @@ class NotificationService:
             f"{consultation.user} has request a consultation with you.\n"
             f"Date: {consultation.day} \n"
             f"Time: {consultation.start_time} - {consultation.end_time}"
-            f"View on your dashboard to accept or reject the consultation"            
+            f"View on your dashboard to accept or reject the consultation"
         )
         user_notification = models.Notification.objects.create(
-            user = consultation.user,
-            title = user_title,
-            content = user_content
+            user=consultation.user, title=user_title, content=user_content
         )
         user_notification.send_email()
 
         doctor_notification = models.Notification.objects.create(
-            user = consultation.doctor.user,
-            title = doctor_title,
-            content = doctor_content
+            user=consultation.doctor.user, title=doctor_title, content=doctor_content
         )
         doctor_notification.send_email()
 
     @classmethod
-    def send_consulation_acceptance_notification(cls, consultation: models.Consultation):
+    def send_consulation_acceptance_notification(
+        cls, consultation: models.Consultation
+    ):
         user_title = "Your Consultation request has been accepted"
         user_content = (
             f"Your Consulation request with Dr. {consultation.doctor} has been accepted.\n"
@@ -290,9 +284,7 @@ class NotificationService:
             f"Payment needs to have been made 30 minutes before consulation time."
         )
         user_notification = models.Notification.objects.create(
-            user = consultation.user,
-            title = user_title,
-            content = user_content
+            user=consultation.user, title=user_title, content=user_content
         )
         user_notification.send_email()
 
@@ -303,9 +295,7 @@ class NotificationService:
             f"Time: {consultation.start_time} - {consultation.end_time}"
         )
         doctor_notification = models.Notification.objects.create(
-            user = consultation.doctor.user,
-            title = doctor_title,
-            content = doctor_content
+            user=consultation.doctor.user, title=doctor_title, content=doctor_content
         )
 
     @classmethod
@@ -317,9 +307,7 @@ class NotificationService:
             "Please check other doctors to book consultations"
         )
         user_notification = models.Notification.objects.create(
-            user = consultation.user,
-            title = user_title,
-            content = user_content
+            user=consultation.user, title=user_title, content=user_content
         )
         user_notification.send_email()
 
@@ -330,13 +318,13 @@ class NotificationService:
             f"Time: {consultation.start_time} - {consultation.end_time}"
         )
         models.Notification.objects.create(
-            user = consultation.doctor.user,
-            title = doctor_title,
-            content = doctor_content
+            user=consultation.doctor.user, title=doctor_title, content=doctor_content
         )
-    
+
     @classmethod
-    def send_consulation_rescheduled_notification(cls, consultation: models.Consultation):
+    def send_consulation_rescheduled_notification(
+        cls, consultation: models.Consultation
+    ):
         user_title = "Your Consultation request has been rescheduled"
         user_content = (
             f"Your Consulation request with Dr. {consultation.doctor} has been rescheduled.\n"
@@ -345,9 +333,7 @@ class NotificationService:
             "Please contact support if there is a dispute"
         )
         user_notification = models.Notification.objects.create(
-            user = consultation.user,
-            title = user_title,
-            content = user_content
+            user=consultation.user, title=user_title, content=user_content
         )
         user_notification.send_email()
 
@@ -358,9 +344,7 @@ class NotificationService:
             f"Time: {consultation.start_time} - {consultation.end_time}"
         )
         models.Notification.objects.create(
-            user = consultation.doctor.user,
-            title = doctor_title,
-            content = doctor_content
+            user=consultation.doctor.user, title=doctor_title, content=doctor_content
         )
 
     @classmethod
@@ -371,9 +355,7 @@ class NotificationService:
             f"Extra details: {consultation.details}"
         )
         user_notification = models.Notification.objects.create(
-            user = consultation.user,
-            title = user_title,
-            content = user_content
+            user=consultation.user, title=user_title, content=user_content
         )
         user_notification.send_email()
 
@@ -386,23 +368,21 @@ class NotificationService:
             "Please be available by this time at the communicated location"
         )
         doctor_notification = models.Notification.objects.create(
-            user = consultation.doctor.user,
-            title = doctor_title,
-            content = doctor_content
+            user=consultation.doctor.user, title=doctor_title, content=doctor_content
         )
         doctor_notification.send_email()
 
     @classmethod
-    def send_consultation_completion_notification(cls, consultation: models.Consultation):
+    def send_consultation_completion_notification(
+        cls, consultation: models.Consultation
+    ):
         user_title = "Consultation completed successfully"
         user_content = (
             f"Your Consulation with Dr. {consultation.doctor} has been completed.\n"
             f"Thank you for your service"
         )
         user_notification = models.Notification.objects.create(
-            user = consultation.user,
-            title = user_title,
-            content = user_content
+            user=consultation.user, title=user_title, content=user_content
         )
         user_notification.send_email()
 
@@ -412,8 +392,6 @@ class NotificationService:
             f"Thank you for your service"
         )
         doctor_notification = models.Notification.objects.create(
-            user = consultation.doctor.user,
-            title = doctor_title,
-            content = doctor_content
+            user=consultation.doctor.user, title=doctor_title, content=doctor_content
         )
         doctor_notification.send_email()

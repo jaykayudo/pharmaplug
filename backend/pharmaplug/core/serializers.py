@@ -653,7 +653,7 @@ class CheckoutSerializer(serializers.Serializer):
         data = service.CoreService.create_order(
             **self.validated_data, cart=cart, user=user
         )
-        
+
         return data
 
 

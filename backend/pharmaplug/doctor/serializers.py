@@ -110,7 +110,9 @@ class ConsultationAcceptSerializer(serializers.Serializer):
         consultation.status = models.ConsultationStatus.ACCEPTED
         consultation.save()
         consult_user: models.User = consultation.user
-        core_service.NotificationService.send_consulation_acceptance_notification(consultation)
+        core_service.NotificationService.send_consulation_acceptance_notification(
+            consultation
+        )
         data = ConsultationSerializer(consultation).data
         return data
 
@@ -150,10 +152,13 @@ class ConsultationRescheduleSerializer(serializers.Serializer):
         consultation.start_time = self.validated_data["start_time"]
         consultation.end_time = self.validated_data["end_time"]
         consultation.save()
-        core_service.NotificationService.send_consulation_rescheduled_notification(consultation)
+        core_service.NotificationService.send_consulation_rescheduled_notification(
+            consultation
+        )
         data = ConsultationSerializer(consultation).data
         return data
-    
+
+
 class ConsultationRejectSerializer(serializers.Serializer):
     consultation = serializers.UUIDField()
     reason = serializers.CharField()
@@ -176,6 +181,8 @@ class ConsultationRejectSerializer(serializers.Serializer):
         consultation.details = self.validated_data["reason"]
         consultation.status = models.ConsultationStatus.REJECTED
         consultation.save()
-        core_service.NotificationService.send_consulation_rejection_notification(consultation)
+        core_service.NotificationService.send_consulation_rejection_notification(
+            consultation
+        )
         data = ConsultationSerializer(consultation).data
         return data

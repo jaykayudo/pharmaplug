@@ -493,9 +493,7 @@ class NotificationReadAPIView(generics.GenericAPIView):
 
     def post(self, request, pk):
         notification: models.Notification = generics.get_object_or_404(
-            models.Notification,
-            pk = pk,
-            user = request.user
+            models.Notification, pk=pk, user=request.user
         )
         notification.read = True
         notification.save()
