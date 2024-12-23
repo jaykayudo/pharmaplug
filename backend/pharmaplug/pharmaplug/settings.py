@@ -184,7 +184,7 @@ if not DEBUG:
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
 
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL","test@test.com")
 
 
 # paystack 
