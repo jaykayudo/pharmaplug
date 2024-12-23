@@ -57,6 +57,7 @@ class CoreService:
             )
             order.transaction = transaction
             order.save()
+            NotificationService.send_order_successful_notification(order)
             return {
                 "order": order.id_as_str,
                 "ref": transaction.ref,
@@ -65,6 +66,7 @@ class CoreService:
                 "key": settings.PAYSTACK_PUBLIC_KEY,
                 "email": order.email,
             }
+        NotificationService.send_order_successful_notification(order)
         return {
             "order": order.id_as_str,
             "payment_method": payment_method,
@@ -221,6 +223,7 @@ class CoreService:
 
 
 class NotificationService:
+    @classmethod
     def send_welcome_notification(cls, user: models.User):
         title = "Welcome to Pharmaplug"
         message = """
@@ -233,6 +236,7 @@ class NotificationService:
         )
         notification.send_email()
 
+    @classmethod
     def send_order_successful_notification(cls, order: models.Order):
         title = "Your Order has been placed"
         content="This is to notify you that your order has been placed successfully"
@@ -243,6 +247,7 @@ class NotificationService:
         )
         notification.send_email()
 
+    @classmethod
     def send_consulation_creation_notification(cls, consultation: models.Consultation):
         user_title = "Your Consultation request"
         user_content = (
@@ -272,6 +277,7 @@ class NotificationService:
         )
         doctor_notification.send_email()
 
+    @classmethod
     def send_consulation_acceptance_notification(cls, consultation: models.Consultation):
         user_title = "Your Consultation request has been accepted"
         user_content = (
@@ -297,8 +303,8 @@ class NotificationService:
             title = doctor_title,
             content = doctor_content
         )
-        doctor_notification.send_email()
 
+    @classmethod
     def send_consulation_rejection_notification(cls, consultation: models.Consultation):
         user_title = "Your Consultation request has been declined"
         user_content = (
@@ -319,13 +325,41 @@ class NotificationService:
             f"Date: {consultation.day} \n"
             f"Time: {consultation.start_time} - {consultation.end_time}"
         )
-        doctor_notification = models.Notification.objects.create(
+        models.Notification.objects.create(
             user = consultation.doctor.user,
             title = doctor_title,
             content = doctor_content
         )
-        doctor_notification.send_email()
     
+    @classmethod
+    def send_consulation_rescheduled_notification(cls, consultation: models.Consultation):
+        user_title = "Your Consultation request has been rescheduled"
+        user_content = (
+            f"Your Consulation request with Dr. {consultation.doctor} has been rescheduled.\n"
+            f"Date: {consultation.day} \n"
+            f"Time: {consultation.start_time} - {consultation.end_time}"
+            "Please contact support if there is a dispute"
+        )
+        user_notification = models.Notification.objects.create(
+            user = consultation.user,
+            title = user_title,
+            content = user_content
+        )
+        user_notification.send_email()
+
+        doctor_title = "Consultation Resheduled"
+        doctor_content = (
+            f"You have rescheduled consultation with {consultation.user}.\n"
+            f"Date: {consultation.day} \n"
+            f"Time: {consultation.start_time} - {consultation.end_time}"
+        )
+        models.Notification.objects.create(
+            user = consultation.doctor.user,
+            title = doctor_title,
+            content = doctor_content
+        )
+
+    @classmethod
     def send_consultation_payment_notification(cls, consultation: models.Consultation):
         user_title = "Consultation payment successful"
         user_content = (
@@ -354,6 +388,7 @@ class NotificationService:
         )
         doctor_notification.send_email()
 
+    @classmethod
     def send_consultation_completion_notification(cls, consultation: models.Consultation):
         user_title = "Consultation completed successfully"
         user_content = (

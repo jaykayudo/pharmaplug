@@ -2,6 +2,7 @@ from rest_framework import serializers, generics
 from django.db import transaction as db_transaction
 from core import models
 from core import serializers as core_serializers
+from core import service as core_service
 
 from . import models as doctor_models, service, utils
 
@@ -109,7 +110,7 @@ class ConsultationAcceptSerializer(serializers.Serializer):
         consultation.status = models.ConsultationStatus.ACCEPTED
         consultation.save()
         consult_user: models.User = consultation.user
-        service.EmailService.consultation_acceptance_email(consult_user, consultation)
+        core_service.NotificationService.send_consulation_acceptance_notification(consultation)
         data = ConsultationSerializer(consultation).data
         return data
 
@@ -149,6 +150,6 @@ class ConsultationRescheduleSerializer(serializers.Serializer):
         consultation.start_time = self.validated_data["start_time"]
         consultation.end_time = self.validated_data["end_time"]
         consultation.save()
-        service.EmailService.consultation_reschedule_email(consultation)
+        core_service.NotificationService.send_consulation_rescheduled_notification(consultation)
         data = ConsultationSerializer(consultation).data
         return data
