@@ -480,10 +480,21 @@ class ConsultationRecieptAPIView(generics.GenericAPIView):
         return response
 
 
-# consultation details --
-# order  details --
-# pay for consultation
-# pay for order
-# user cart
-# order receipt
-# consultation receipt
+class NotificationListAPIView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = serializers.NotificationSerializer
+
+    def get_queryset(self):
+        return service.CoreService.get_user_notifications(self.request.user)
+
+
+class NotificationReadAPIView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        notification: models.Notification = generics.get_object_or_404(
+            models.Notification, pk=pk, user=request.user
+        )
+        notification.read = True
+        notification.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)

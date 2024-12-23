@@ -134,4 +134,14 @@ urlpatterns = [
         views.ConsultationRecieptAPIView.as_view(),
         name="consultations_receipt",
     ),
+    path(
+        "notifications/",
+        views.NotificationListAPIView.as_view(),
+        name="notifications",
+    ),
+    path(
+        "notifications/<uuid:pk>/read/",
+        views.NotificationReadAPIView.as_view(),
+        name="notification_read",
+    ),
 ]

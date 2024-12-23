@@ -12,6 +12,8 @@ from django.contrib.auth.models import AbstractUser, UserManager
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.core.signing import TimestampSigner, SignatureExpired, BadSignature
+from django.core.mail import EmailMessage
+from django.conf import settings
 from django.utils.crypto import get_random_string
 
 from .validators import phone_number_validator
@@ -208,6 +210,28 @@ class OTP(BaseModel):
             return code == decoded_code
         except (BadSignature, SignatureExpired):
             return False
+
+
+class Notification(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+    html_content = models.TextField(blank=True, null=True)
+    read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.title
+
+    def send_email(self, is_html=False, fail_silently=True):
+        mail = EmailMessage(
+            self.title,
+            self.content if is_html else self.html_content,
+            settings.DEFAULT_FROM_EMAIL,
+            [self.user.email],
+        )
+        if is_html:
+            mail.content_subtype = "html"
+        mail.send(fail_silently=fail_silently)
 
 
 class Sickness(BaseModel):

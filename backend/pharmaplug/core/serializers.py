@@ -83,6 +83,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def save(self, **kwargs):
         user = super().save(**kwargs)
+        service.NotificationService.send_welcome_notification(user)
         user_data = UserSerializer(user).data
         token_data_obj = RefreshToken.for_user(user)
         expiry = token_data_obj.access_token["exp"]
@@ -170,6 +171,7 @@ class DoctorUserCreateSerializer(serializers.ModelSerializer):
 
     def save(self, **kwargs):
         user = super().save(**kwargs)
+        service.NotificationService.send_welcome_notification(user)
         user_data = UserSerializer(user).data
         token_data_obj = RefreshToken.for_user(user)
         expiry = token_data_obj.access_token["exp"]
@@ -360,6 +362,12 @@ class ChangePasswordSerializer(serializers.Serializer):
         user.set_password(self.validated_data["new_password"])
         user.save()
         return user
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Notification
+        fields = "__all__"
 
 
 class StorySerializer(serializers.ModelSerializer):
@@ -719,6 +727,7 @@ class ConsultationCreateSerializer(serializers.ModelSerializer):
             validated_data["note"],
             self.context["user"],
         )
+        service.NotificationService.send_consulation_creation_notification(consult)
         return consult
 
 
@@ -772,5 +781,6 @@ class ConsultationPaymentVerifySerializer(serializers.Serializer):
         consultation: models.Consultation = self.context["consultation"]
         consultation.status = models.ConsultationStatus.PAID
         consult = consultation.save()
+        service.NotificationService.send_consultation_payment_notification(consultation)
         data = ConsultationSerializer(consult).data
         return data

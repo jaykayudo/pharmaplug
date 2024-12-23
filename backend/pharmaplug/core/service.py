@@ -16,6 +16,10 @@ logger = logging.getLogger(__name__)
 
 class CoreService:
     @classmethod
+    def get_user_notifications(cls, user: models.User):
+        return models.Notification.objects.filter(user=user).order_by("-created_at")
+
+    @classmethod
     def get_alternative_drug(cls, product: models.Product):
         pass
 
@@ -57,6 +61,7 @@ class CoreService:
             )
             order.transaction = transaction
             order.save()
+            NotificationService.send_order_successful_notification(order)
             return {
                 "order": order.id_as_str,
                 "ref": transaction.ref,
@@ -65,6 +70,7 @@ class CoreService:
                 "key": settings.PAYSTACK_PUBLIC_KEY,
                 "email": order.email,
             }
+        NotificationService.send_order_successful_notification(order)
         return {
             "order": order.id_as_str,
             "payment_method": payment_method,
@@ -218,3 +224,174 @@ class CoreService:
             user=user,
         )
         return consult
+
+
+class NotificationService:
+    @classmethod
+    def send_welcome_notification(cls, user: models.User):
+        title = "Welcome to Pharmaplug"
+        message = """
+            Welcome to pharmaplug
+        """
+        notification = models.Notification.objects.create(
+            user=user, title=title, content=message
+        )
+        notification.send_email()
+
+    @classmethod
+    def send_order_successful_notification(cls, order: models.Order):
+        title = "Your Order has been placed"
+        content = "This is to notify you that your order has been placed successfully"
+        notification = models.Notification.objects.create(
+            user=order.user, title=title, content=content
+        )
+        notification.send_email()
+
+    @classmethod
+    def send_consulation_creation_notification(cls, consultation: models.Consultation):
+        user_title = "Your Consultation request"
+        user_content = (
+            "You have created consultation request and the doctor has been notified. "
+            "You will receive a notification after the doctor accept or reject the consultation. "
+            "If the doctor accepts, you will pay required to pay the fees before receiving further informations "
+            "which included the meeting location."
+        )
+        doctor_title = "A Consultation has been request from you"
+        doctor_content = (
+            f"{consultation.user} has request a consultation with you.\n"
+            f"Date: {consultation.day} \n"
+            f"Time: {consultation.start_time} - {consultation.end_time}"
+            f"View on your dashboard to accept or reject the consultation"
+        )
+        user_notification = models.Notification.objects.create(
+            user=consultation.user, title=user_title, content=user_content
+        )
+        user_notification.send_email()
+
+        doctor_notification = models.Notification.objects.create(
+            user=consultation.doctor.user, title=doctor_title, content=doctor_content
+        )
+        doctor_notification.send_email()
+
+    @classmethod
+    def send_consulation_acceptance_notification(
+        cls, consultation: models.Consultation
+    ):
+        user_title = "Your Consultation request has been accepted"
+        user_content = (
+            f"Your Consulation request with Dr. {consultation.doctor} has been accepted.\n"
+            "Login to your dashboard to make the payment. "
+            f"Payment needs to have been made 30 minutes before consulation time."
+        )
+        user_notification = models.Notification.objects.create(
+            user=consultation.user, title=user_title, content=user_content
+        )
+        user_notification.send_email()
+
+        doctor_title = "Consultation Accepted"
+        doctor_content = (
+            f"You have accepted consultation with {consultation.user}.\n"
+            f"Date: {consultation.day} \n"
+            f"Time: {consultation.start_time} - {consultation.end_time}"
+        )
+        doctor_notification = models.Notification.objects.create(
+            user=consultation.doctor.user, title=doctor_title, content=doctor_content
+        )
+
+    @classmethod
+    def send_consulation_rejection_notification(cls, consultation: models.Consultation):
+        user_title = "Your Consultation request has been declined"
+        user_content = (
+            f"Your Consulation request with Dr. {consultation.doctor} has been declined.\n"
+            f"Reasons: {consultation.details}. "
+            "Please check other doctors to book consultations"
+        )
+        user_notification = models.Notification.objects.create(
+            user=consultation.user, title=user_title, content=user_content
+        )
+        user_notification.send_email()
+
+        doctor_title = "Consultation Accepted"
+        doctor_content = (
+            f"You have accepted consultation with {consultation.user}.\n"
+            f"Date: {consultation.day} \n"
+            f"Time: {consultation.start_time} - {consultation.end_time}"
+        )
+        models.Notification.objects.create(
+            user=consultation.doctor.user, title=doctor_title, content=doctor_content
+        )
+
+    @classmethod
+    def send_consulation_rescheduled_notification(
+        cls, consultation: models.Consultation
+    ):
+        user_title = "Your Consultation request has been rescheduled"
+        user_content = (
+            f"Your Consulation request with Dr. {consultation.doctor} has been rescheduled.\n"
+            f"Date: {consultation.day} \n"
+            f"Time: {consultation.start_time} - {consultation.end_time}"
+            "Please contact support if there is a dispute"
+        )
+        user_notification = models.Notification.objects.create(
+            user=consultation.user, title=user_title, content=user_content
+        )
+        user_notification.send_email()
+
+        doctor_title = "Consultation Resheduled"
+        doctor_content = (
+            f"You have rescheduled consultation with {consultation.user}.\n"
+            f"Date: {consultation.day} \n"
+            f"Time: {consultation.start_time} - {consultation.end_time}"
+        )
+        models.Notification.objects.create(
+            user=consultation.doctor.user, title=doctor_title, content=doctor_content
+        )
+
+    @classmethod
+    def send_consultation_payment_notification(cls, consultation: models.Consultation):
+        user_title = "Consultation payment successful"
+        user_content = (
+            f"Your Consulation with Dr. {consultation.doctor} has been paid for successfully.\n"
+            f"Extra details: {consultation.details}"
+        )
+        user_notification = models.Notification.objects.create(
+            user=consultation.user, title=user_title, content=user_content
+        )
+        user_notification.send_email()
+
+        doctor_title = f"Consultation with {consultation.user} Paid"
+        doctor_content = (
+            f"Consultation with {consultation.user} has been paid.\n"
+            f"Date: {consultation.day} \n"
+            f"Time: {consultation.start_time} - {consultation.end_time}"
+            f"Extra Details: {consultation.details}"
+            "Please be available by this time at the communicated location"
+        )
+        doctor_notification = models.Notification.objects.create(
+            user=consultation.doctor.user, title=doctor_title, content=doctor_content
+        )
+        doctor_notification.send_email()
+
+    @classmethod
+    def send_consultation_completion_notification(
+        cls, consultation: models.Consultation
+    ):
+        user_title = "Consultation completed successfully"
+        user_content = (
+            f"Your Consulation with Dr. {consultation.doctor} has been completed.\n"
+            f"Thank you for your service"
+        )
+        user_notification = models.Notification.objects.create(
+            user=consultation.user, title=user_title, content=user_content
+        )
+        user_notification.send_email()
+
+        doctor_title = f"Consultation completed successfully "
+        doctor_content = (
+            f"Consultation with {consultation.user} has been completed.\n"
+            f"Thank you for your service"
+        )
+        doctor_notification = models.Notification.objects.create(
+            user=consultation.doctor.user, title=doctor_title, content=doctor_content
+        )
+        doctor_notification.send_email()
