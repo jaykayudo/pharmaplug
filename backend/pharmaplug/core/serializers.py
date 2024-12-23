@@ -364,6 +364,12 @@ class ChangePasswordSerializer(serializers.Serializer):
         return user
 
 
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Notification
+        fields = "__all__"
+
+
 class StorySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Story

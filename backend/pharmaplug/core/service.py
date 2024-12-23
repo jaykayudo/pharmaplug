@@ -16,6 +16,10 @@ logger = logging.getLogger(__name__)
 
 class CoreService:
     @classmethod
+    def get_user_notifications(cls, user: models.User):
+        return models.Notification.objects.filter(user = user).order_by("-created_at")
+
+    @classmethod
     def get_alternative_drug(cls, product: models.Product):
         pass
 
