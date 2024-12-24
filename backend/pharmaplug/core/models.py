@@ -15,6 +15,8 @@ from django.core.signing import TimestampSigner, SignatureExpired, BadSignature
 from django.core.mail import EmailMessage
 from django.conf import settings
 from django.utils.crypto import get_random_string
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 from .validators import phone_number_validator
 from .payment import Paystack
@@ -54,6 +56,11 @@ class TransactionStatus(models.IntegerChoices):
     VERIFIED = 1, "Verified"
     DECLINED = 2, "Declined"
     INVALID = 3, "Invalid"
+
+
+class TransactionType(models.TextChoices):
+    ORDER = "order", "Order"
+    WALLET = "wallet", "Wallet"
 
 
 class WalletTransactionType(models.IntegerChoices):
@@ -340,6 +347,12 @@ class Transaction(BaseModel):
         choices=TransactionStatus.choices, default=TransactionStatus.INITAILIZED
     )
     verified_at = models.DateTimeField(null=True, blank=True)
+
+    type = models.CharField(max_length=20, choices=TransactionType.choices)
+
+    object_ct = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.UUIDField()
+    object = GenericForeignKey("object_ct", "object_id")
 
     class Meta:
         ordering = ("created_at",)
