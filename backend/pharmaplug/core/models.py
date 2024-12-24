@@ -15,7 +15,7 @@ from django.core.signing import TimestampSigner, SignatureExpired, BadSignature
 from django.core.mail import EmailMessage
 from django.conf import settings
 from django.utils.crypto import get_random_string
-from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 
 from .validators import phone_number_validator
@@ -478,13 +478,13 @@ class Order(BaseModel):
     state = models.CharField(max_length=30)
     region = models.CharField(max_length=50)
     address = models.TextField()
-    transaction = models.ForeignKey(Transaction, null=True, on_delete=models.SET_NULL)
     payment_method = models.IntegerField(choices=OrderPaymentMethod.choices)
     delivery_method = models.IntegerField(choices=OrderDeliveryMethod.choices)
     receipt = models.FileField(null=True, blank=True, upload_to="order-receipts")
     paid = models.BooleanField(default=False)
     price = models.DecimalField(max_digits=15, decimal_places=2)
     delivery_fee = models.DecimalField(max_digits=15, decimal_places=2)
+    transactions = GenericRelation(Transaction)
     status = models.IntegerField(default=OrderStatus.NEW, choices=OrderStatus.choices)
 
     def __str__(self) -> str:
