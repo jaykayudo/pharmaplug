@@ -62,6 +62,7 @@ class CoreService:
                 amount=order.total_price,
                 object_ct=ContentType.objects.get_for_model(models.Order),
                 object_id=order.id,
+                type = models.TransactionType.ORDER
             )
             NotificationService.send_order_successful_notification(order)
             return {
@@ -109,14 +110,20 @@ class CoreService:
             amount=order.total_price,
             object_ct=ContentType.objects.get_for_model(models.Order),
             object_id=order.id,
+            type = models.TransactionType.ORDER
         )
         return transaction
 
     @classmethod
-    def verify_order_payment(cls, transaction_ref: str):
-        response = payment.Paystack().verify_payment(transaction_ref)
+    def verify_order_payment(cls, transaction: models.Transaction):
+        response = payment.Paystack().verify_payment(transaction.ref)
         if not response["status"]:
+            transaction.status = models.TransactionStatus.INVALID
+            transaction.save()
             return False
+        transaction.status = models.TransactionStatus.VERIFIED
+        transaction.verified_at = timezone.now()
+        transaction.save()
         return True
 
     @classmethod
@@ -126,15 +133,21 @@ class CoreService:
             amount=consultation.cost,
             object_ct=ContentType.objects.get_for_model(models.Consultation),
             object_id=consultation.id,
+            type = models.TransactionType.CONSULTATION
         )
         data = {"transaction": transaction.ref, "consultation": consultation.id_as_str}
         return data
 
     @classmethod
-    def verify_consultation_payment(cls, transaction_ref: str):
-        response = payment.Paystack().verify_payment(transaction_ref)
+    def verify_consultation_payment(cls, transaction: models.Transaction):
+        response = payment.Paystack().verify_payment(transaction.ref)
         if not response["status"]:
+            transaction.status = models.TransactionStatus.INVALID
+            transaction.save()
             return False
+        transaction.status = models.TransactionStatus.VERIFIED
+        transaction.verified_at = timezone.now()
+        transaction.save()
         return True
 
     @classmethod

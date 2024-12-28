@@ -60,6 +60,7 @@ class TransactionStatus(models.IntegerChoices):
 
 class TransactionType(models.TextChoices):
     ORDER = "order", "Order"
+    CONSULTATION = "consultation", "Consultation"
     WALLET = "wallet", "Wallet"
 
 

@@ -690,11 +690,15 @@ class OrderPaymentVerfiySerializer(serializers.Serializer):
         transaction: models.Transaction = generics.get_object_or_404(
             models.Transaction, ref=attrs["ref"]
         )
+        if transaction.status != models.TransactionStatus.INITAILIZED:
+            raise serializers.ValidationError(
+                {"detail": "Transaction is invalid"}
+            )
         if not isinstance(transaction.object, models.Order):
             raise serializers.ValidationError({"detail": "Invalid tx for order"})
         if transaction.object.status >= models.OrderStatus.PAID:
             raise serializers.ValidationError({"detail": "Order is already Paid for"})
-        verification = service.CoreService.verify_order_payment(transaction.ref)
+        verification = service.CoreService.verify_order_payment(transaction)
         if not verification:
             raise serializers.ValidationError(
                 {"detail": "Order payment verification failed"}
@@ -784,13 +788,17 @@ class ConsultationPaymentVerifySerializer(serializers.Serializer):
         transaction: models.Transaction = generics.get_object_or_404(
             models.Transaction, ref=attrs["ref"]
         )
+        if transaction.status != models.TransactionStatus.INITAILIZED:
+            raise serializers.ValidationError(
+                {"detail": "Transaction is invalid"}
+            )
         if not isinstance(transaction.object, models.Consultation):
             raise serializers.ValidationError({"detail": "Invalid tx for consultation"})
         if transaction.object.status >= models.ConsultationStatus.PAID:
             raise serializers.ValidationError(
                 {"detail": "Consultation is already Paid for"}
             )
-        verification = service.CoreService.verify_consultation_payment(transaction.ref)
+        verification = service.CoreService.verify_consultation_payment(transaction)
         if not verification:
             raise serializers.ValidationError(
                 {"detail": "Consultaton payment verification failed"}

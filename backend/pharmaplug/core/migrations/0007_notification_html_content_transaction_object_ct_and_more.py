@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='transaction',
             name='type',
-            field=models.CharField(choices=[('order', 'Order'), ('wallet', 'Wallet')], default='order', max_length=20),
+            field=models.CharField(choices=[('order', 'Order'), ('wallet', 'Wallet'), ('consultation', 'Consultation')], default='order', max_length=20),
             preserve_default=False,
         ),
     ]
