@@ -92,7 +92,7 @@ class DoctorPerRate(models.IntegerChoices):
 
 
 class AuthProvider(models.TextChoices):
-    EMAIL = "email","Email"
+    EMAIL = "email", "Email"
     GOOGLE = "google", "Google"
 
 
@@ -182,10 +182,7 @@ class User(AbstractUser, BaseModel):
     )
     is_doctor = models.BooleanField(default=False)
     email_verified = models.BooleanField(default=False)
-    auth_provider = models.CharField(
-        max_length=15,
-        default=AuthProvider.EMAIL
-    )
+    auth_provider = models.CharField(max_length=15, default=AuthProvider.EMAIL)
     objects = BaseManager()
 
     USERNAME_FIELD = "email"

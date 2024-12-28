@@ -401,38 +401,29 @@ class GoogleLoginSerializer(serializers.Serializer):
 class GoogleRegisterSerializer(serializers.Serializer):
     auth_token = serializers.CharField()
     phone_number = serializers.CharField()
-    is_doctor = serializers.BooleanField(default = False)
-    field = serializers.UUIDField(required = False)
+    is_doctor = serializers.BooleanField(default=False)
+    field = serializers.UUIDField(required=False)
 
     def validate(self, attrs):
         auth_token = attrs["auth_token"]
         user_data = auth_providers.Google.verify(auth_token)
-        if models.User.objects.filter(
-            email = user_data["email"]
-        ).exists():
-            serializers.ValidationError({
-                "details":"User with email already exists"
-            })
-        if models.User.objects.filter(
-            phone_number = attrs["phone_number"]
-        ).exists():
-            serializers.ValidationError({
-                "details":"User with phone number already exists"
-            })
+        if models.User.objects.filter(email=user_data["email"]).exists():
+            serializers.ValidationError({"details": "User with email already exists"})
+        if models.User.objects.filter(phone_number=attrs["phone_number"]).exists():
+            serializers.ValidationError(
+                {"details": "User with phone number already exists"}
+            )
         if attrs["is_doctor"]:
             if not attrs.get("field"):
-                raise serializers.ValidationError({
-                    "details": "Doctor must provide field for registration"
-                })
-            field = generics.get_object_or_404(
-                models.DoctorCategory,
-                id = attrs["field"]
-            )
+                raise serializers.ValidationError(
+                    {"details": "Doctor must provide field for registration"}
+                )
+            field = generics.get_object_or_404(models.DoctorCategory, id=attrs["field"])
             self.context["field"] = field
         self.context["user_data"] = {
             **user_data,
             "phone_number": attrs["phone_number"],
-            "is_doctor": attrs["doctor"]
+            "is_doctor": attrs["doctor"],
         }
         return attrs
 
@@ -462,13 +453,10 @@ class GoogleRegisterSerializer(serializers.Serializer):
             first_name=first_name,
             last_name=last_name,
             phone_number=user_data["phone_number"],
-            is_doctor=user_data["is_doctor"]
+            is_doctor=user_data["is_doctor"],
         )
         if user_data["is_doctor"]:
-            models.Doctor.objects.create(
-                user = user,
-                field = self.context["field"]
-            )
+            models.Doctor.objects.create(user=user, field=self.context["field"])
         user_data = UserSerializer(user).data
         token_data_obj = RefreshToken.for_user(user)
         expiry = token_data_obj.access_token["exp"]

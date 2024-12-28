@@ -77,7 +77,11 @@ urlpatterns = [
     path("login/", views.LoginAPIView.as_view(), name="login"),
     path("login/google/", views.GoogleLoginAPIView.as_view(), name="login_google"),
     path("register/", views.RegisterAPIView.as_view(), name="register"),
-    path("register/google/", views.GoogleRegisterAPIView.as_view(), name="register_google"),
+    path(
+        "register/google/",
+        views.GoogleRegisterAPIView.as_view(),
+        name="register_google",
+    ),
     path(
         "register-doctor/",
         views.DoctorRegisterAPIView.as_view(),
