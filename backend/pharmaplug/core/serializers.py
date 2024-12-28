@@ -5,10 +5,11 @@ from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 from rest_framework import serializers, generics
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.validators import UniqueValidator
 
-from . import models, exceptions, service
+from . import models, exceptions, service, auth_providers
 from .utils import generated_username_from_email
 
 
@@ -362,6 +363,122 @@ class ChangePasswordSerializer(serializers.Serializer):
         user.set_password(self.validated_data["new_password"])
         user.save()
         return user
+
+
+# Google OAUTH
+class GoogleLoginSerializer(serializers.Serializer):
+    auth_token = serializers.CharField()
+
+    def validate(self, attrs):
+        auth_token = attrs["auth_token"]
+        user_data = auth_providers.Google.verify(auth_token)
+        users = models.User.objects.filter(
+            email=user_data["data"],
+            auth_provider=models.AuthProvider.GOOGLE,
+            is_active=True,
+        )
+        if not users.exists():
+            raise AuthenticationFailed(
+                {"details": "Account not registered with system"}
+            )
+
+        self.context["user"] = users.first()
+        return attrs
+
+    def save(self):
+        user = self.context["user"]
+        user_data = UserSerializer(user).data
+        token_data_obj = RefreshToken.for_user(user)
+        expiry = token_data_obj.access_token["exp"]
+        token_data = {
+            "access": str(token_data_obj.access_token),
+            "refresh": str(token_data_obj),
+            "expiry": expiry,
+        }
+        return {**user_data, **token_data}
+
+
+class GoogleRegisterSerializer(serializers.Serializer):
+    auth_token = serializers.CharField()
+    phone_number = serializers.CharField()
+    is_doctor = serializers.BooleanField(default = False)
+    field = serializers.UUIDField(required = False)
+
+    def validate(self, attrs):
+        auth_token = attrs["auth_token"]
+        user_data = auth_providers.Google.verify(auth_token)
+        if models.User.objects.filter(
+            email = user_data["email"]
+        ).exists():
+            serializers.ValidationError({
+                "details":"User with email already exists"
+            })
+        if models.User.objects.filter(
+            phone_number = attrs["phone_number"]
+        ).exists():
+            serializers.ValidationError({
+                "details":"User with phone number already exists"
+            })
+        if attrs["is_doctor"]:
+            if not attrs.get("field"):
+                raise serializers.ValidationError({
+                    "details": "Doctor must provide field for registration"
+                })
+            field = generics.get_object_or_404(
+                models.DoctorCategory,
+                id = attrs["field"]
+            )
+            self.context["field"] = field
+        self.context["user_data"] = {
+            **user_data,
+            "phone_number": attrs["phone_number"],
+            "is_doctor": attrs["doctor"]
+        }
+        return attrs
+
+    @db_transaction.atomic
+    def save(self):
+        user_data = self.context["user_data"]
+        username = generated_username_from_email(user_data["email"])
+        counter = 1  # a little hack to prevent infinite hack :)
+        while models.User.objects.filter(username=username).exists():
+            username = generated_username_from_email(
+                user_data["email"], use_random=True
+            )
+            counter += 1
+            if counter > 50:
+                break
+        first_name = ""
+        last_name = ""
+        full_name_list = user_data["name"].rsplit(" ", maxsplit=2)
+        if len(full_name_list) == 2:
+            first_name = full_name_list[0]
+            last_name = full_name_list[1]
+        else:
+            first_name = full_name_list[0]
+        user = models.User.objects.create(
+            username=username,
+            email=user_data["email"],
+            first_name=first_name,
+            last_name=last_name,
+            phone_number=user_data["phone_number"],
+            is_doctor=user_data["is_doctor"]
+        )
+        if user_data["is_doctor"]:
+            models.Doctor.objects.create(
+                user = user,
+                field = self.context["field"]
+            )
+        user_data = UserSerializer(user).data
+        token_data_obj = RefreshToken.for_user(user)
+        expiry = token_data_obj.access_token["exp"]
+        token_data = {
+            "access": str(token_data_obj.access_token),
+            "refresh": str(token_data_obj),
+            "expiry": expiry,
+        }
+        login(self.context["request"], user)
+        return {**user_data, **token_data}
 
 
 class NotificationSerializer(serializers.ModelSerializer):

@@ -244,6 +244,18 @@ class LoginAPIView(generics.GenericAPIView):
         return Response(data)
 
 
+class GoogleLoginAPIView(generics.GenericAPIView):
+    serializer_class = serializers.GoogleLoginSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(
+            data=request.data, context={"request": request}
+        )
+        serializer.is_valid(raise_exception=True)
+        data = serializer.save()
+        return Response(data)
+
+
 class RegisterAPIView(generics.GenericAPIView):
     serializer_class = serializers.UserSerializer
 
@@ -266,6 +278,19 @@ class DoctorRegisterAPIView(generics.GenericAPIView):
         )
         serializer.is_valid(raise_exception=True)
         data = serializer.save()
+        return Response(data)
+
+
+class GoogleRegisterAPIView(generics.GenericAPIView):
+    serializer_class = serializers.GoogleRegisterSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(
+            data=request.data, context={"request": request}
+        )
+        serializer.is_valid(raise_exception=True)
+        data = serializer.save()
+        # log user in
         return Response(data)
 
 

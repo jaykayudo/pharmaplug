@@ -194,3 +194,7 @@ PAYSTACK_PUBLIC_KEY = os.getenv("PAYSTACK_PUBLIC_KEY")
 # static and media
 if not DEBUG:
     STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+
+# OAUTH
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
