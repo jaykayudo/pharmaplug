@@ -325,9 +325,6 @@ class Consultation(BaseModel):
         default=ConsultationStatus.PENDING, choices=ConsultationStatus.choices
     )
     details = models.TextField(null=True, blank=True)
-    transaction = models.ForeignKey(
-        "Transaction", null=True, blank=True, on_delete=models.SET_NULL
-    )
 
     def __str__(self) -> str:
         return self.note
@@ -489,6 +486,10 @@ class Order(BaseModel):
 
     def __str__(self) -> str:
         return self.full_name
+
+    @property
+    def total_price(self):
+        return self.price + self.delivery_fee
 
     @property
     def item_count(self):

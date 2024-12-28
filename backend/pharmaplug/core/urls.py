@@ -110,6 +110,16 @@ urlpatterns = [
         name="orders_receipt",
     ),
     path(
+        "orders/<uuid:pk>/pay/",
+        views.OrderPaymentInitializeAPIView.as_view(),
+        name="orders_pay_initailize",
+    ),
+    path(
+        "orders/pay_verify/",
+        views.OrderPaymentVerificationAPIView.as_view(),
+        name="orders_pay_verify",
+    ),
+    path(
         "consultations/",
         views.ConsultationHistoryAPIView.as_view(),
         name="consultations",
