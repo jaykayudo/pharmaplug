@@ -44,7 +44,7 @@ class DoctorListAPIView(generics.ListAPIView):
         category = self.request.query_params.get("category")
         name = self.request.query_params.get("name")
         if name:
-            full_name_list = name.rsplit(" ",maxsplit=2)
+            full_name_list = name.rsplit(" ", maxsplit=2)
             if len(full_name_list) == 2:
                 kwargs["user__first_name__istartswith"] = full_name_list[0]
                 kwargs["user__last_name__istartswith"] = full_name_list[1]
@@ -128,14 +128,10 @@ class DrugSearchListAPIView(generics.ListAPIView):
         sickness = self.request.query_params.get("sickness")
         drugs = models.Product.objects.all()
         if name:
-            drugs = drugs.filter(
-                Q(name__icontains = name)
-            )
+            drugs = drugs.filter(Q(name__icontains=name))
         if sickness:
             if utils.check_uuid_validity(sickness):
-                drugs = drugs.filter(
-                    sickness__id = sickness
-                )
+                drugs = drugs.filter(sickness__id=sickness)
         return drugs.order_by("name").distinct("id")
 
 

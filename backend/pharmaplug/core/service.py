@@ -62,7 +62,7 @@ class CoreService:
                 amount=order.total_price,
                 object_ct=ContentType.objects.get_for_model(models.Order),
                 object_id=order.id,
-                type = models.TransactionType.ORDER
+                type=models.TransactionType.ORDER,
             )
             NotificationService.send_order_successful_notification(order)
             return {
@@ -110,7 +110,7 @@ class CoreService:
             amount=order.total_price,
             object_ct=ContentType.objects.get_for_model(models.Order),
             object_id=order.id,
-            type = models.TransactionType.ORDER
+            type=models.TransactionType.ORDER,
         )
         return transaction
 
@@ -133,7 +133,7 @@ class CoreService:
             amount=consultation.cost,
             object_ct=ContentType.objects.get_for_model(models.Consultation),
             object_id=consultation.id,
-            type = models.TransactionType.CONSULTATION
+            type=models.TransactionType.CONSULTATION,
         )
         data = {"transaction": transaction.ref, "consultation": consultation.id_as_str}
         return data
