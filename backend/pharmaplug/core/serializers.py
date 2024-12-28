@@ -657,25 +657,53 @@ class CheckoutSerializer(serializers.Serializer):
         return data
 
 
+class OrderPaymentInitailizeSerializer(serializers.Serializer):
+    def validate(self, attrs):
+        order: models.Order = self.context["order"]
+        if (
+            order.status >= models.OrderStatus.PAID
+            or order.payment_method != models.OrderPaymentMethod.CARD
+            or order.paid
+        ):
+            raise serializers.ValidationError({"details": "Cannot Initialize Payment"})
+        return attrs
+
+    def save(self):
+        order: models.Order = self.context["order"]
+        transaction: models.Transaction = service.CoreService.initialize_order_payment(
+            order
+        )
+        return {
+            "ref": transaction.ref,
+            "order": order.id,
+            "payment_method": order.payment_method,
+            "amount": order.total_price,
+            "key": settings.PAYSTACK_PUBLIC_KEY,
+            "email": order.email,
+        }
+
+
 class OrderPaymentVerfiySerializer(serializers.Serializer):
-    order = serializers.UUIDField()
+    ref = serializers.CharField()
 
     def validate(self, attrs):
-        order: models.Order = generics.get_object_or_404(
-            models.Order, id=attrs["order"]
+        transaction: models.Transaction = generics.get_object_or_404(
+            models.Transaction, ref=attrs["ref"]
         )
-        if not order.transaction:
+        if transaction.status != models.TransactionStatus.INITAILIZED:
             raise serializers.ValidationError(
-                {"detail": "Payment for order has not been initialized"}
+                {"detail": "Transaction is invalid"}
             )
-        if order.status >= models.OrderStatus.PAID:
+        if not isinstance(transaction.object, models.Order):
+            raise serializers.ValidationError({"detail": "Invalid tx for order"})
+        if transaction.object.status >= models.OrderStatus.PAID:
             raise serializers.ValidationError({"detail": "Order is already Paid for"})
-        verification = service.CoreService.verify_order_payment(order)
+        verification = service.CoreService.verify_order_payment(transaction)
         if not verification:
             raise serializers.ValidationError(
                 {"detail": "Order payment verification failed"}
             )
-        self.context["order"] = order
+        self.context["order"] = models.Order.objects.get(id=transaction.object_id)
         return attrs
 
     @db_transaction.atomic
@@ -754,26 +782,30 @@ class ConsultationPaySerializer(serializers.Serializer):
 
 
 class ConsultationPaymentVerifySerializer(serializers.Serializer):
-    consultation = serializers.UUIDField()
+    ref = serializers.CharField()
 
     def validate(self, attrs):
-        consultation: models.Consultation = generics.get_object_or_404(
-            models.Consultation, id=attrs["consultation"]
+        transaction: models.Transaction = generics.get_object_or_404(
+            models.Transaction, ref=attrs["ref"]
         )
-        if not consultation.transaction:
+        if transaction.status != models.TransactionStatus.INITAILIZED:
             raise serializers.ValidationError(
-                {"detail": "Payment for consultation has not been initialized"}
+                {"detail": "Transaction is invalid"}
             )
-        if consultation.status != models.ConsultationStatus.ACCEPTED:
+        if not isinstance(transaction.object, models.Consultation):
+            raise serializers.ValidationError({"detail": "Invalid tx for consultation"})
+        if transaction.object.status >= models.ConsultationStatus.PAID:
             raise serializers.ValidationError(
-                {"detail": "Consultation payment cannot be verified"}
+                {"detail": "Consultation is already Paid for"}
             )
-        verification = service.CoreService.verify_consultation_payment(consultation)
+        verification = service.CoreService.verify_consultation_payment(transaction)
         if not verification:
             raise serializers.ValidationError(
                 {"detail": "Consultaton payment verification failed"}
             )
-        self.context["consultation"] = consultation
+        self.context["consultation"] = models.Consultation.objects.get(
+            id=transaction.object_id
+        )
         return attrs
 
     @db_transaction.atomic

@@ -15,6 +15,8 @@ from django.core.signing import TimestampSigner, SignatureExpired, BadSignature
 from django.core.mail import EmailMessage
 from django.conf import settings
 from django.utils.crypto import get_random_string
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
 
 from .validators import phone_number_validator
 from .payment import Paystack
@@ -54,6 +56,12 @@ class TransactionStatus(models.IntegerChoices):
     VERIFIED = 1, "Verified"
     DECLINED = 2, "Declined"
     INVALID = 3, "Invalid"
+
+
+class TransactionType(models.TextChoices):
+    ORDER = "order", "Order"
+    CONSULTATION = "consultation", "Consultation"
+    WALLET = "wallet", "Wallet"
 
 
 class WalletTransactionType(models.IntegerChoices):
@@ -318,9 +326,6 @@ class Consultation(BaseModel):
         default=ConsultationStatus.PENDING, choices=ConsultationStatus.choices
     )
     details = models.TextField(null=True, blank=True)
-    transaction = models.ForeignKey(
-        "Transaction", null=True, blank=True, on_delete=models.SET_NULL
-    )
 
     def __str__(self) -> str:
         return self.note
@@ -340,6 +345,12 @@ class Transaction(BaseModel):
         choices=TransactionStatus.choices, default=TransactionStatus.INITAILIZED
     )
     verified_at = models.DateTimeField(null=True, blank=True)
+
+    type = models.CharField(max_length=20, choices=TransactionType.choices)
+
+    object_ct = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.UUIDField()
+    object = GenericForeignKey("object_ct", "object_id")
 
     class Meta:
         ordering = ("created_at",)
@@ -465,17 +476,21 @@ class Order(BaseModel):
     state = models.CharField(max_length=30)
     region = models.CharField(max_length=50)
     address = models.TextField()
-    transaction = models.ForeignKey(Transaction, null=True, on_delete=models.SET_NULL)
     payment_method = models.IntegerField(choices=OrderPaymentMethod.choices)
     delivery_method = models.IntegerField(choices=OrderDeliveryMethod.choices)
     receipt = models.FileField(null=True, blank=True, upload_to="order-receipts")
     paid = models.BooleanField(default=False)
     price = models.DecimalField(max_digits=15, decimal_places=2)
     delivery_fee = models.DecimalField(max_digits=15, decimal_places=2)
+    transactions = GenericRelation(Transaction)
     status = models.IntegerField(default=OrderStatus.NEW, choices=OrderStatus.choices)
 
     def __str__(self) -> str:
         return self.full_name
+
+    @property
+    def total_price(self):
+        return self.price + self.delivery_fee
 
     @property
     def item_count(self):
