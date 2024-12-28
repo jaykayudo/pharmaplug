@@ -91,6 +91,11 @@ class DoctorPerRate(models.IntegerChoices):
     CONSULTATION = 1, "Consultation"
 
 
+class AuthProvider(models.TextChoices):
+    EMAIL = "email", "Email"
+    GOOGLE = "google", "Google"
+
+
 class BaseModel(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -177,6 +182,7 @@ class User(AbstractUser, BaseModel):
     )
     is_doctor = models.BooleanField(default=False)
     email_verified = models.BooleanField(default=False)
+    auth_provider = models.CharField(max_length=15, default=AuthProvider.EMAIL)
     objects = BaseManager()
 
     USERNAME_FIELD = "email"
@@ -271,7 +277,7 @@ class DoctorCategory(BaseModel):
 
 class Doctor(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to="doctors")
+    image = models.ImageField(upload_to="doctors", blank=True, null=True)
     field = models.ForeignKey(DoctorCategory, null=True, on_delete=models.SET_NULL)
     is_available = models.BooleanField(default=True)
     rate = models.DecimalField(default=Decimal("0.00"), max_digits=10, decimal_places=2)
