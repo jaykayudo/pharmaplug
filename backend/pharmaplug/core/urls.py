@@ -47,6 +47,7 @@ urlpatterns = [
         views.SicknessDrugListAPIView.as_view(),
         name="sicknesses_drug",
     ),
+    path("drugs/", views.DrugSearchListAPIView.as_view(), name="all_drugs"),
     path("drugs/<uuid:pk>/", views.DrugDetailsAPIView.as_view(), name="drug_details"),
     path(
         "drugs/<uuid:pk>/alternatives/",

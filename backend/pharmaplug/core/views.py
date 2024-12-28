@@ -1,4 +1,4 @@
-from django.db.models import Count, Sum
+from django.db.models import Q
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
@@ -42,6 +42,15 @@ class DoctorListAPIView(generics.ListAPIView):
     def get_queryset(self):
         kwargs = {}
         category = self.request.query_params.get("category")
+        name = self.request.query_params.get("name")
+        if name:
+            full_name_list = name.rsplit(" ", maxsplit=2)
+            if len(full_name_list) == 2:
+                kwargs["user__first_name__istartswith"] = full_name_list[0]
+                kwargs["user__last_name__istartswith"] = full_name_list[1]
+            else:
+                kwargs["user__first_name"] = full_name_list[0]
+
         if category:
             if utils.check_uuid_validity(category):
                 kwargs["field__id"] = category
@@ -111,8 +120,19 @@ class SicknessDrugListAPIView(generics.ListAPIView):
         return models.Product.objects.filter(sicknesses=sickness)
 
 
-class DrugSearchListAPIView(generics.RetrieveAPIView):
-    pass
+class DrugSearchListAPIView(generics.ListAPIView):
+    serializer_class = serializers.ProductSerializer
+
+    def get_queryset(self):
+        name = self.request.query_params.get("name")
+        sickness = self.request.query_params.get("sickness")
+        drugs = models.Product.objects.all()
+        if name:
+            drugs = drugs.filter(Q(name__icontains=name))
+        if sickness:
+            if utils.check_uuid_validity(sickness):
+                drugs = drugs.filter(sickness__id=sickness)
+        return drugs.order_by("name").distinct("id")
 
 
 class DrugDetailsAPIView(generics.RetrieveAPIView):
