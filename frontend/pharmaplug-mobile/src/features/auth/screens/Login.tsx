@@ -83,8 +83,7 @@ const Login = () => {
   // }
   const onGoogleSignIn = (data: UserType) => {
     authContext.logUserIn(data)
-    Alert.alert("Success","Login Successful")
-    
+    Alert.alert('Success', 'Login Successful')
   }
   const onErrorCallback = (err: any) => {
     // Uncomment when using development build or production build
@@ -163,7 +162,7 @@ const Login = () => {
           </View>
           <Text style={styles.throughText}>or</Text>
           <View>
-          {/* <GoogleSigninButton
+            {/* <GoogleSigninButton
             onPress={googleSignIn}
             size={GoogleSigninButton.Size.Wide}
             color={GoogleSigninButton.Color.Dark}
