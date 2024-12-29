@@ -42,6 +42,9 @@ const DoctorWallet = lazy(
 const DoctorConsultation = lazy(
   () => import('../pages/authPages/doctorPages/consultation/index.js'),
 )
+const DoctorConsultationDetails = lazy(
+  () => import('../pages/authPages/doctorPages/consultation/details.js'),
+)
 const DoctorSettings = lazy(
   () => import('../pages/authPages/doctorPages/settings/index.js'),
 )
@@ -147,6 +150,10 @@ const Router = () => {
           <Route
             path={Path.doctorConsultations}
             element={<DoctorRoute children={<DoctorConsultation />} />}
+          />
+          <Route
+            path={Path.doctorConsultationsDetails(':id')}
+            element={<DoctorRoute children={<DoctorConsultationDetails />} />}
           />
           <Route
             path={Path.doctorSettings}

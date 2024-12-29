@@ -43,7 +43,9 @@ const DrugStoreFull = () => {
   }, [])
   const filterData = (text) => {
     setFilteredData(
-      data.filter((value) => value.name.toLowerCase().startsWith(text.toLowerCase())),
+      data.filter((value) =>
+        value.name.toLowerCase().startsWith(text.toLowerCase()),
+      ),
     )
   }
   const fetchData = (data) => {

@@ -5,41 +5,45 @@ import { Link } from 'react-router-dom'
 import { IoWalletOutline } from 'react-icons/io5'
 import { useGetAPI } from '../../../../services/serviceHooks.js'
 import { doctorEndpoints } from '../../../../services/constants.js'
-import Path from "../../../../navigations/constants.js"
+import Path from '../../../../navigations/constants.js'
 
 const DoctorDashboard = () => {
-  const [pendingConsultData, setPendingConsultData] = useState(tempData);
-  const [statData, setStatData] = useState({});
-  const [wallet, setWallet] = useState({});
-  const fetchDashboardStat = (data) =>{
+  const [pendingConsultData, setPendingConsultData] = useState([])
+  const [statData, setStatData] = useState({})
+  const [wallet, setWallet] = useState({})
+  const fetchDashboardStat = (data) => {
     setStatData(data)
   }
-  const fetchPendingConsults = (data) =>{
-    setPendingConsultData(data)
+  const fetchPendingConsults = (data) => {
+    setPendingConsultData(
+      data.map((val) => ({
+        id: val.id,
+        name: `${val.user.first_name} ${val.user.last_name}`,
+        message: val.note,
+        date: new Date(val.day).toLocaleDateString(),
+        status: val.status,
+      })),
+    )
   }
-  const fetchWalletData = (data)=>{
+  const fetchWalletData = (data) => {
     setWallet(data)
   }
   const dashboardStatAPI = useGetAPI(
     doctorEndpoints.dashboardStat,
     null,
-    fetchDashboardStat
+    fetchDashboardStat,
   )
-  const walletAPI = useGetAPI(
-    doctorEndpoints.wallet,
-    null,
-    fetchWalletData
-  )
+  const walletAPI = useGetAPI(doctorEndpoints.wallet, null, fetchWalletData)
   const pendingConsultAPI = useGetAPI(
     doctorEndpoints.consultations,
     null,
-    fetchPendingConsults
+    fetchPendingConsults,
   )
-  useEffect(()=>{
+  useEffect(() => {
     dashboardStatAPI.sendRequest()
     walletAPI.sendRequest()
     pendingConsultAPI.sendRequest()
-  },[])
+  }, [])
   return (
     <div>
       <h1 className="mb-2em">Welcome back, Joe</h1>
@@ -76,7 +80,9 @@ const DoctorDashboard = () => {
         <div className="data-box w-25 sm-w-100">
           <div className="mb-2em flex-between">
             <h2>Wallet</h2>
-            <Link className="link" to={Path.doctorWallet}>view wallet</Link>
+            <Link className="link" to={Path.doctorWallet}>
+              view wallet
+            </Link>
           </div>
           <div className="flex gap-20">
             <div className="data-box-icon">
@@ -98,8 +104,12 @@ const DoctorDashboard = () => {
             </div>
             <div>
               <p>
-                You have {statData.pending_consult_num || 0}{" "}
-                <Link className="link" to={`${Path.doctorConsultations}?active=1`} style={{ textDecoration: 'underline' }}>
+                You have {statData.pending_consult_num || 0}{' '}
+                <Link
+                  className="link"
+                  to={`${Path.doctorConsultations}?active=1`}
+                  style={{ textDecoration: 'underline' }}
+                >
                   pending consultations
                 </Link>
               </p>
@@ -144,7 +154,7 @@ const columns = [
     render: (_, { status }) => (
       <>
         <Tag color={status.length > 7 ? 'green' : 'geekblue'} key={status}>
-          {status.toUpperCase()}
+          {status}
         </Tag>
       </>
     ),
@@ -154,8 +164,7 @@ const columns = [
     key: 'action',
     render: (_, record) => (
       <Space size="middle">
-        <a>Invite {record.name}</a>
-        <a>Delete</a>
+        <a href={Path.doctorConsultationsDetails(record.id)}>View</a>
       </Space>
     ),
   },

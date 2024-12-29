@@ -92,7 +92,9 @@ const SideLayout = ({ children }) => {
           <NavLink className="side-profile-nav-link">
             <img className="little-rounded-image" src={assets.profile} />
             <div>
-              <h3 style={{textTransform:"capitalize"}}>{authContext.user.first_name} {authContext.user.last_name}</h3>
+              <h3 style={{ textTransform: 'capitalize' }}>
+                {authContext.user.first_name} {authContext.user.last_name}
+              </h3>
               <p>Certified</p>
             </div>
           </NavLink>

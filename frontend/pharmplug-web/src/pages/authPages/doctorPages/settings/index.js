@@ -2,7 +2,10 @@ import './style.scss'
 import React, { useEffect, useState, useContext, useRef } from 'react'
 import { Tabs } from 'antd'
 import { NormalButton } from '../../../../components/button/index.js'
-import { NormalInput, NormalSelect } from '../../../../components/input/index.js'
+import {
+  NormalInput,
+  NormalSelect,
+} from '../../../../components/input/index.js'
 import assets from '../../../../assets/index.js'
 import { LuImagePlus } from 'react-icons/lu'
 import { FaCheckCircle } from 'react-icons/fa'
@@ -16,7 +19,7 @@ const DoctorSettings = () => {
   const authContext = useContext(AuthContext)
   const [profileDisabled, setProfileDisabled] = useState(true)
   const [activePage, setActivePage] = useState(1)
-  const [fields, setFields] = useState([]);
+  const [fields, setFields] = useState([])
   const [profile, setProfile] = useState({})
 
   const [firstName, setFirstName] = useState(authContext.user.first_name)
@@ -33,10 +36,10 @@ const DoctorSettings = () => {
       setProfileDisabled(false)
     }
   }
-  const fetchFields = (data) =>{
+  const fetchFields = (data) => {
     setFields(data)
   }
-  
+
   const submitPasswordForm = () => {
     if (!oldPassword || !newPassword || !confirmNewPassword) {
       message.error({
@@ -83,20 +86,19 @@ const DoctorSettings = () => {
       return
     }
     console.log(field.current.value)
-    if(!field.current.value){
-
+    if (!field.current.value) {
       return
     }
     const data = {
-      user:{
+      user: {
         first_name: firstName,
         last_name: lastName,
       },
-      field: field.current.value
+      field: field.current.value,
     }
     ProfileUpdateAPI.sendRequest(data)
   }
-  
+
   const onProfileSuccess = (data) => {
     // authContext.logUserIn(data)
     message.success({
@@ -104,7 +106,7 @@ const DoctorSettings = () => {
       duration: 2,
     })
   }
-  const fetchProfile = (data) =>{
+  const fetchProfile = (data) => {
     setProfile(data)
   }
   const onChangeSuccess = (data) => {
@@ -122,12 +124,16 @@ const DoctorSettings = () => {
     onChangeSuccess,
   )
   const ProfileGetAPI = useGetAPI(doctorEndpoints.profile, null, fetchProfile)
-  const ProfileUpdateAPI = usePostAPI(doctorEndpoints.profile, null, onProfileSuccess)
+  const ProfileUpdateAPI = usePostAPI(
+    doctorEndpoints.profile,
+    null,
+    onProfileSuccess,
+  )
   const fieldsAPI = useGetAPI(endpoints.doctorCategories, null, fetchFields)
-  useEffect(()=>{
+  useEffect(() => {
     fieldsAPI.sendRequest()
     ProfileGetAPI.sendRequest()
-  },[])
+  }, [])
   return (
     <div className="settings-cover">
       <div className="mb-3em">
@@ -172,10 +178,14 @@ const DoctorSettings = () => {
                   </span>
                 </div>
               </div>
-              <form className="personal-info-box" onInput={onInputChange} onSubmit={(e) => {
+              <form
+                className="personal-info-box"
+                onInput={onInputChange}
+                onSubmit={(e) => {
                   e.preventDefault()
                   submitUpdateProfileForm()
-                }}>
+                }}
+              >
                 <div className="w-30 sm-w-100 mb-1em">
                   <h3 className="mb-1em">Personal Information</h3>
                   <p className="mb-1em text-gray font-14">
@@ -213,19 +223,23 @@ const DoctorSettings = () => {
                     />
                   </div>
                   <div>
-                  <NormalSelect
-            label="Select a field"
-            headerLabel={'Field'}
-            required
-            name="field"
-            ref = {field}
-          >
-            {fields.map((value, idx) => (
-              <option value={value.id} key={idx} selected={value.name === profile.field}>
-                {value.name}
-              </option>
-            ))}
-          </NormalSelect>
+                    <NormalSelect
+                      label="Select a field"
+                      headerLabel={'Field'}
+                      required
+                      name="field"
+                      ref={field}
+                    >
+                      {fields.map((value, idx) => (
+                        <option
+                          value={value.id}
+                          key={idx}
+                          selected={value.name === profile.field}
+                        >
+                          {value.name}
+                        </option>
+                      ))}
+                    </NormalSelect>
                   </div>
                 </div>
               </form>
@@ -233,7 +247,14 @@ const DoctorSettings = () => {
           )}
           {activePage == 2 && (
             <div className="security-box">
-              <form className="personal-info-box" onInput={onInputChange} onSubmit={(e)=>{e.preventDefault(); submitPasswordForm()}}>
+              <form
+                className="personal-info-box"
+                onInput={onInputChange}
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  submitPasswordForm()
+                }}
+              >
                 <div className="w-30 sm-w-100 mb-1em">
                   <h3 className="mb-1em">Change Password</h3>
                   <p className="mb-1em text-gray font-14">

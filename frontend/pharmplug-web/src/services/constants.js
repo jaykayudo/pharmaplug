@@ -4,7 +4,7 @@ export const endpoints = {
   stories: `${host}/stories/`,
   commonSicknesses: `${host}/common/sicknesses/`,
   sicknesses: `${host}/sicknesses/`,
-  sicknessesDetails: (id)=>`${host}/sicknesses/${id}/`,
+  sicknessesDetails: (id) => `${host}/sicknesses/${id}/`,
   commonDoctorCategories: `${host}/common/doctor-categories/`,
   doctorCategories: `${host}/doctor-categories/`,
   doctorList: `${host}/doctors/`,
@@ -48,6 +48,7 @@ export const doctorEndpoints = {
   consultationDetails: (id) => `${host}/doctor/consults/${id}/`,
   consultationAccept: `${host}/doctor/consults/accept/`,
   consultationReschedule: `${host}/doctor/consults/reschedule/`,
+  consultationReject: `${host}/doctor/consults/reject/`,
   schedules: `${host}/doctor/schedules/`,
   scheduleCreate: `${host}/doctor/schedules/create/`,
 }

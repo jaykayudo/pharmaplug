@@ -24,6 +24,7 @@ export default {
   doctorWallet: '/doctor/wallet',
   doctorSettings: '/doctor/settings',
   doctorConsultations: '/doctor/consultations',
+  doctorConsultationsDetails: (id) => `/doctor/consultations/${id}`,
   doctorReferral: '/doctor/referral',
   doctorSupport: '/doctor/support',
 

@@ -33,10 +33,10 @@ const History = () => {
     fetchConsultations,
   )
   const orderAPI = useGetAPI(endpoints.orderHistory, null, fetchOrders)
-  useEffect(()=>{
+  useEffect(() => {
     orderAPI.sendRequest()
     consultationAPI.sendRequest()
-  },[])
+  }, [])
   return (
     <div className="history-cover">
       <div className="mb-3em">
@@ -96,48 +96,58 @@ const History = () => {
                   {consultationList.length === 0 && <EmptyData />}
                   <div className="consultation-box">
                     {consultationList.map((value, idx) => {
-                      return(
-                      
-                      <div className="light-border-gray curved-box mb-1em">
-                      <div className="p-1">
-                        <div className="flex gap-20">
-                          <img src={value.doctor.image} className="little-rounded-image" />
-                          <div>
-                            <h3 className="mb-1em">
-                              Dr. {value.doctor.user.first_name} {value.doctor.user.last_name}
-                            </h3>
-                            <p className="mb-05em">
-                              {value.doctor.field.name}
-                            </p>
-                            <p className="text-gray font-14 mb-05em">
-                              <FaRegClock />{' '}
-                              <span>
-                                {value.start_time} - {value.end_time} <br />
-                                 {new Date(value.day).toDateString()}
-                              </span>
-                            </p>
-                            <p className="text-gray font-14 mb-05em">
-                              <IoLocationOutline />{' '}
-                              <span>
-                                {value.location ? (
-                                  value.location
-                                ): (
-                                  "Not set"
+                      return (
+                        <div className="light-border-gray curved-box mb-1em">
+                          <div className="p-1">
+                            <div className="flex gap-20">
+                              <img
+                                src={value.doctor.image}
+                                className="little-rounded-image"
+                              />
+                              <div>
+                                <h3 className="mb-1em">
+                                  Dr. {value.doctor.user.first_name}{' '}
+                                  {value.doctor.user.last_name}
+                                </h3>
+                                <p className="mb-05em">
+                                  {value.doctor.field.name}
+                                </p>
+                                <p className="text-gray font-14 mb-05em">
+                                  <FaRegClock />{' '}
+                                  <span>
+                                    {value.start_time} - {value.end_time} <br />
+                                    {new Date(value.day).toDateString()}
+                                  </span>
+                                </p>
+                                <p className="text-gray font-14 mb-05em">
+                                  <IoLocationOutline />{' '}
+                                  <span>
+                                    {value.location
+                                      ? value.location
+                                      : 'Not set'}
+                                  </span>
+                                </p>
+                              </div>
+                              <div>
+                                {value.status == 1 && (
+                                  <p className="font-14">
+                                    Awaiting Doctor Confirmation
+                                  </p>
                                 )}
-                              </span>
-                            </p>
-                          </div>
-                          <div>
-                            {value.status == 1 && (<p className='font-14'>Awaiting Doctor Confirmation</p>)}
-                            {value.status == 2 && (<NormalButton>Pay</NormalButton>)}
-                            {value.status > 2 && (
-                              <p className='font-14'>{consultationStatus[value.status]}</p>
-                            )}
+                                {value.status == 2 && (
+                                  <NormalButton>Pay</NormalButton>
+                                )}
+                                {value.status > 2 && (
+                                  <p className="font-14">
+                                    {consultationStatus[value.status]}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                    )})}
+                      )
+                    })}
                   </div>
                 </>
               )}

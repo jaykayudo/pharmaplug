@@ -25,7 +25,11 @@ const DrugStore = () => {
 
   const onSearch = () => {}
   const healthDataAPI = useGetAPI(endpoints.stories, null, fetchHealthData)
-  const sicknessesAPI = useGetAPI(endpoints.commonSicknesses, null, fetchSicknesses)
+  const sicknessesAPI = useGetAPI(
+    endpoints.commonSicknesses,
+    null,
+    fetchSicknesses,
+  )
   useEffect(() => {
     sicknessesAPI.sendRequest()
     healthDataAPI.sendRequest()

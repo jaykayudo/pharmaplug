@@ -24,12 +24,16 @@ const DrugsList = () => {
   const fetchHealthData = (data) => {
     setHealthData(data)
   }
-  const fetchSicknessData = (data) =>{
+  const fetchSicknessData = (data) => {
     setSicknessData(data)
   }
   const healthDataAPI = useGetAPI(endpoints.stories, null, fetchHealthData)
   const drugsAPI = useGetAPI(endpoints.drugs(sicknessId), null, fetchData)
-  const sicknessDataAPI = useGetAPI(endpoints.sicknessesDetails(sicknessId), null, fetchSicknessData)
+  const sicknessDataAPI = useGetAPI(
+    endpoints.sicknessesDetails(sicknessId),
+    null,
+    fetchSicknessData,
+  )
   useEffect(() => {
     drugsAPI.sendRequest()
     healthDataAPI.sendRequest()
@@ -43,10 +47,10 @@ const DrugsList = () => {
           <p>
             &lt; <Link>Drug store</Link>
             <Link> / Sickness</Link>
-            <span> / {sicknessData.name ?? "Loading..."}</span>
+            <span> / {sicknessData.name ?? 'Loading...'}</span>
           </p>
-          <h3>{sicknessData.name ?? "Loading..."}</h3>
-          <p>{sicknessData.description ?? "Loading..."}</p>
+          <h3>{sicknessData.name ?? 'Loading...'}</h3>
+          <p>{sicknessData.description ?? 'Loading...'}</p>
         </div>
         {drugsAPI.loading ? (
           <Loader />

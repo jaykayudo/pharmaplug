@@ -12,50 +12,49 @@ const ResetPassword = () => {
   const [code, setCode] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const user = location.state.id;
-  if(!user){
+  const user = location.state.id
+  if (!user) {
     navigate(-1)
   }
-  const submitForm = () =>{
-    if(code.length != 6){
+  const submitForm = () => {
+    if (code.length != 6) {
       message.error({
-        content: "code length is invalid",
-        duration: 2
+        content: 'code length is invalid',
+        duration: 2,
       })
       return
-    }else if(password.length < 8){
+    } else if (password.length < 8) {
       message.error({
-        content: "Password too short",
-        duration: 2
+        content: 'Password too short',
+        duration: 2,
       })
       return
-    }else if(confirmPassword != password){
+    } else if (confirmPassword != password) {
       message.error({
-        content: "Password mismatch",
-        duration: 2
+        content: 'Password mismatch',
+        duration: 2,
       })
       return
     }
     const data = {
       user,
       code,
-      password
+      password,
     }
     sendRequest(data)
-
   }
-  const onSuccessCallback = (data) =>{
+  const onSuccessCallback = (data) => {
     message.success({
-      content: "Password reset successfully",
-      duration: 3
+      content: 'Password reset successfully',
+      duration: 3,
     })
     location.state
-    navigate(Path.login, {replace: true})
+    navigate(Path.login, { replace: true })
   }
-  const {sendRequest} = usePostAPI(
+  const { sendRequest } = usePostAPI(
     endpoints.resetPassword,
     null,
-    onSuccessCallback
+    onSuccessCallback,
   )
   return (
     <div className="auth-full-page">
@@ -65,7 +64,14 @@ const ResetPassword = () => {
           Enter the 6-digit code sent to your email and your new password.
         </p>
         <div className="auth-form-group">
-          <NormalInput label={"Code"} maxLength={6} minLength={6} value={code} onChange={(e)=>setCode(e.target.value)} type='tel' />
+          <NormalInput
+            label={'Code'}
+            maxLength={6}
+            minLength={6}
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            type="tel"
+          />
         </div>
         <div className="auth-form-group">
           <NormalInput
@@ -83,7 +89,9 @@ const ResetPassword = () => {
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </div>
-        <NormalButton full onClick={submitForm}>Reset Password</NormalButton>
+        <NormalButton full onClick={submitForm}>
+          Reset Password
+        </NormalButton>
       </div>
     </div>
   )

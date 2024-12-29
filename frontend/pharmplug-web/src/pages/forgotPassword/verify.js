@@ -12,23 +12,16 @@ const VerifyForgotPasswordCode = () => {
   const [code, setCode] = useState('')
   const navigate = useNavigate()
   const submitForm = () => {
-    if(code.length !== 6){
-      message.error(
-        {
-          content: "Code length invalid",
-          duration: 2
-        }
-      )
+    if (code.length !== 6) {
+      message.error({
+        content: 'Code length invalid',
+        duration: 2,
+      })
       return
     }
-    
   }
-  const verifyForgotPassword = usePostAPI(
-    endpoints
-  )
-  useEffect(()=>{
-
-  },[])
+  const verifyForgotPassword = usePostAPI(endpoints)
+  useEffect(() => {}, [])
   return (
     <div className="auth-full-page">
       <div className="form-box">
@@ -37,7 +30,13 @@ const VerifyForgotPasswordCode = () => {
           Enter the 6-digit code sent to your email.
         </p>
         <div className="auth-form-group">
-          <NormalInput maxLength={6} minLength={6} value={code} onChange={(e)=>setCode(e.target.value)} type='tel' />
+          <NormalInput
+            maxLength={6}
+            minLength={6}
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            type="tel"
+          />
         </div>
         <NormalButton full onClick={submitForm}>
           Submit
