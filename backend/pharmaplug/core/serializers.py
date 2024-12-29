@@ -373,7 +373,7 @@ class GoogleLoginSerializer(serializers.Serializer):
         auth_token = attrs["auth_token"]
         user_data = auth_providers.Google.verify(auth_token)
         users = models.User.objects.filter(
-            email=user_data["data"],
+            email=user_data["email"],
             auth_provider=models.AuthProvider.GOOGLE,
             is_active=True,
         )
@@ -408,9 +408,11 @@ class GoogleRegisterSerializer(serializers.Serializer):
         auth_token = attrs["auth_token"]
         user_data = auth_providers.Google.verify(auth_token)
         if models.User.objects.filter(email=user_data["email"]).exists():
-            serializers.ValidationError({"details": "User with email already exists"})
+            raise serializers.ValidationError(
+                {"details": "User with email already exists"}
+            )
         if models.User.objects.filter(phone_number=attrs["phone_number"]).exists():
-            serializers.ValidationError(
+            raise serializers.ValidationError(
                 {"details": "User with phone number already exists"}
             )
         if attrs["is_doctor"]:
@@ -423,7 +425,7 @@ class GoogleRegisterSerializer(serializers.Serializer):
         self.context["user_data"] = {
             **user_data,
             "phone_number": attrs["phone_number"],
-            "is_doctor": attrs["doctor"],
+            "is_doctor": attrs["is_doctor"],
         }
         return attrs
 
@@ -454,6 +456,7 @@ class GoogleRegisterSerializer(serializers.Serializer):
             last_name=last_name,
             phone_number=user_data["phone_number"],
             is_doctor=user_data["is_doctor"],
+            auth_provider=models.AuthProvider.GOOGLE,
         )
         if user_data["is_doctor"]:
             models.Doctor.objects.create(user=user, field=self.context["field"])

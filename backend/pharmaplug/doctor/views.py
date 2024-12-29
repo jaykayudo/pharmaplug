@@ -83,10 +83,7 @@ class ConsultationAcceptAPIView(generics.GenericAPIView):
 
     def post(self, request):
         serializer = self.serializer_class(
-            data=request.data,
-            context = {
-                "doctor": request.user.doctor
-            }
+            data=request.data, context={"doctor": request.user.doctor}
         )
         serializer.is_valid(raise_exception=True)
         data = serializer.save()
@@ -99,10 +96,7 @@ class ConsultationRescheduleAPIView(generics.GenericAPIView):
 
     def post(self, request):
         serializer = self.serializer_class(
-            data=request.data,
-            context = {
-                "doctor": request.user.doctor
-            }
+            data=request.data, context={"doctor": request.user.doctor}
         )
         serializer.is_valid(raise_exception=True)
         data = serializer.save()
@@ -115,10 +109,7 @@ class ConsultationRejectAPIView(generics.GenericAPIView):
 
     def post(self, request):
         serializer = self.serializer_class(
-            data=request.data,
-            context = {
-                "doctor": request.user.doctor
-            }
+            data=request.data, context={"doctor": request.user.doctor}
         )
         serializer.is_valid(raise_exception=True)
         data = serializer.save()
