@@ -824,7 +824,7 @@ class ConsultationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Consultation
-        exclude = ["transaction"]
+        fields = "__all__"
 
     def get_location(self, obj):
         if obj.status == models.ConsultationStatus.PAID:
