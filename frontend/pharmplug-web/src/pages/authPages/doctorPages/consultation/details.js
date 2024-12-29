@@ -28,12 +28,11 @@ const ConsultationDetails = () => {
         btnTitle: "Accept",
         action:()=>{}
     });
+    const [acceptDetails, setAcceptDetails] = useState("")
+    const [rejectReason, setRejectReason] = useState("")
     const [details, setDetails] = useState("")
     const showModal = () => {
         setIsModalOpen(true);
-    };
-    const handleOk = () => {
-        setIsModalOpen(false);
     };
     const handleCancel = () => {
         setIsModalOpen(false);
@@ -44,7 +43,7 @@ const ConsultationDetails = () => {
             title: "Accept Consultation",
             btnTitle: "Accept",
             action: ()=>{
-                if(!details){
+                if(!acceptDetails){
                     message.error({
                         content: "Details field is required",
                         duration: 2
@@ -53,7 +52,7 @@ const ConsultationDetails = () => {
                 }
                 acceptConsultAPI.sendRequest({
                     consultation: Id,
-                    details: details
+                    details: acceptDetails
                 })
                 handleCancel()
             }
@@ -66,9 +65,10 @@ const ConsultationDetails = () => {
             title: "Reschedule Consultation",
             btnTitle: "Reschedule",
             action: ()=>{
-                if(!dateRef.current?.value || !timeRef.current?.value){
+                console.log(details)
+                if(!dateRef.current?.value || !timeRef.current?.value || !details){
                     message.error({
-                        content: "Date and time fields are required",
+                        content: "Date, time and location fields are required",
                         duration: 2
                     })
                     return
@@ -79,7 +79,8 @@ const ConsultationDetails = () => {
                     consultation: Id,
                     day: dateRef.current.value,
                     start_time: timeRef.current.value,
-                    end_time: end_time
+                    end_time: end_time,
+                    details: details
                 })
                 handleCancel()
             }
@@ -92,7 +93,7 @@ const ConsultationDetails = () => {
             title: "Reject Consultation",
             btnTitle: "Reject",
             action: ()=>{
-                if(!details){
+                if(!rejectReason){
                     message.error({
                         content: "Reason field is required",
                         duration: 2
@@ -101,7 +102,7 @@ const ConsultationDetails = () => {
                 }
                 rejectConsultAPI.sendRequest({
                     consultation: Id,
-                    reason: details
+                    reason: rejectReason
                 })
                 handleCancel()
             }
@@ -247,24 +248,26 @@ const ConsultationDetails = () => {
                     <Modal title={modalParams.title} open={isModalOpen} onOk={modalParams.action} okText={modalParams.btnTitle} onCancel={handleCancel}>
                         {modalState === 1 && (
                             <div>
-                                <h3 style={{marginBottom: 15}}>Enter the location for the consultation (virtual or physical)</h3>
-                                <NormalInput label={'Details'} type='text' onChange={(e)=>setDetails(e.target.value)} value={details} />
+                                <h3 style={{marginBottom: 15}}>Enter the location for the consultation (virtual meet link or physical address)</h3>
+                                <NormalInput label={'Details'} type='text' onChange={(e)=>setAcceptDetails(e.target.value)} value={acceptDetails} />
                             </div>
                         )}
                         {modalState === 2 && (
                             <div>
-                                <h3 style={{marginBottom: 15}}>Choose a new date and time</h3>
+                                <h3 style={{marginBottom: 15}}>Choose a new date and time and the location for the consultation (virtual meet link or physical address)</h3>
                                 <NormalInput label={'Date'} type='date' ref={dateRef} min={dateMin}  />
                                 <NormalInput label={'Start Time'} type='time' ref={timeRef}  />
+                                <NormalInput label={'Location'} type='text' onChange={(e)=>setDetails(e.target.value)} value={details} />
                                 <p style={{fontSize: 12, fontStyle:"italic", color:"#1e1e1e"}}>
-                                    Note: The duration will be the same as the patient's initial selected duration
+                                    Note: The duration will be the same as the patient's initial selected duration. <br />
+                                    The consultation is automatically accepted upon reschedule
                                 </p>
                             </div>
                         )}
                         {modalState === 3 && (
                             <div>
                                 <h3 style={{marginBottom: 15}}>Enter a reason for canceling</h3>
-                                <NormalInput label={'Reason'} type='text' onChange={(e)=>setDetails(e.target.value)} value={details} />    
+                                <NormalInput label={'Reason'} type='text' onChange={(e)=>setRejectReason(e.target.value)} value={rejectReason} />    
                             </div>
                         )}
                     </Modal>
