@@ -73,6 +73,7 @@ class ScheduleSerializer(serializers.ModelSerializer):
 
 class ConsultationAcceptSerializer(serializers.Serializer):
     consultation = serializers.UUIDField()
+    details = serializers.CharField()
 
     def validate(self, attrs):
         doctor = self.context["doctor"]
@@ -106,10 +107,10 @@ class ConsultationAcceptSerializer(serializers.Serializer):
         return attrs
 
     def save(self):
-        consultation = self.context["consultation"]
+        consultation: models.Consultation = self.context["consultation"]
         consultation.status = models.ConsultationStatus.ACCEPTED
+        consultation.details = self.validated_data["details"]
         consultation.save()
-        consult_user: models.User = consultation.user
         core_service.NotificationService.send_consulation_acceptance_notification(
             consultation
         )
@@ -122,6 +123,7 @@ class ConsultationRescheduleSerializer(serializers.Serializer):
     day = serializers.DateField()
     start_time = serializers.TimeField()
     end_time = serializers.TimeField()
+    details = serializers.CharField()
 
     def validate(self, attrs):
         doctor = self.context["doctor"]
@@ -151,6 +153,8 @@ class ConsultationRescheduleSerializer(serializers.Serializer):
         consultation.day = self.validated_data["day"]
         consultation.start_time = self.validated_data["start_time"]
         consultation.end_time = self.validated_data["end_time"]
+        consultation.details = self.validated_data["details"]
+        consultation.status = models.ConsultationStatus.ACCEPTED
         consultation.save()
         core_service.NotificationService.send_consulation_rescheduled_notification(
             consultation
