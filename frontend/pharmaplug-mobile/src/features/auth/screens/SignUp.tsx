@@ -25,6 +25,10 @@ import {
 } from '../../../infrastructure/utils/validation'
 import { usePostAPI } from '../../../services/serviceHooks'
 import { endpoints } from '../../../services/constants'
+// uncomment when using development or production build
+// import { GoogleSignin, GoogleSigninButton, isSuccessResponse, SignInSuccessResponse } from '@react-native-google-signin/google-signin'
+import { Modal, Portal, Provider } from 'react-native-paper';
+import { LoaderContext } from '../../../contexts/LoaderContext'
 
 const SignUp = () => {
   const navigation = useNavigation()
@@ -34,11 +38,18 @@ const SignUp = () => {
   const [email, setEmail] = useState('')
   const [phoneNumber, setPhoneNumber] = useState('')
   const [password, setPassword] = useState('')
+
+  const [authToken, setAuthToken] = useState<string|null>("");
+  const [showAltModal, setShowAltModal] = useState(false);
   const styles = getStyles(themeContext.theme)
   const navigateToLogin = () => {
     navigation.navigate('Login')
   }
+  const hideModal = ()=>{
+    setShowAltModal(false)
+  }
   const submitForm = () => {
+    const loaderContext = useContext(LoaderContext)
     const fullNameValidation = validateName(fullName, 'Full name')
     const emailValidation = validateEmail(email)
     const phoneNumberValidation = validatePhoneNumber(phoneNumber)
@@ -67,12 +78,65 @@ const SignUp = () => {
   const onSuccessCallback = (data: UserType) => {
     authContext.logUserIn(data)
   }
+  // Uncomment when using development build or production build
+  // const googleSignIn = async ()=>{
+  //   try {
+  //     await GoogleSignin.hasPlayServices();
+  //     const response = await GoogleSignin.signIn();
+  //     if(isSuccessResponse(response)){
+  //       triggerAltModal(response)
+  //     }
+  //     else{
+  //       Alert.alert('Error',"Authentication Error")
+  //     }
+  //   } catch (error) {
+  //     Alert.alert('Error',"Authentication Error")
+  //   }
+  // }
+  // const googleSignOut = async () => {
+  //   try {
+  //     await GoogleSignin.signOut();
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+  // const triggerAltModal = (response: SignInSuccessResponse) =>{
+  //   setAuthToken(response.data.idToken)
+  //   setShowAltModal(true)
+  // }
+  const submitGoogleSignUptoBackend = () => {
+    if(!authToken || !phoneNumber){
+      Alert.alert("Validation Error","Fill all additional info")
+      return
+    }
+    googleSigninApi.sendRequest({
+      auth_token: authToken,
+      phone_number: phoneNumber
+    })
+    hideModal()
+  }
+  const onGoogleSignIn = (data: UserType) => {
+    authContext.logUserIn(data)
+    Alert.alert("Success","User account created")
+    
+  }
+  const onErrorCallback = (err: any) => {
+    // uncomment when using development build or production build
+    // googleSignOut()
+  }
+  const googleSigninApi = usePostAPI(
+    endpoints.googleSignUp,
+    null,
+    onGoogleSignIn,
+    onErrorCallback,
+  )
   const { sendRequest, loading } = usePostAPI(
     endpoints.register,
     null,
     onSuccessCallback,
   )
   return (
+    <Provider>
     <SafeArea>
       <KeyboardAvoidingView
         style={styles.container}
@@ -187,10 +251,36 @@ const SignUp = () => {
             </View>
           </View>
           <Text>or</Text>
-          <View></View>
+          <View>
+            {/* <GoogleSigninButton 
+              onPress={googleSignIn}
+              size={GoogleSigninButton.Size.Wide}
+              color={GoogleSigninButton.Color.Dark}
+            /> */}
+          </View>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeArea>
+        <Portal>
+          <Modal visible={showAltModal} onDismiss={hideModal} contentContainerStyle={{ backgroundColor: 'white', padding: 20, margin: 20, borderRadius: 10 }}>
+            <Text style={{marginBottom: 20}}>Add additional information!</Text>
+            <View style={{ marginBottom: 10 }}>
+              <NormalInput
+                label="Phone Number"
+                value={phoneNumber}
+                onChangeText={setPhoneNumber}
+                keyboardType="phone-pad"
+                inputMode="tel"
+                placeholder="Enter Phone number"
+                placeholderTextColor={'#D9DDE7'}
+              />
+            </View>
+            <View style={{ marginVertical: 15 }}>
+              <NormalButtton onPress={submitGoogleSignUptoBackend}>Sign Up with Google</NormalButtton>
+            </View>
+          </Modal>
+        </Portal>
+    </Provider>
   )
 }
 
