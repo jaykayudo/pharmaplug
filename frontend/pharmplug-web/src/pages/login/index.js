@@ -1,6 +1,8 @@
 import './style.scss'
+import assets from '../../assets/index.js'
 import { useContext, useState } from 'react'
-import { NormalInput } from '../../components/input/index.js'
+import Logo from '../../components/logo/index.js'
+import { SecondaryInput } from '../../components/input/index.js'
 import { NormalButton } from '../../components/button/index.js'
 import { Link, useNavigate } from 'react-router-dom'
 import Path from '../../navigations/constants.js'
@@ -9,11 +11,14 @@ import { validateEmail } from '../../utils/validation.js'
 import { message } from 'antd'
 import { usePostAPI } from '../../services/serviceHooks.js'
 import { endpoints } from '../../services/constants.js'
+import { GoogleLogin, googleLogout } from '@react-oauth/google'
+import SiteLoader from '../../components/loader/index.js'
 
 const Login = () => {
   const authContext = useContext(AuthContext)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   const submitForm = () => {
     if (!email || !password) return
@@ -39,54 +44,106 @@ const Login = () => {
       navigate(Path.userDashboard)
     }
   }
-  const { sendRequest, loading } = usePostAPI(
+  const submitGoogleSignUptoBackend = (response) => {
+    const authToken = response.credential
+    googleSigninApi.sendRequest({
+      auth_token: authToken,
+    })
+  }
+  const onGoogleSignIn = (data) => {
+    authContext.logUserIn(data)
+    message.success({
+      content: 'Login Successful',
+      duration: 5,
+    })
+    if (data.is_doctor) {
+      navigate(Path.doctorDashboard)
+    } else {
+      navigate(Path.userDashboard)
+    }
+  }
+  const onErrorCallback = (err) => {
+    googleLogout()
+  }
+  const googleSigninApi = usePostAPI(
+    endpoints.googleSignIn,
+    setLoading,
+    onGoogleSignIn,
+    onErrorCallback,
+  )
+  const { sendRequest } = usePostAPI(
     endpoints.login,
-    null,
+    setLoading,
     onSuccessCallback,
   )
   return (
-    <div className="auth-full-page">
-      <form
-        className="form-box"
-        onSubmit={(e) => {
-          e.preventDefault()
-          submitForm()
-        }}
+    <div className="auth-full-page2">
+      {loading && <SiteLoader />}
+      <div
+        className="image-div"
+        style={{ backgroundImage: `url("${assets.authBG2}")` }}
       >
-        <h2 className="mb-2em text-center">Log In</h2>
-        <p className="mb-2em text-center">
-          Lorem ipsum dolor sit amet consectetur.
+        <p className="text-center text-white">
+          Office ipsum you must be muted. Replied event activities closing eow
+          like rehydrate. Points money agile including whistles initiative
+          shower loss cadence running.
         </p>
-
-        <div className="auth-form-group">
-          <NormalInput
+      </div>
+      <form className="main-page-div">
+        <Logo />
+        <h2 className="mb-2em text-center">Login</h2>
+        <div style={{ padding: '15px 0' }}>
+          <GoogleLogin
+            size="large"
+            text="signin_with"
+            onSuccess={(credentialResponse) => {
+              submitGoogleSignUptoBackend(credentialResponse)
+            }}
+            onError={() => {
+              message.error({
+                content: 'Authentication Error',
+                duration: 2,
+              })
+            }}
+          />
+        </div>
+        <div className="register-form-box">
+          <SecondaryInput
+            label={'Email address'}
+            placeholder="Enter your email address"
+            type="email"
+            name="email"
             value={email}
-            label={'Email'}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
-        </div>
-        <div className="auth-form-group">
-          <NormalInput
-            value={password}
+          <SecondaryInput
             label={'Password'}
+            type="password"
+            minLength={8}
+            placeholder="Enter your password"
+            name="password"
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
+          <div></div>
+          <NormalButton full onClick={submitForm} type="button">
+            Login
+          </NormalButton>
+          <p className="mb-2em text-center" style={{ marginTop: '1em' }}>
+            Don't have an account ?{' '}
+            <Link to={Path.registerPreview} className="link">
+              Create account
+            </Link>
+          </p>
+          <p className="mb-2em text-center">
+            Forgot Password ?{' '}
+            <Link to={Path.forgotPassword} className="link">
+              Click here
+            </Link>
+          </p>
         </div>
-        <p className="mb-2em text-center">
-          Don't have an account ?{' '}
-          <Link to={Path.register} className="link">
-            Register
-          </Link>
-        </p>
-        <NormalButton full onClick={submitForm} disabled={loading}>
-          Log In
-        </NormalButton>
-        <p className="mb-2em text-center" style={{ marginTop: '1em' }}>
-          Forgot Password ?{' '}
-          <Link to={Path.forgotPassword} className="link">
-            Click here
-          </Link>
-        </p>
       </form>
     </div>
   )

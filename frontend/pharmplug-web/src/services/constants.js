@@ -24,7 +24,9 @@ export const endpoints = {
   orderVerify: `${host}/order-verify/`,
   // auth
   login: `${host}/login/`,
+  googleSignIn: `${host}/login/google/`,
   register: `${host}/register/`,
+  googleSignUp: `${host}/register/google/`,
   registerDoctor: `${host}/register-doctor/`,
   refreshToken: `${host}/token/refresh/`,
   changePassword: `${host}/change-password/`,

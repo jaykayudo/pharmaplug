@@ -21,6 +21,7 @@ import assets from '../../assets/index.js'
 import { useContext, useEffect, useRef, useState } from 'react'
 import { AuthContext } from '../../context/authContext.js'
 import Modal from 'antd/es/modal/Modal.js'
+import { googleLogout } from '@react-oauth/google'
 const SideLayout = ({ children }) => {
   const [showModal, setShowModal] = useState(false)
   const authContext = useContext(AuthContext)
@@ -32,6 +33,7 @@ const SideLayout = ({ children }) => {
   }
   const logout = () => {
     authContext.logUserOut(() => {
+      googleLogout()
       navigate(Path.home)
     })
   }

@@ -25,6 +25,10 @@ import {
 } from '../../../infrastructure/utils/validation'
 import { usePostAPI } from '../../../services/serviceHooks'
 import { endpoints } from '../../../services/constants'
+// uncomment when using development or production build
+// import { GoogleSignin, GoogleSigninButton, isSuccessResponse, SignInSuccessResponse } from '@react-native-google-signin/google-signin'
+import { Modal, Portal, Provider } from 'react-native-paper'
+import { LoaderContext } from '../../../contexts/LoaderContext'
 
 const SignUp = () => {
   const navigation = useNavigation()
@@ -34,11 +38,18 @@ const SignUp = () => {
   const [email, setEmail] = useState('')
   const [phoneNumber, setPhoneNumber] = useState('')
   const [password, setPassword] = useState('')
+
+  const [authToken, setAuthToken] = useState<string | null>('')
+  const [showAltModal, setShowAltModal] = useState(false)
   const styles = getStyles(themeContext.theme)
   const navigateToLogin = () => {
     navigation.navigate('Login')
   }
+  const hideModal = () => {
+    setShowAltModal(false)
+  }
   const submitForm = () => {
+    const loaderContext = useContext(LoaderContext)
     const fullNameValidation = validateName(fullName, 'Full name')
     const emailValidation = validateEmail(email)
     const phoneNumberValidation = validatePhoneNumber(phoneNumber)
@@ -67,130 +78,219 @@ const SignUp = () => {
   const onSuccessCallback = (data: UserType) => {
     authContext.logUserIn(data)
   }
+  // Uncomment when using development build or production build
+  // const googleSignIn = async ()=>{
+  //   try {
+  //     await GoogleSignin.hasPlayServices();
+  //     const response = await GoogleSignin.signIn();
+  //     if(isSuccessResponse(response)){
+  //       triggerAltModal(response)
+  //     }
+  //     else{
+  //       Alert.alert('Error',"Authentication Error")
+  //     }
+  //   } catch (error) {
+  //     Alert.alert('Error',"Authentication Error")
+  //   }
+  // }
+  // const googleSignOut = async () => {
+  //   try {
+  //     await GoogleSignin.signOut();
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+  // const triggerAltModal = (response: SignInSuccessResponse) =>{
+  //   setAuthToken(response.data.idToken)
+  //   setShowAltModal(true)
+  // }
+  const submitGoogleSignUptoBackend = () => {
+    if (!authToken || !phoneNumber) {
+      Alert.alert('Validation Error', 'Fill all additional info')
+      return
+    }
+    googleSigninApi.sendRequest({
+      auth_token: authToken,
+      phone_number: phoneNumber,
+    })
+    hideModal()
+  }
+  const onGoogleSignIn = (data: UserType) => {
+    authContext.logUserIn(data)
+    Alert.alert('Success', 'User account created')
+  }
+  const onErrorCallback = (err: any) => {
+    // uncomment when using development build or production build
+    // googleSignOut()
+  }
+  const googleSigninApi = usePostAPI(
+    endpoints.googleSignUp,
+    null,
+    onGoogleSignIn,
+    onErrorCallback,
+  )
   const { sendRequest, loading } = usePostAPI(
     endpoints.register,
     null,
     onSuccessCallback,
   )
   return (
-    <SafeArea>
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
-      >
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
+    <Provider>
+      <SafeArea>
+        <KeyboardAvoidingView
+          style={styles.container}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
         >
-          <View style={styles.headerContainer}>
-            <Text style={styles.headerText}>Create an Account</Text>
-            <View style={{ flexDirection: 'row', alignContent: 'center' }}>
-              <Text style={styles.normalText}>Already have an account?</Text>
-              <TouchableOpacity onPress={navigateToLogin}>
-                <Text
-                  style={[
-                    styles.normalText,
-                    styles.underLinedText,
-                    styles.altText,
-                  ]}
-                >
-                  {' '}
-                  Log In
-                </Text>
-              </TouchableOpacity>
+          <ScrollView
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.headerContainer}>
+              <Text style={styles.headerText}>Create an Account</Text>
+              <View style={{ flexDirection: 'row', alignContent: 'center' }}>
+                <Text style={styles.normalText}>Already have an account?</Text>
+                <TouchableOpacity onPress={navigateToLogin}>
+                  <Text
+                    style={[
+                      styles.normalText,
+                      styles.underLinedText,
+                      styles.altText,
+                    ]}
+                  >
+                    {' '}
+                    Log In
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-          <View>
-            <View style={{ marginBottom: 10 }}>
-              <NormalInput
-                label="Full Name"
-                value={fullName}
-                onChangeText={setFullName}
-                placeholder="Enter Full Name"
-                placeholderTextColor={'#D9DDE7'}
-              />
-            </View>
-            <View style={{ marginBottom: 10 }}>
-              <NormalInput
-                label="Email"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                inputMode="email"
-                placeholder="Enter Email"
-                placeholderTextColor={'#D9DDE7'}
-              />
-            </View>
-            <View style={{ marginBottom: 10 }}>
-              <NormalInput
-                label="Phone Number"
-                value={phoneNumber}
-                onChangeText={setPhoneNumber}
-                keyboardType="phone-pad"
-                inputMode="tel"
-                placeholder="Enter Phone number"
-                placeholderTextColor={'#D9DDE7'}
-              />
-            </View>
-            <View style={{ marginBottom: 10 }}>
-              <NormalInput
-                label="Password"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-                placeholder="Enter Password"
-                placeholderTextColor={'#D9DDE7'}
-              />
-            </View>
-            <Text style={styles.normalText}>
-              Passwords must contain at least 8 characters.
-            </Text>
-            <View style={{ marginVertical: 15 }}>
-              <NormalButtton onPress={submitForm}>Sign Up</NormalButtton>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignContent: 'center',
-                flexWrap: 'wrap',
-              }}
-            >
-              <Text style={styles.smallText}>
-                By signing up you are agreeing to our
+            <View>
+              <View style={{ marginBottom: 10 }}>
+                <NormalInput
+                  label="Full Name"
+                  value={fullName}
+                  onChangeText={setFullName}
+                  placeholder="Enter Full Name"
+                  placeholderTextColor={'#D9DDE7'}
+                />
+              </View>
+              <View style={{ marginBottom: 10 }}>
+                <NormalInput
+                  label="Email"
+                  value={email}
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  inputMode="email"
+                  placeholder="Enter Email"
+                  placeholderTextColor={'#D9DDE7'}
+                />
+              </View>
+              <View style={{ marginBottom: 10 }}>
+                <NormalInput
+                  label="Phone Number"
+                  value={phoneNumber}
+                  onChangeText={setPhoneNumber}
+                  keyboardType="phone-pad"
+                  inputMode="tel"
+                  placeholder="Enter Phone number"
+                  placeholderTextColor={'#D9DDE7'}
+                />
+              </View>
+              <View style={{ marginBottom: 10 }}>
+                <NormalInput
+                  label="Password"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry
+                  placeholder="Enter Password"
+                  placeholderTextColor={'#D9DDE7'}
+                />
+              </View>
+              <Text style={styles.normalText}>
+                Passwords must contain at least 8 characters.
               </Text>
-              <TouchableOpacity>
-                <Text
-                  style={[
-                    styles.smallText,
-                    styles.underLinedText,
-                    styles.altText,
-                  ]}
-                >
-                  {' '}
-                  Terms of Service.{' '}
+              <View style={{ marginVertical: 15 }}>
+                <NormalButtton onPress={submitForm}>Sign Up</NormalButtton>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignContent: 'center',
+                  flexWrap: 'wrap',
+                }}
+              >
+                <Text style={styles.smallText}>
+                  By signing up you are agreeing to our
                 </Text>
-              </TouchableOpacity>
-              <Text style={styles.smallText}>View our</Text>
-              <TouchableOpacity>
-                <Text
-                  style={[
-                    styles.smallText,
-                    styles.underLinedText,
-                    styles.altText,
-                  ]}
-                >
-                  {' '}
-                  Privacy Policy.
-                </Text>
-              </TouchableOpacity>
+                <TouchableOpacity>
+                  <Text
+                    style={[
+                      styles.smallText,
+                      styles.underLinedText,
+                      styles.altText,
+                    ]}
+                  >
+                    {' '}
+                    Terms of Service.{' '}
+                  </Text>
+                </TouchableOpacity>
+                <Text style={styles.smallText}>View our</Text>
+                <TouchableOpacity>
+                  <Text
+                    style={[
+                      styles.smallText,
+                      styles.underLinedText,
+                      styles.altText,
+                    ]}
+                  >
+                    {' '}
+                    Privacy Policy.
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
+            <Text>or</Text>
+            <View>
+              {/* <GoogleSigninButton 
+              onPress={googleSignIn}
+              size={GoogleSigninButton.Size.Wide}
+              color={GoogleSigninButton.Color.Dark}
+            /> */}
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeArea>
+      <Portal>
+        <Modal
+          visible={showAltModal}
+          onDismiss={hideModal}
+          contentContainerStyle={{
+            backgroundColor: 'white',
+            padding: 20,
+            margin: 20,
+            borderRadius: 10,
+          }}
+        >
+          <Text style={{ marginBottom: 20 }}>Add additional information!</Text>
+          <View style={{ marginBottom: 10 }}>
+            <NormalInput
+              label="Phone Number"
+              value={phoneNumber}
+              onChangeText={setPhoneNumber}
+              keyboardType="phone-pad"
+              inputMode="tel"
+              placeholder="Enter Phone number"
+              placeholderTextColor={'#D9DDE7'}
+            />
           </View>
-          <Text>or</Text>
-          <View></View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeArea>
+          <View style={{ marginVertical: 15 }}>
+            <NormalButtton onPress={submitGoogleSignUptoBackend}>
+              Sign Up with Google
+            </NormalButtton>
+          </View>
+        </Modal>
+      </Portal>
+    </Provider>
   )
 }
 

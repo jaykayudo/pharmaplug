@@ -20,7 +20,8 @@ import { useState } from 'react'
 import { validateEmail } from '../../../infrastructure/utils/validation'
 import { usePostAPI } from '../../../services/serviceHooks'
 import { endpoints } from '../../../services/constants'
-
+// Uncomment when using development build or production build
+// import { GoogleSigninButton, GoogleSignin, SignInSuccessResponse, isSuccessResponse } from '@react-native-google-signin/google-signin'
 const Login = () => {
   const themeContext = useContext(ThemeContext)
   const authContext = useContext(AuthContext)
@@ -48,9 +49,52 @@ const Login = () => {
     }
     sendRequest(data)
   }
+  // Uncomment when using development build or production build
+  // const googleSignIn = async ()=>{
+  //   try {
+  //     await GoogleSignin.hasPlayServices();
+  //     const response = await GoogleSignin.signIn();
+  //     if(isSuccessResponse(response)){
+  //       submitGoogleSignUptoBackend(response)
+  //     }
+  //     else{
+  //       Alert.alert('Error',"Authentication Error")
+  //     }
+  //   } catch (error) {
+  //     Alert.alert('Error',"Authentication Error")
+  //   }
+  // }
+  // const googleSignOut = async () => {
+  //   try {
+  //     await GoogleSignin.signOut();
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
   const onSuccessCallback = (data: UserType) => {
     authContext.logUserIn(data)
   }
+  // Uncomment when using development build or production build
+  // const submitGoogleSignUptoBackend = (response: SignInSuccessResponse) => {
+  //   const authToken = response.data.idToken
+  //   googleSigninApi.sendRequest({
+  //     auth_token: authToken,
+  //   })
+  // }
+  const onGoogleSignIn = (data: UserType) => {
+    authContext.logUserIn(data)
+    Alert.alert('Success', 'Login Successful')
+  }
+  const onErrorCallback = (err: any) => {
+    // Uncomment when using development build or production build
+    // googleSignOut()
+  }
+  const googleSigninApi = usePostAPI(
+    endpoints.googleSignIn,
+    null,
+    onGoogleSignIn,
+    onErrorCallback,
+  )
   const { sendRequest, loading } = usePostAPI(
     endpoints.login,
     null,
@@ -117,7 +161,13 @@ const Login = () => {
             </View>
           </View>
           <Text style={styles.throughText}>or</Text>
-          <View></View>
+          <View>
+            {/* <GoogleSigninButton
+            onPress={googleSignIn}
+            size={GoogleSigninButton.Size.Wide}
+            color={GoogleSigninButton.Color.Dark}
+          /> */}
+          </View>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeArea>
