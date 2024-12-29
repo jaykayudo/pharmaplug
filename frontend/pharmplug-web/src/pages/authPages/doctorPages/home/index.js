@@ -8,14 +8,20 @@ import { doctorEndpoints } from '../../../../services/constants.js'
 import Path from "../../../../navigations/constants.js"
 
 const DoctorDashboard = () => {
-  const [pendingConsultData, setPendingConsultData] = useState(tempData);
+  const [pendingConsultData, setPendingConsultData] = useState([]);
   const [statData, setStatData] = useState({});
   const [wallet, setWallet] = useState({});
   const fetchDashboardStat = (data) =>{
     setStatData(data)
   }
   const fetchPendingConsults = (data) =>{
-    setPendingConsultData(data)
+    setPendingConsultData(data.map((val)=>({
+      id: val.id,
+      name: `${val.user.first_name} ${val.user.last_name}`,
+      message: val.note,
+      date: new Date(val.day).toLocaleDateString(),
+      status: val.status
+    })))
   }
   const fetchWalletData = (data)=>{
     setWallet(data)
@@ -144,7 +150,7 @@ const columns = [
     render: (_, { status }) => (
       <>
         <Tag color={status.length > 7 ? 'green' : 'geekblue'} key={status}>
-          {status.toUpperCase()}
+          {status}
         </Tag>
       </>
     ),
@@ -154,8 +160,7 @@ const columns = [
     key: 'action',
     render: (_, record) => (
       <Space size="middle">
-        <a>Invite {record.name}</a>
-        <a>Delete</a>
+        <a href={Path.doctorConsultationsDetails(record.id)}>View</a>
       </Space>
     ),
   },

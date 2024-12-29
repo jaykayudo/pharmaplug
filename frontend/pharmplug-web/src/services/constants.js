@@ -48,6 +48,7 @@ export const doctorEndpoints = {
   consultationDetails: (id) => `${host}/doctor/consults/${id}/`,
   consultationAccept: `${host}/doctor/consults/accept/`,
   consultationReschedule: `${host}/doctor/consults/reschedule/`,
+  consultationReject: `${host}/doctor/consults/reject/`,
   schedules: `${host}/doctor/schedules/`,
   scheduleCreate: `${host}/doctor/schedules/create/`,
 }

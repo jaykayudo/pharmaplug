@@ -5,7 +5,7 @@ import { useGetAPI } from '../../../../services/serviceHooks.js';
 import { doctorEndpoints } from '../../../../services/constants.js';
 
 const Consultation = () => {
-  const [data, setData] = useState(tempData);
+  const [data, setData] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const activeNumber = Number(searchParams.get("active"))
   const [currentActive, setCurrentActive] = useState(activeNumber > 0 ? activeNumber: 5)
@@ -77,7 +77,7 @@ const columns = [
     render: (_, { status }) => (
       <>
         <Tag color={status.length > 7 ? 'green' : 'geekblue'} key={status}>
-          {status.toUpperCase()}
+          {status}
         </Tag>
       </>
     ),

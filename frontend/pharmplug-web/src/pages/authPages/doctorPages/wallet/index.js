@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 const Wallet = () => {
   const [wallet, setWallet] = useState({});
   const [walletEarnedAmount, setWalletEarnedAmount] = useState(0);
-  const [data, setData] = useState(tempData);
+  const [data, setData] = useState([]);
   const fetchWalletData = (data)=>{
     setWallet(data)
   }
@@ -111,7 +111,7 @@ const columns = [
     render: (_, { status }) => (
       <>
         <Tag color={status.length > 7 ? 'green' : 'geekblue'} key={status}>
-          {status.toUpperCase()}
+          {status}
         </Tag>
       </>
     ),
