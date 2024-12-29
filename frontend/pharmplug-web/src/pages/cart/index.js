@@ -33,7 +33,7 @@ const Cart = () => {
     }
     console.log(checkedDelete)
   }
-  
+
   const onCheckClick = (flag, id) => {
     if (flag) {
       setCheckDelete((prevState) => {
@@ -94,7 +94,7 @@ const Cart = () => {
                       key={idx}
                       id={value.id}
                       data={value.product}
-                      quantity = {value.quantity}
+                      quantity={value.quantity}
                       onCheckClick={onCheckClick}
                       onQuantityDecrease={() => decreaseQuantity(value.id)}
                       onQuantityIncrease={() => increaseQuantity(value.id)}

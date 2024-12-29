@@ -1,42 +1,38 @@
 import { IoWalletOutline } from 'react-icons/io5'
 import { Space, Table, Tag } from 'antd'
-import { doctorEndpoints } from '../../../../services/constants.js';
-import { useGetAPI } from '../../../../services/serviceHooks.js';
-import { useEffect, useState } from 'react';
+import { doctorEndpoints } from '../../../../services/constants.js'
+import { useGetAPI } from '../../../../services/serviceHooks.js'
+import { useEffect, useState } from 'react'
 
 const Wallet = () => {
-  const [wallet, setWallet] = useState({});
-  const [walletEarnedAmount, setWalletEarnedAmount] = useState(0);
-  const [data, setData] = useState([]);
-  const fetchWalletData = (data)=>{
+  const [wallet, setWallet] = useState({})
+  const [walletEarnedAmount, setWalletEarnedAmount] = useState(0)
+  const [data, setData] = useState([])
+  const fetchWalletData = (data) => {
     setWallet(data)
   }
-  const fetctWalletTransactions = (data) =>{
+  const fetctWalletTransactions = (data) => {
     setData(data)
   }
-  const fetchWalletEarnedAmount = (data) =>{
+  const fetchWalletEarnedAmount = (data) => {
     setWalletEarnedAmount(data ?? 0)
   }
   const walletTransactionAPI = useGetAPI(
     doctorEndpoints.walletTransactions,
     null,
-    fetctWalletTransactions
+    fetctWalletTransactions,
   )
-  const walletAPI = useGetAPI(
-    doctorEndpoints.wallet,
-    null,
-    fetchWalletData
-  )
+  const walletAPI = useGetAPI(doctorEndpoints.wallet, null, fetchWalletData)
   const walletEarnedAmountAPI = useGetAPI(
     doctorEndpoints.walletEarnedAmounts,
     null,
-    fetchWalletEarnedAmount
+    fetchWalletEarnedAmount,
   )
-  useEffect(()=>{
+  useEffect(() => {
     walletAPI.sendRequest()
     walletTransactionAPI.sendRequest()
     walletEarnedAmountAPI.sendRequest()
-  },[])
+  }, [])
   return (
     <div>
       <div className="flex-between mb-2em">
@@ -79,7 +75,11 @@ const Wallet = () => {
         </div>
       </div>
       <div className="table-box w-100 overflow-x-auto">
-        <Table columns={columns} dataSource={data} loading={walletTransactionAPI.loading} />
+        <Table
+          columns={columns}
+          dataSource={data}
+          loading={walletTransactionAPI.loading}
+        />
       </div>
     </div>
   )

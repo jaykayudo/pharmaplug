@@ -33,9 +33,9 @@ const Login = () => {
   }
   const onSuccessCallback = (data) => {
     authContext.logUserIn(data)
-    if (data.is_doctor){
+    if (data.is_doctor) {
       navigate(Path.doctorDashboard)
-    }else{
+    } else {
       navigate(Path.userDashboard)
     }
   }

@@ -211,7 +211,14 @@ const UserSettings = () => {
           )}
           {activePage == 2 && (
             <div className="security-box">
-              <form className="personal-info-box" onInput={onInputChange} onSubmit={(e)=>{e.preventDefault(); submitPasswordForm()}}>
+              <form
+                className="personal-info-box"
+                onInput={onInputChange}
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  submitPasswordForm()
+                }}
+              >
                 <div className="w-30 sm-w-100 mb-1em">
                   <h3 className="mb-1em">Change Password</h3>
                   <p className="mb-1em text-gray font-14">

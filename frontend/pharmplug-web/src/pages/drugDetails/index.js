@@ -40,14 +40,12 @@ const drugDetails = () => {
   const fetchHealthData = (data) => {
     setHealthData(data)
   }
-  const addToCart = () =>{
+  const addToCart = () => {
     cartContext.addToCart(drugId)
-    message.success(
-      {
-        content:"Added to Cart",
-        duration: 5
-      }
-    )
+    message.success({
+      content: 'Added to Cart',
+      duration: 5,
+    })
   }
   const drugDataAPI = useGetAPI(
     endpoints.drugDetails(drugId),

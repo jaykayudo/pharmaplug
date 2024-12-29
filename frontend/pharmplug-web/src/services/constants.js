@@ -4,7 +4,7 @@ export const endpoints = {
   stories: `${host}/stories/`,
   commonSicknesses: `${host}/common/sicknesses/`,
   sicknesses: `${host}/sicknesses/`,
-  sicknessesDetails: (id)=>`${host}/sicknesses/${id}/`,
+  sicknessesDetails: (id) => `${host}/sicknesses/${id}/`,
   commonDoctorCategories: `${host}/common/doctor-categories/`,
   doctorCategories: `${host}/doctor-categories/`,
   doctorList: `${host}/doctors/`,

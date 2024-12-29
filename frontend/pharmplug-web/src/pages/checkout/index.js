@@ -3,7 +3,7 @@ import { NormalButton } from '../../components/button/index.js'
 import { LargeAccordion } from '../../components/accordion/index.js'
 import { NormalInput, NormalSelect } from '../../components/input/index.js'
 import { MiniCartItem } from '../../components/cartItem/index.js'
-import Path from "../../navigations/constants.js"
+import Path from '../../navigations/constants.js'
 
 import { useContext, useEffect, useState } from 'react'
 import { usePostAPI } from '../../services/serviceHooks.js'
@@ -17,7 +17,7 @@ import {
 } from '../../utils/validation.js'
 import { lgaList } from '../../utils/lga.js'
 
-import { usePaystackPayment } from 'react-paystack'; 
+import { usePaystackPayment } from 'react-paystack'
 import { useNavigate } from 'react-router-dom'
 import SiteLoader from '../../components/loader/index.js'
 
@@ -35,7 +35,7 @@ const Checkout = () => {
   const [deliveryMethod, setDeliveryMethod] = useState('')
   const [loader, setLoader] = useState(false)
 
-  const [paymentConfig, setPaymentConfig] = useState({});
+  const [paymentConfig, setPaymentConfig] = useState({})
   const [orderId, setOrderID] = useState(null)
 
   const initializePayment = usePaystackPayment(paymentConfig)
@@ -45,49 +45,44 @@ const Checkout = () => {
   cart.cart_items.forEach((value) => {
     subtotal += value.price
   })
-  const onPaymentSuccess = (ref) =>{
-    console.log("Success")
-    orderVerifyAPI.sendRequest(
-      {
-        order: orderId
-      }
-    )
+  const onPaymentSuccess = (ref) => {
+    console.log('Success')
+    orderVerifyAPI.sendRequest({
+      order: orderId,
+    })
     message.loading({
-      content: "Verifying Transaction",
+      content: 'Verifying Transaction',
       duration: 5,
-      key: "updatable"
+      key: 'updatable',
     })
   }
-  const onPaymentClose = () =>{
+  const onPaymentClose = () => {
     message.error({
-      content: "Payment Cancelled",
-      duration: 2
+      content: 'Payment Cancelled',
+      duration: 2,
     })
   }
   const onSuccessCallback = (data) => {
-    if(data.payment_method == 1){
+    if (data.payment_method == 1) {
       setOrderID(data.order)
       setPaymentConfig({
         reference: data.ref,
         amount: Number(data.amount) * 100,
         publicKey: data.key,
-        email: data.email
+        email: data.email,
       })
-    }else{
-      message.success(
-        {
-          content: "Order Placed Successfully",
-          duration: 2
-        }
-      )
+    } else {
+      message.success({
+        content: 'Order Placed Successfully',
+        duration: 2,
+      })
     }
-    
   }
-  const onOrderVerify = (data) =>{
+  const onOrderVerify = (data) => {
     message.success({
-      content: "Order Paid successfully",
+      content: 'Order Paid successfully',
       duration: 5,
-      key: "updatable"
+      key: 'updatable',
     })
     navigate(Path.cart)
   }
@@ -146,16 +141,15 @@ const Checkout = () => {
   const orderVerifyAPI = usePostAPI(
     endpoints.orderVerify,
     setLoader,
-    onOrderVerify
+    onOrderVerify,
   )
   useEffect(() => {}, [])
-  useEffect(()=>{
-    if(paymentConfig.reference && paymentConfig.amount){
+  useEffect(() => {
+    if (paymentConfig.reference && paymentConfig.amount) {
       initializePayment(onPaymentSuccess, onPaymentClose)
     }
-  },[paymentConfig])
+  }, [paymentConfig])
   return (
-    
     <div className="checkout-page-cover">
       {loader && <SiteLoader />}
       <div className="breadcrump-header-top">
@@ -306,8 +300,8 @@ const Checkout = () => {
                         type="radio"
                         name="delivery-method"
                         value={'home'}
-                        onChange={(e)=>{
-                          if(e.target.checked){
+                        onChange={(e) => {
+                          if (e.target.checked) {
                             setDeliveryMethod(0)
                           }
                         }}
@@ -326,8 +320,8 @@ const Checkout = () => {
                         type="radio"
                         name="delivery-method"
                         value={'pharmacy'}
-                        onChange={(e)=>{
-                          if(e.target.checked){
+                        onChange={(e) => {
+                          if (e.target.checked) {
                             setDeliveryMethod(1)
                           }
                         }}
@@ -353,8 +347,8 @@ const Checkout = () => {
                         type="radio"
                         name="payment-method"
                         value={'card'}
-                        onChange={(e)=>{
-                          if(e.target.checked){
+                        onChange={(e) => {
+                          if (e.target.checked) {
                             setPaymentMethod(1)
                           }
                         }}
@@ -373,8 +367,8 @@ const Checkout = () => {
                         type="radio"
                         name="payment-method"
                         value={'delivery'}
-                        onChange={(e)=>{
-                          if(e.target.checked){
+                        onChange={(e) => {
+                          if (e.target.checked) {
                             setPaymentMethod(0)
                           }
                         }}
@@ -394,7 +388,11 @@ const Checkout = () => {
               <h3>Order summary</h3>
               <div>
                 {cart.cart_items.map((value, idx) => (
-                  <MiniCartItem key={idx} data={value.product} quantity={value.quantity}  />
+                  <MiniCartItem
+                    key={idx}
+                    data={value.product}
+                    quantity={value.quantity}
+                  />
                 ))}
               </div>
             </div>

@@ -31,52 +31,53 @@ export const SearchInput = ({
   )
 }
 
-export const NormalInput = forwardRef(({
-  label,
-  value,
-  onChange,
-  type = 'text',
-  ...props
-}, ref) => {
-  return (
-    <div className="form-group">
-      <label className="form-label">{label}</label>
-      <input
-        type={type}
-        value={value}
-        onChange={onChange}
-        className="form-input"
-        ref={ref}
-        {...props}
-      />
-    </div>
-  )
-});
+export const NormalInput = forwardRef(
+  ({ label, value, onChange, type = 'text', ...props }, ref) => {
+    return (
+      <div className="form-group">
+        <label className="form-label">{label}</label>
+        <input
+          type={type}
+          value={value}
+          onChange={onChange}
+          className="form-input"
+          ref={ref}
+          {...props}
+        />
+      </div>
+    )
+  },
+)
 
-export const NormalSelect = forwardRef(({
-  label = 'Select an Option',
-  headerLabel = null,
-  value,
-  onChange,
-  children,
-  ...props
-}, ref) => {
-  return (
-    <div className="form-group">
-      {headerLabel && <label className="sec-form-label">{headerLabel}</label>}
-      <select
-        value={value}
-        onChange={onChange}
-        className="form-select"
-        ref={ref}
-        {...props}
-      >
-        <option value={''}>{label}</option>
-        {children}
-      </select>
-    </div>
-  )
-});
+export const NormalSelect = forwardRef(
+  (
+    {
+      label = 'Select an Option',
+      headerLabel = null,
+      value,
+      onChange,
+      children,
+      ...props
+    },
+    ref,
+  ) => {
+    return (
+      <div className="form-group">
+        {headerLabel && <label className="sec-form-label">{headerLabel}</label>}
+        <select
+          value={value}
+          onChange={onChange}
+          className="form-select"
+          ref={ref}
+          {...props}
+        >
+          <option value={''}>{label}</option>
+          {children}
+        </select>
+      </div>
+    )
+  },
+)
 
 export const SecondaryInput = ({
   label,

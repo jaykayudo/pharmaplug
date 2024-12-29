@@ -16,7 +16,7 @@ import { endpoints } from '../../services/constants.js'
 
 const Home = () => {
   const [activeSlideContent, setActiveSlideContent] = useState(0)
-  const [healthData, setHealthData] = useState([]);
+  const [healthData, setHealthData] = useState([])
   const slideContent = [
     {
       header: 'Let us get well together',
@@ -49,9 +49,9 @@ const Home = () => {
     setHealthData(data)
   }
   const healthDataAPI = useGetAPI(endpoints.stories, null, fetchHealthData)
-  useEffect(()=>{
+  useEffect(() => {
     healthDataAPI.sendRequest()
-  },[])
+  }, [])
   return (
     <>
       <section className="first-section">
@@ -174,25 +174,23 @@ const Home = () => {
         </div>
       </section>
       <section className="fourth-section">
-        <div className='container'>
-
-        
-        <div className="content-div">
-          <h1>We deliver your quality drugs at the perfect time</h1>
-          <p>
-            As a pharmaceutical leader, we are focused on providing you with
-            high-quality drugs. That is why we have collaborated with partners
-            who share our commitment to excellence and timely delivery.
-          </p>
-        </div>
-        <div className="partner-div">
-          <img src={assets.google} alt="google" />
-          <img src={assets.ios} alt="ios" />
-          <img src={assets.samsung} alt="samsung" /> <br />
-          <img src={assets.ios} alt="ios" />
-          <img src={assets.samsung} alt="samsung" />
-          <img src={assets.google} alt="google" />
-        </div>
+        <div className="container">
+          <div className="content-div">
+            <h1>We deliver your quality drugs at the perfect time</h1>
+            <p>
+              As a pharmaceutical leader, we are focused on providing you with
+              high-quality drugs. That is why we have collaborated with partners
+              who share our commitment to excellence and timely delivery.
+            </p>
+          </div>
+          <div className="partner-div">
+            <img src={assets.google} alt="google" />
+            <img src={assets.ios} alt="ios" />
+            <img src={assets.samsung} alt="samsung" /> <br />
+            <img src={assets.ios} alt="ios" />
+            <img src={assets.samsung} alt="samsung" />
+            <img src={assets.google} alt="google" />
+          </div>
         </div>
       </section>
       <section className="mb-1em">
@@ -205,4 +203,3 @@ const Home = () => {
 }
 
 export default Home
-

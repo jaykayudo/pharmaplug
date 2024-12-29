@@ -53,29 +53,37 @@ const CartContextProvider = ({ children }) => {
     if (!cartId) {
       setCartId(data)
       localStorage.setItem('cartId', data)
-    }else{
+    } else {
       CartAPI.sendRequest()
     }
   }
-  const decreaseQuantity = (id) =>{
-    if(!cartId) return
+  const decreaseQuantity = (id) => {
+    if (!cartId) return
     CartDecreaseAPI.sendRequest({
       cart: cartId,
-      item: id
+      item: id,
     })
   }
-  const increaseQuantity = (id) =>{
-    if(!cartId) return
+  const increaseQuantity = (id) => {
+    if (!cartId) return
     CartIncreaseAPI.sendRequest({
       cart: cartId,
-      item: id
+      item: id,
     })
   }
   const CartAPI = useGetAPI(endpoints.cart(cartId), null, fetchCartItems)
   const CartDeleteAPI = usePostAPI(endpoints.removeFromCart, null, reloadCart)
   const CartAddAPI = usePostAPI(endpoints.addToCart, null, reloadCart)
-  const CartIncreaseAPI = usePostAPI(endpoints.cartQuantityIncrease, null, reloadCart)
-  const CartDecreaseAPI = usePostAPI(endpoints.cartQuantityDecrease, null, reloadCart)
+  const CartIncreaseAPI = usePostAPI(
+    endpoints.cartQuantityIncrease,
+    null,
+    reloadCart,
+  )
+  const CartDecreaseAPI = usePostAPI(
+    endpoints.cartQuantityDecrease,
+    null,
+    reloadCart,
+  )
   useEffect(() => {
     // search local storage for the cart id
     const tempStore = localStorage.getItem('cartId')

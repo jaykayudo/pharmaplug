@@ -1,25 +1,27 @@
 import { act, useEffect, useState } from 'react'
 import { Space, Table, Tag } from 'antd'
 import { useSearchParams } from 'react-router-dom'
-import { useGetAPI } from '../../../../services/serviceHooks.js';
-import { doctorEndpoints } from '../../../../services/constants.js';
+import { useGetAPI } from '../../../../services/serviceHooks.js'
+import { doctorEndpoints } from '../../../../services/constants.js'
 
 const Consultation = () => {
-  const [data, setData] = useState([]);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const activeNumber = Number(searchParams.get("active"))
-  const [currentActive, setCurrentActive] = useState(activeNumber > 0 ? activeNumber: 5)
-  const fetchConsultations = (data) =>{
+  const [data, setData] = useState([])
+  const [searchParams, setSearchParams] = useSearchParams()
+  const activeNumber = Number(searchParams.get('active'))
+  const [currentActive, setCurrentActive] = useState(
+    activeNumber > 0 ? activeNumber : 5,
+  )
+  const fetchConsultations = (data) => {
     setData(data)
   }
-  const {sendRequest, loading} = useGetAPI(
+  const { sendRequest, loading } = useGetAPI(
     doctorEndpoints.consultations,
     null,
-    fetchConsultations
+    fetchConsultations,
   )
-  useEffect(()=>{
-    sendRequest({status: currentActive}) 
-  },[currentActive])
+  useEffect(() => {
+    sendRequest({ status: currentActive })
+  }, [currentActive])
   return (
     <div>
       <div className="flex-between mb-2em">
@@ -32,13 +34,19 @@ const Consultation = () => {
         <div className="w-40 sm-w-100 flex-end gap-20">
           <button
             className={`filter-button${currentActive == 5 ? ' active' : ''}`}
-            onClick={() => {setCurrentActive(5); setSearchParams({active: 5})}}
+            onClick={() => {
+              setCurrentActive(5)
+              setSearchParams({ active: 5 })
+            }}
           >
             Ongoing Consultation
           </button>
           <button
             className={`filter-button${currentActive == 6 ? ' active' : ''}`}
-            onClick={() => {setCurrentActive(6); setSearchParams({active: 6})}}
+            onClick={() => {
+              setCurrentActive(6)
+              setSearchParams({ active: 6 })
+            }}
           >
             completed Consultation
           </button>

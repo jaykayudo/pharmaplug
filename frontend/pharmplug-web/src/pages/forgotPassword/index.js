@@ -11,16 +11,16 @@ const ForgotPassword = () => {
   const navigate = useNavigate()
   const submitForm = () => {
     sendRequest({
-      email
+      email,
     })
   }
-  const onSuccessCallback = (data) =>{
-    navigate(Path.resetPassword, {state: {id: data}})
+  const onSuccessCallback = (data) => {
+    navigate(Path.resetPassword, { state: { id: data } })
   }
-  const {sendRequest, loading} = usePostAPI(
+  const { sendRequest, loading } = usePostAPI(
     endpoints.forgotPassword,
     null,
-    onSuccessCallback
+    onSuccessCallback,
   )
   return (
     <div className="auth-full-page">

@@ -91,11 +91,17 @@ const DoctorPortalCategory = () => {
           <>
             <div className="mb-1em">
               <h3 className="mb-05em">
-                Search related to <span>{categoryList.find((value)=> value.id == type)?.name ?? "doctors"}</span>
+                Search related to{' '}
+                <span>
+                  {categoryList.find((value) => value.id == type)?.name ??
+                    'doctors'}
+                </span>
               </h3>
               <p className="text-gray font-14">
-                <span>{data.length}</span> {categoryList.find((value)=> value.id == type)?.name ?? "doctors"} available at your
-                current location.
+                <span>{data.length}</span>{' '}
+                {categoryList.find((value) => value.id == type)?.name ??
+                  'doctors'}{' '}
+                available at your current location.
               </p>
             </div>
             {data.length === 0 && <EmptyData />}
@@ -108,7 +114,9 @@ const DoctorPortalCategory = () => {
                 >
                   <div>
                     <h3 className="flex-between">
-                      <span>{value.user.first_name} {value.user.last_name}</span>
+                      <span>
+                        {value.user.first_name} {value.user.last_name}
+                      </span>
                       <span>{value.rate}</span>
                     </h3>
                     <p className="text-gray mb-05em">{value.description}</p>
