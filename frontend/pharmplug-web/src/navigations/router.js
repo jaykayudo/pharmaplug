@@ -36,6 +36,9 @@ const ResetPassword = lazy(() => import('../pages/forgotPassword/reset.js'))
 const DoctorDashboard = lazy(
   () => import('../pages/authPages/doctorPages/home/index.js'),
 )
+const DoctorNotification = lazy(
+  () => import('../pages/authPages/doctorPages/notification/index.js'),
+)
 const DoctorWallet = lazy(
   () => import('../pages/authPages/doctorPages/wallet/index.js'),
 )
@@ -55,6 +58,9 @@ const DoctorReferral = lazy(
 //User Pages
 const UserDashboard = lazy(
   () => import('../pages/authPages/userPages/home/index.js'),
+)
+const UserNotification = lazy(
+  () => import('../pages/authPages/userPages/notification/index.js'),
 )
 const UserHistory = lazy(
   () => import('../pages/authPages/userPages/history/index.js'),
@@ -144,6 +150,10 @@ const Router = () => {
             element={<DoctorRoute children={<DoctorDashboard />} />}
           />
           <Route
+            path={Path.doctorNotification}
+            element={<DoctorRoute children={<DoctorNotification />} />}
+          />
+          <Route
             path={Path.doctorWallet}
             element={<DoctorRoute children={<DoctorWallet />} />}
           />
@@ -168,6 +178,10 @@ const Router = () => {
           <Route
             path={Path.userDashboard}
             element={<UserRoute children={<UserDashboard />} />}
+          />
+          <Route
+            path={Path.userNotification}
+            element={<UserRoute children={<UserNotification />} />}
           />
           <Route
             path={Path.userHistory}

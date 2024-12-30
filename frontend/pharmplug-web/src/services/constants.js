@@ -37,6 +37,8 @@ export const endpoints = {
   profile: `${host}/profile/`,
   consultationHistory: `${host}/consultations/`,
   orderHistory: `${host}/orders/`,
+  notifications: `${host}/notifications/`,
+  notificationsRead: (id) => `${host}/notifications/${id}/read/`,
 }
 
 export const doctorEndpoints = {

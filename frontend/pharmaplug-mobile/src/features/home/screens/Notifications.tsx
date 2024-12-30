@@ -54,7 +54,7 @@ const Notifications = () => {
   }, [])
   useEffect(() => {
     if (readId) {
-      // readNotificationAPI.sendRequest()
+      readNotificationAPI.sendRequest()
     }
   }, [readId])
   return (
