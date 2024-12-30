@@ -112,7 +112,7 @@ const SideLayoutAlt = ({ children }) => {
             </button>
           </div>
           <div className="w-50 flex-end gap-20">
-            <Link className="rounded-icon">
+            <Link className="rounded-icon" to={Path.userNotification}>
               <FaBell size={20} color="#1E1E1E" />
             </Link>
             <img src={assets.profile} className="little-rounded-image" />

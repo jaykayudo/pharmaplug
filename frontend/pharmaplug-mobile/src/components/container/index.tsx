@@ -29,6 +29,7 @@ type Props = {
   }
   refreshing?: boolean
   onRefresh?: () => void
+  onNotificationPress?: () => void
   children: ReactNode
 }
 export const DashboardContainer = ({
@@ -36,6 +37,7 @@ export const DashboardContainer = ({
   children,
   refreshing = false,
   onRefresh,
+  onNotificationPress,
 }: Props) => {
   const themeContext = useContext(ThemeContext)
   const styles = getStyles(themeContext.theme, themeContext.currentMode)
@@ -64,7 +66,10 @@ export const DashboardContainer = ({
             </View>
           </View>
           <View>
-            <TouchableOpacity style={styles.notificationIconBox}>
+            <TouchableOpacity
+              style={styles.notificationIconBox}
+              onPress={onNotificationPress}
+            >
               <MaterialCommunityIcons
                 name="bell-outline"
                 size={24}

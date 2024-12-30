@@ -21,6 +21,7 @@ export default {
 
   // Doctors paths
   doctorDashboard: '/doctor/dashboard',
+  doctorNotification: '/doctor/notifications',
   doctorWallet: '/doctor/wallet',
   doctorSettings: '/doctor/settings',
   doctorConsultations: '/doctor/consultations',
@@ -30,6 +31,7 @@ export default {
 
   // User paths
   userDashboard: '/account/dashboard',
+  userNotification: '/account/notifications',
   userHistory: '/account/history',
   userSettings: '/account/settings',
   userReferral: '/account/referral',

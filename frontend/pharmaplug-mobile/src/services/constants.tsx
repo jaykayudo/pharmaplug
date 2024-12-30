@@ -36,6 +36,8 @@ export const endpoints = {
   resetPassword: `${host}/reset-password/`,
   //auth user
   userDashboard: `${host}/dashboard/`,
+  notifications: `${host}/notifications/`,
+  notificationsRead: (id: string) => `${host}/notifications/${id}/read/`,
   profile: `${host}/profile/`,
   consultationHistory: `${host}/consultations/`,
   orderHistory: `${host}/orders/`,
