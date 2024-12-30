@@ -14,6 +14,12 @@ import { Loader } from '../../../../components/loader/index.js'
 import EmptyData from '../../../../components/empty/index.js'
 import { consultationStatus } from '../../../../utils/enums.js'
 import { NormalButton } from '../../../../components/button/index.js'
+import { MiniCartItem } from '../../../../components/cartItem/index.js'
+import {
+  CONSULTATION_STATUS_ALT,
+  ORDER_STATUS,
+  ORDER_STATUS_ALT,
+} from '../../../../services/serviceEnums.js'
 
 const History = () => {
   const authContext = useContext(AuthContext)
@@ -71,15 +77,61 @@ const History = () => {
                       <LargeAccordion
                         key={idx}
                         header1={`Order - ${value.order_id}`}
-                        header2={`Price: ${value.price}  Status: ${value.status}`}
+                        header2={`Unique Items Count: ${value.order_items.length}`}
                       >
-                        {value.order_items.map((item, item_idx) => (
-                          <MiniItemCard
-                            key={item_idx}
-                            name={item.name}
-                            image={item.image}
-                          />
-                        ))}
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '20px',
+                            marginBottom: '10px',
+                          }}
+                        >
+                          <p>
+                            Price: <b>{value.price}</b>
+                          </p>
+                          <p>
+                            Status: <b>{ORDER_STATUS[value.status]}</b>
+                          </p>
+                          <p>
+                            Payment Type:{' '}
+                            {value.payment_method == 1 && <b>Card</b>}
+                            {value.payment_method == 2 && <b>Delivery</b>}
+                          </p>
+                          <p>
+                            Email: <b>{value.email}</b>
+                          </p>
+                          <p>
+                            Address: <b>{value.address}</b>
+                          </p>
+                          {value.status === ORDER_STATUS_ALT.NEW && (
+                            <div
+                              style={{
+                                marginVertical: 10,
+                                flexDirection: 'row',
+                              }}
+                            >
+                              <NormalButton>Pay</NormalButton>
+                            </div>
+                          )}
+                        </div>
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            alignItems: 'center',
+                            gap: 10,
+                          }}
+                        >
+                          {value.order_items.map((item, item_idx) => (
+                            <div key={item_idx} className="w-45 sm-w-45">
+                              <MiniCartItem
+                                data={item.product}
+                                quantity={item.quantity}
+                              />
+                            </div>
+                          ))}
+                        </div>
                       </LargeAccordion>
                     ))}
                   </div>
@@ -127,14 +179,18 @@ const History = () => {
                                       : 'Not set'}
                                   </span>
                                 </p>
+                                <h4 className="mb-05em">Note</h4>
+                                <p className="mb-05em">{value.note}</p>
                               </div>
                               <div>
-                                {value.status == 1 && (
+                                {value.status ==
+                                  CONSULTATION_STATUS_ALT.PENDING && (
                                   <p className="font-14">
                                     Awaiting Doctor Confirmation
                                   </p>
                                 )}
-                                {value.status == 2 && (
+                                {value.status ==
+                                  CONSULTATION_STATUS_ALT.ACCEPTED && (
                                   <NormalButton>Pay</NormalButton>
                                 )}
                                 {value.status > 2 && (
