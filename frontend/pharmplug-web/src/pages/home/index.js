@@ -115,10 +115,10 @@ const Home = () => {
           <div>
             <h1>Connect with a doctor today</h1>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco
+              Connect with a certified doctor online for convenient and
+              confidential consultations. Simply choose a time that suits you,
+              discuss your symptoms, receive a diagnosis, and get your
+              prescription delivered to your door.
             </p>
             <HomeButton>Learn More</HomeButton>
           </div>
@@ -145,10 +145,10 @@ const Home = () => {
             <div>
               <h3>Online doctor</h3>
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                Connect with a certified doctor online for convenient and
+                confidential consultations. Simply choose a time that suits you,
+                discuss your symptoms, receive a diagnosis, and get your
+                prescription delivered to your door.
               </p>
               <Link className="link" to={Path.home}>
                 Learn more &gt;

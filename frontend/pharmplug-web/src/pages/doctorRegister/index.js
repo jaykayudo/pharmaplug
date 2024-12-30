@@ -141,9 +141,8 @@ const DoctorRegister = () => {
         style={{ backgroundImage: `url("${assets.authBG2}")` }}
       >
         <p className="text-center text-white">
-          Office ipsum you must be muted. Replied event activities closing eow
-          like rehydrate. Points money agile including whistles initiative
-          shower loss cadence running.
+          Register with us as a doctor and kickstart your online consultation
+          journey
         </p>
       </div>
       {showAltForm ? (

@@ -42,9 +42,7 @@ const DoctorPortal = () => {
       <div className="container">
         <div className="drug-top-header">
           <h3>Doctor Categories</h3>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do{' '}
-          </p>
+          <p>Find specialized doctors for all your healthcare needs</p>
         </div>
         <div className="doctor-see-more">
           <h2>See all Doctors</h2>

@@ -59,7 +59,7 @@ const Consultation = () => {
           <SearchInput alt placeholder="Search Doctor" />
         </View>
         <AppText style={{ marginBottom: 10 }}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          Find specialized doctors for all your healthcare needs
         </AppText>
         <View>
           {data.map((value, idx) => (
