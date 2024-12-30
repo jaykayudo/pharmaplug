@@ -18,7 +18,7 @@ export const ORDER_STATUS = Object.freeze({
   10: 'pending payment',
   20: 'cancelled',
   30: 'paid',
-  40: 'delivered'
+  40: 'delivered',
 })
 
 export const DOCTOR_PER_RATE = Object.freeze({
