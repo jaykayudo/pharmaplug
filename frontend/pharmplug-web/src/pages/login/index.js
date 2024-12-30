@@ -83,11 +83,7 @@ const Login = () => {
         className="image-div"
         style={{ backgroundImage: `url("${assets.authBG2}")` }}
       >
-        <p className="text-center text-white">
-          Office ipsum you must be muted. Replied event activities closing eow
-          like rehydrate. Points money agile including whistles initiative
-          shower loss cadence running.
-        </p>
+        <p className="text-center text-white"></p>
       </div>
       <form className="main-page-div">
         <Logo />

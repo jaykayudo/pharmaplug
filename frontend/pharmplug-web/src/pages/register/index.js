@@ -118,13 +118,7 @@ const Register = () => {
       <div
         className="image-div"
         style={{ backgroundImage: `url("${assets.authBG2}")` }}
-      >
-        <p className="text-center text-white">
-          Office ipsum you must be muted. Replied event activities closing eow
-          like rehydrate. Points money agile including whistles initiative
-          shower loss cadence running.
-        </p>
-      </div>
+      ></div>
       {showAltForm ? (
         <div className="main-page-div">
           <Logo />

@@ -119,15 +119,15 @@ const Landing: React.FC<Props> = ({ navigation }) => {
 const data = [
   {
     image: assets.onboardingOne,
-    title: 'Lorem ipsum dolor sit amet consectetur.',
+    title: 'Order prescription medications easily and safely online',
     content:
-      'Lorem ipsum dolor sit amet consectetur. Feugiat amet suscipit hendrerit scelerisque',
+      'Browse a wide range of over-the-counter medications. Boost your health with essential vitamins and minerals.',
   },
   {
     image: assets.onboardingTwo,
-    title: 'Lorem ipsum dolor sit amet consectetur.',
+    title: 'Find specialized doctors for all your healthcare needs',
     content:
-      'Lorem ipsum dolor sit amet consectetur. Feugiat amet suscipit hendrerit scelerisque',
+      'We offer wide range of doctors for any situation that you might be dealing with',
   },
 ]
 

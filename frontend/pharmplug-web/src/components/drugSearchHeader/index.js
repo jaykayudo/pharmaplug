@@ -9,8 +9,7 @@ const DrugSearchHeader = ({
   onSearch,
   showSearchInput = true,
   header = 'Drug Store',
-  description = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
-                        eiusmod tempor incididunt ut labore et dolore magna aliqua. `,
+  description = `Browse a wide range of over-the-counter medications. Order prescription medications easily and safely online.`,
 }) => {
   const [searchValue, setSearchValue] = useState('')
   const mainSearchValue = useDeferredValue(searchValue)
