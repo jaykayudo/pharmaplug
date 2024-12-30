@@ -115,10 +115,9 @@ const Home = () => {
           <div>
             <h1>Connect with a doctor today</h1>
             <p>
-              Connect with a certified doctor online for convenient and
-              confidential consultations. Simply choose a time that suits you,
-              discuss your symptoms, receive a diagnosis, and get your
-              prescription delivered to your door.
+              Connect with a certified doctor online for convenient and confidential consultations. 
+              Simply choose a time that suits you, discuss your symptoms, 
+              receive a diagnosis, and get your prescription delivered to your door.
             </p>
             <HomeButton>Learn More</HomeButton>
           </div>
@@ -133,10 +132,8 @@ const Home = () => {
             <div>
               <h3>Drug Store</h3>
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco
+              We offer a wide range of prescription medications, over-the-counter drugs, health supplements, and personal care products. 
+              Shop conveniently and securely, with fast delivery and dedicated customer support to ensure you receive the care you deserve
               </p>
               <Link className="link" to={Path.home}>
                 Learn more &gt;
@@ -145,10 +142,9 @@ const Home = () => {
             <div>
               <h3>Online doctor</h3>
               <p>
-                Connect with a certified doctor online for convenient and
-                confidential consultations. Simply choose a time that suits you,
-                discuss your symptoms, receive a diagnosis, and get your
-                prescription delivered to your door.
+              Connect with a certified doctor online for convenient and confidential consultations. 
+              Simply choose a time that suits you, discuss your symptoms, receive a diagnosis, and 
+              get your prescription delivered to your door.
               </p>
               <Link className="link" to={Path.home}>
                 Learn more &gt;
@@ -157,10 +153,8 @@ const Home = () => {
             <div>
               <h3>Support community</h3>
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco
+              Join us in supporting a community of health-challenged individuals. 
+              Together, we provide resources, encouragement, and connections to ensure everyone has the support they need for a healthier life.
               </p>
               <Link className="link" to={Path.home}>
                 Learn more &gt;
