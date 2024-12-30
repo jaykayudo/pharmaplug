@@ -14,9 +14,11 @@ import assets from '../../../../assets'
 import { AuthContext } from '../../../contexts/AuthContext'
 import { useGetAPI } from '../../../services/serviceHooks'
 import { endpoints } from '../../../services/constants'
+import { useNavigation } from '@react-navigation/native'
 
 const Dashboard = () => {
   const authContext = useContext(AuthContext)
+  const navigation = useNavigation()
   const [sicknessList, setSicknessList] = useState([])
   const [healthData, setHealthData] = useState([])
   const [doctorCategories, setDoctorCategories] = useState([])
@@ -24,6 +26,9 @@ const Dashboard = () => {
   const [refreshing, setRefreshing] = useState(false)
   const user = {
     name: authContext.user.first_name,
+  }
+  const navigateToNotifcations = () => {
+    navigation.navigate('Notifications')
   }
   const fetchHealthData = (data: any) => {
     setHealthData(
@@ -93,6 +98,7 @@ const Dashboard = () => {
       user={user}
       onRefresh={loadDashboardData}
       refreshing={refreshing}
+      onNotificationPress={navigateToNotifcations}
     >
       {upcomingConsultation && (
         <>
