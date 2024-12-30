@@ -1,0 +1,26 @@
+.drug-list-page-content {
+  .header-div {
+    padding: 1.2em 0;
+    p:first-child {
+      margin-bottom: 1.2em;
+      font-size: 14px;
+      a {
+        text-decoration: none;
+        color: #1e1e1eb2;
+      }
+      span {
+        font-weight: 600;
+        color: #1e1e1e;
+      }
+    }
+    h3 {
+      font-size: 24px;
+    }
+    p:last-child {
+      margin-top: 1em;
+    }
+  }
+}
+
+@media screen and (max-width: 600px) {
+}

@@ -11,6 +11,7 @@ export default {
   doctorRegister: '/doctor/register',
   register: '/register',
   registerPreview: '/choose-user',
+  search: '/search',
   cart: '/cart',
   checkout: '/checkout',
   blogs: '/blogs',
