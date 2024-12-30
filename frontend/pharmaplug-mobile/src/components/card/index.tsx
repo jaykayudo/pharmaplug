@@ -370,6 +370,8 @@ const getStyles = (theme: ThemeType, mode: ThemeMode = 'light') =>
       justifyContent: 'flex-end',
       borderRadius: 20,
       overflow: 'hidden',
+      backgroundBlendMode: 'overlay',
+      backgroundColor: '#00000080',
     },
     dp: {
       width: 30,

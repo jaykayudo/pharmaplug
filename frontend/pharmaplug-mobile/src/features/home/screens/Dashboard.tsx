@@ -30,6 +30,37 @@ const Dashboard = () => {
   const navigateToNotifcations = () => {
     navigation.navigate('Notifications')
   }
+  const navigateToSicknessesPage = () => {
+    navigation.navigate('DrugStore', { screen: 'DrugStoreMain' })
+  }
+  const navigateToDrugPage = (id: string) => {
+    navigation.navigate('DrugStore', { screen: 'DrugList', params: { id } })
+  }
+  const navigateToConsultation = () => {
+    navigation.navigate('Consultation', { screen: 'ConsultationMain' })
+  }
+  const navigateToDoctorList = (id: string) => {
+    navigation.navigate('Consultation', {
+      screen: 'DoctorList',
+      params: { id },
+    })
+  }
+  const adCard = {
+    title: 'Drug store',
+    description: 'view drug store to buy drugs',
+    image: assets.drug,
+    onViewMore: () => {
+      navigation.navigate('DrugStore', { screen: 'DrugStoreMain' })
+    },
+  }
+  const altAdCard = {
+    title: 'Consult a doctor',
+    description: 'Quick access to a team of highly trained doctors',
+    image: assets.doc,
+    onViewMore: () => {
+      navigation.navigate('Consultation', { screen: 'ConsultationMain' })
+    },
+  }
   const fetchHealthData = (data: any) => {
     setHealthData(
       data.map((value) => ({
@@ -122,7 +153,7 @@ const Dashboard = () => {
         <AppText style={{ fontSize: 14, fontWeight: 600 }}>
           Medication for common sickness
         </AppText>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={navigateToSicknessesPage}>
           <AppText
             style={{
               fontSize: 13,
@@ -140,7 +171,12 @@ const Dashboard = () => {
         showsHorizontalScrollIndicator={false}
       >
         {sicknessList.map((value, idx) => (
-          <SmallButton key={idx} onPress={() => {}} style={{ marginLeft: 10 }}>
+          <SmallButton
+            onPressIn={() => navigateToDrugPage(value.id)}
+            key={idx}
+            onPress={() => {}}
+            style={{ marginLeft: 10 }}
+          >
             {value.name}
           </SmallButton>
         ))}
@@ -159,7 +195,7 @@ const Dashboard = () => {
         <AppText style={{ fontSize: 14, fontWeight: 600 }}>
           Doctor categories
         </AppText>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={navigateToConsultation}>
           <AppText
             style={{
               fontSize: 13,
@@ -177,7 +213,13 @@ const Dashboard = () => {
         showsHorizontalScrollIndicator={false}
       >
         {doctorCategories.map((value, idx) => (
-          <SmallButton key={idx} onPress={() => {}} style={{ marginLeft: 10 }}>
+          <SmallButton
+            key={idx}
+            onPress={() => {
+              navigateToDoctorList(value.id)
+            }}
+            style={{ marginLeft: 10 }}
+          >
             {value.name}
           </SmallButton>
         ))}
@@ -227,19 +269,6 @@ const consultData = {
   field: 'Oncologist',
   date: 'June 20, 2024',
   time: '11:00 am - 2:00pm',
-}
-
-const adCard = {
-  title: 'Drug store',
-  description: 'view drug store to buy drugs',
-  image: assets.drug,
-  onViewMore: () => {},
-}
-const altAdCard = {
-  title: 'Consult a doctor',
-  description: 'Quick access to a team of highly trained doctors',
-  image: assets.doc,
-  onViewMore: () => {},
 }
 
 const sicknessList = [
