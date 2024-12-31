@@ -1,7 +1,8 @@
-import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Container, MainContainer } from '../../../components/container'
 import { AppText } from '../../../components/text'
 import RNPickerSelect from 'react-native-picker-select'
+import SelectDropdown from 'react-native-select-dropdown'
 import { useContext, useState, useEffect } from 'react'
 import { ThemeContext } from '../../../contexts/ThemeContext'
 import { ThemeMode, ThemeType } from '../../../../types'
@@ -83,19 +84,58 @@ const DrugStore = () => {
           Sort sickness name
         </AppText>
         <View style={styles.sortButton}>
-          <AppText style={{ fontWeight: 700 }}>
-            Begins with {currentSelection}
-          </AppText>
-          <RNPickerSelect
-            items={choicesItems}
-            onValueChange={onPick}
-            // useNativeAndroidPickerStyle={false}
-            style={{
-              inputAndroid: styles.selectAndroid,
-              inputIOS: styles.selectIOS,
-            }}
-            placeholder={choicesItems[0]}
-          />
+          {Platform.OS !== 'ios' && (
+            <AppText style={{ fontWeight: 700 }}>
+              Begins with {currentSelection}
+            </AppText>
+          )}
+          {Platform.OS === 'ios' ? (
+            <SelectDropdown
+              data={selectChoices}
+              defaultValueByIndex={0} // use default value by index or default value
+              // defaultValue={'Canada'} // use default value by index or default value
+              onSelect={(selectedItem, index) => {
+                onPick(selectedItem)
+              }}
+              renderButton={(selectedItem, isOpened) => {
+                return (
+                  <View>
+                    <AppText style={{ fontWeight: 700 }}>
+                      Begins with {selectedItem}
+                    </AppText>
+                  </View>
+                )
+              }}
+              renderItem={(item, index, isSelected) => {
+                return (
+                  <View
+                    style={{
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      paddingVertical: 5,
+                      borderWidth: 0.5,
+                      borderColor: '#1e1e1e',
+                      ...(isSelected && { backgroundColor: '#00000080' }),
+                    }}
+                  >
+                    <AppText>{item}</AppText>
+                  </View>
+                )
+              }}
+              showsVerticalScrollIndicator={false}
+            />
+          ) : (
+            <RNPickerSelect
+              items={choicesItems}
+              onValueChange={onPick}
+              // useNativeAndroidPickerStyle={false}
+              style={{
+                inputAndroid: styles.selectAndroid,
+                inputIOS: styles.selectIOS,
+              }}
+              placeholder={choicesItems[0]}
+            />
+          )}
         </View>
       </View>
       <Container>
