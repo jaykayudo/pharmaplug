@@ -15,6 +15,7 @@ const DrugStore = () => {
   const navigation = useNavigation()
   const [data, setData] = useState([])
   const [filteredData, setFilteredData] = useState(data)
+  const [searchValue, setSearchValue] = useState('')
 
   const styles = getStyles(theme, currentMode)
   const selectChoices =
@@ -47,6 +48,9 @@ const DrugStore = () => {
       ),
     )
   }
+  const searchDrug = (name: string) => {
+    navigation.navigate('DrugSearch', { q: name })
+  }
   const fetchData = (data: any) => {
     setData(data)
   }
@@ -67,7 +71,11 @@ const DrugStore = () => {
   useEffect(() => {
     filterData(currentSelection)
   }, [data, currentSelection])
-
+  useEffect(() => {
+    if (searchValue.length > 2) {
+      searchDrug(searchValue)
+    }
+  }, [searchValue])
   return (
     <MainContainer title="Drug Store" refreshing={loading} onRefresh={loadData}>
       <View style={styles.filterContainer}>
@@ -92,7 +100,7 @@ const DrugStore = () => {
       </View>
       <Container>
         <View style={{ marginBottom: 15 }}>
-          <SearchInput alt />
+          <SearchInput alt value={searchValue} onChangeText={setSearchValue} />
         </View>
         <View>
           {filteredData.map((value, idx) => (

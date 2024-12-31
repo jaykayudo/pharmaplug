@@ -6,8 +6,12 @@ export const SearchInput = ({
   value,
   onChange,
   coverStyle = {},
-  placeholder = 'Search by category, Product and brands',
+  placeholder = 'Search by product name and filter by category',
   showCategory = true,
+  categoryData = [],
+  categoryPlaceholderText = 'Category',
+  onCategoryChange = () => {},
+  categoryDefaultValue = '',
   ...props
 }) => {
   return (
@@ -24,7 +28,18 @@ export const SearchInput = ({
           {...props}
         />
         {showCategory && (
-          <button className="search-category-btn">Category</button>
+          <select
+            className="search-category-btn"
+            onChange={onCategoryChange}
+            defaultValue={categoryDefaultValue}
+          >
+            <option value="">{categoryPlaceholderText}</option>
+            {categoryData.map((value, idx) => (
+              <option value={value.value} key={idx}>
+                {value.label}
+              </option>
+            ))}
+          </select>
         )}
       </div>
     </>

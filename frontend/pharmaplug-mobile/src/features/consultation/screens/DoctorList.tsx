@@ -3,7 +3,7 @@ import { Container, MainContainer } from '../../../components/container'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { useGetAPI } from '../../../services/serviceHooks'
 import { endpoints } from '../../../services/constants'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useDeferredValue, useEffect, useState } from 'react'
 import { SearchInput } from '../../../components/input'
 import { AppText } from '../../../components/text'
 import { NormalButtton } from '../../../components/button'
@@ -18,17 +18,22 @@ const DoctorList = () => {
   const [data, setData] = useState<object[]>([])
   const [categoryList, setCategoryList] = useState([])
   const category_id: string = route.params?.id
+  const doctor_name: string = route.params?.name
+  const [doctorNameSearch, setDoctorNameSearch] = useState(doctor_name ?? '')
+  const mainSearchVal = useDeferredValue(doctorNameSearch)
   const fetchDoctors = (data: object[]) => {
     setData(data)
   }
 
   const loadData = () => {
-    let data = undefined
+    let data = {}
     if (category_id) {
-      data = {
-        category: category_id,
-      }
+      data.category = category_id
     }
+    if (doctorNameSearch) {
+      data.name = doctorNameSearch
+    }
+
     sendRequest(data)
   }
   const navigateToDoctorDetails = (id: string) => {
@@ -51,11 +56,21 @@ const DoctorList = () => {
     loadData()
     categoryListAPI.sendRequest()
   }, [])
+  useEffect(() => {
+    if (mainSearchVal.length > 3) {
+      loadData()
+    }
+  }, [mainSearchVal])
   return (
     <MainContainer title="Doctor List" back>
       <Container>
         <View>
-          <SearchInput alt placeholder="Search Doctors" />
+          <SearchInput
+            alt
+            placeholder="Search Doctors"
+            value={doctorNameSearch}
+            onChangeText={setDoctorNameSearch}
+          />
         </View>
         <View style={{ paddingVertical: 20 }}>
           <AppText style={{ marginBottom: 5, fontSize: 17 }}>

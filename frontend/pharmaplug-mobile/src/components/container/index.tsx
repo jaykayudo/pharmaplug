@@ -29,6 +29,8 @@ type Props = {
   }
   refreshing?: boolean
   onRefresh?: () => void
+  searchValue?: string
+  onSearchChangeText?: (val: any) => void
   onNotificationPress?: () => void
   children: ReactNode
 }
@@ -36,6 +38,8 @@ export const DashboardContainer = ({
   user,
   children,
   refreshing = false,
+  searchValue,
+  onSearchChangeText,
   onRefresh,
   onNotificationPress,
 }: Props) => {
@@ -80,7 +84,11 @@ export const DashboardContainer = ({
           </View>
         </View>
         <View>
-          <SearchInput label="Search" />
+          <SearchInput
+            label="Search"
+            value={searchValue}
+            onChangeText={onSearchChangeText}
+          />
         </View>
       </View>
       <ScrollView

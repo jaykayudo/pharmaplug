@@ -19,6 +19,11 @@ const Consultation = () => {
   const { theme, currentMode } = useContext(ThemeContext)
   const navigation = useNavigation()
   const [data, setData] = useState<object[]>([])
+  const [searchValue, setSearchValue] = useState('')
+
+  const searchDoctor = (name: string) => {
+    navigation.navigate('DoctorList', { name })
+  }
 
   const styles = getStyles(theme, currentMode)
   const navigateToDoctorList = (id: string) => {
@@ -38,6 +43,11 @@ const Consultation = () => {
   useEffect(() => {
     doctorCategoriesAPI.sendRequest()
   }, [])
+  useEffect(() => {
+    if (searchValue.length > 2) {
+      searchDoctor(searchValue)
+    }
+  }, [searchValue])
   return (
     <MainContainer title="Consultation">
       <View style={styles.filterContainer}>
@@ -56,7 +66,12 @@ const Consultation = () => {
       </View>
       <Container>
         <View style={{ marginBottom: 10 }}>
-          <SearchInput alt placeholder="Search Doctor" />
+          <SearchInput
+            alt
+            placeholder="Search Doctor"
+            value={searchValue}
+            onChangeText={setSearchValue}
+          />
         </View>
         <AppText style={{ marginBottom: 10 }}>
           Find specialized doctors for all your healthcare needs

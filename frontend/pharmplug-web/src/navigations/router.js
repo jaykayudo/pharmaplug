@@ -11,6 +11,7 @@ const Home = lazy(() => import('../pages/home/index.js'))
 const DrugStore = lazy(() => import('../pages/drugStore/index.js'))
 const DrugStoreFull = lazy(() => import('../pages/drugStoreFull/index.js'))
 const DrugsList = lazy(() => import('../pages/drugList/index.js'))
+const SearchDrug = lazy(() => import('../pages/searchDrug/index.js'))
 const DrugsDetails = lazy(() => import('../pages/drugDetails/index.js'))
 const Cart = lazy(() => import('../pages/cart/index.js'))
 const Checkout = lazy(() => import('../pages/checkout/index.js'))
@@ -89,6 +90,10 @@ const Router = () => {
           <Route
             path={Path.drugs(':id')}
             element={<FullLayout children={<DrugsList />} />}
+          />
+          <Route
+            path={Path.search}
+            element={<FullLayout children={<SearchDrug />} />}
           />
           <Route
             path={Path.drugDetails(':id')}

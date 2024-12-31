@@ -13,6 +13,7 @@ export const endpoints = {
     `${host}/doctors/${id}/verify-schedule/`,
   doctorConsultFee: (id: string) => `${host}/doctors/${id}/get-consult-fee/`,
   drugs: (sickness_id: string) => `${host}/sicknesses/${sickness_id}/drugs/`,
+  drugSearch: `${host}/drugs/`,
   drugDetails: (drugId: string) => `${host}/drugs/${drugId}/`,
   drugAlternatives: (drugId: string) => `${host}/drugs/${drugId}/alternatives/`,
   scheduleAppointment: `${host}/book-consult/`,
