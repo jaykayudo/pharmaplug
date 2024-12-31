@@ -24,6 +24,7 @@ const Dashboard = () => {
   const [doctorCategories, setDoctorCategories] = useState([])
   const [upcomingConsultation, setUpcomingConsultation] = useState<any>(null)
   const [refreshing, setRefreshing] = useState(false)
+  const [searchValue, setSearchValue] = useState("")
   const user = {
     name: authContext.user.first_name,
   }
@@ -34,7 +35,7 @@ const Dashboard = () => {
     navigation.navigate('DrugStore', { screen: 'DrugStoreMain' })
   }
   const navigateToDrugPage = (id: string) => {
-    navigation.navigate('DrugStore', { screen: 'DrugList', params: { id } })
+    navigation.navigate('DrugStore', {screen: 'DrugList', params:{id}  })
   }
   const navigateToConsultation = () => {
     navigation.navigate('Consultation', { screen: 'ConsultationMain' })
@@ -44,6 +45,9 @@ const Dashboard = () => {
       screen: 'DoctorList',
       params: { id },
     })
+  }
+  const searchDrug = (name: string)=>{
+    navigation.navigate('DrugStore', { screen: 'DrugSearch', params: { q: name} })
   }
   const adCard = {
     title: 'Drug store',
@@ -124,11 +128,18 @@ const Dashboard = () => {
   useEffect(() => {
     loadDashboardData()
   }, [])
+  useEffect(()=>{
+    if(searchValue.length > 2){
+      searchDrug(searchValue)
+    }
+  },[searchValue])
   return (
     <DashboardContainer
       user={user}
       onRefresh={loadDashboardData}
       refreshing={refreshing}
+      searchValue={searchValue}
+      onSearchChangeText={setSearchValue}
       onNotificationPress={navigateToNotifcations}
     >
       {upcomingConsultation && (
@@ -172,9 +183,8 @@ const Dashboard = () => {
       >
         {sicknessList.map((value, idx) => (
           <SmallButton
-            onPressIn={() => navigateToDrugPage(value.id)}
+            onPress={() => navigateToDrugPage(value.id)}
             key={idx}
-            onPress={() => {}}
             style={{ marginLeft: 10 }}
           >
             {value.name}
