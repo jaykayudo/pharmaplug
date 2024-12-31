@@ -135,7 +135,13 @@ class CoreService:
             object_id=consultation.id,
             type=models.TransactionType.CONSULTATION,
         )
-        data = {"transaction": transaction.ref, "consultation": consultation.id_as_str}
+        data = {
+            "ref": transaction.ref,
+            "consultation": consultation.id_as_str,
+            "amount": consultation.cost,
+            "key": settings.PAYSTACK_PUBLIC_KEY,
+            "email": consultation.user.email,
+        }
         return data
 
     @classmethod
