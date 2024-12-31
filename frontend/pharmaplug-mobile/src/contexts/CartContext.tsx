@@ -11,6 +11,7 @@ export const CartContext = createContext({
   increaseQuantity: (id: string) => {},
   decreaseQuantity: (id: string) => {},
   refreshCart: () => {},
+  clearCart: () => {},
   cart: {
     cart_items: [],
   },
@@ -89,6 +90,16 @@ const CartContextProvider: React.FC<CartContextProps> = ({ children }) => {
       CartAPI.sendRequest()
     }
   }
+  const clearCart = () =>{
+    if (!cartId) return
+    if(cart.cart_items.length == 0) return
+    const formObj = new FormData()
+    formObj.append('cart', cartId)
+    for (const obj of cart.cart_items) {
+      formObj.append('cart_items', obj.id)
+    }
+    CartDeleteAPI.sendRequest(formObj)
+  }
   const CartAPI = useGetAPI(endpoints.cart(cartId), null, fetchCartItems)
   const CartDeleteAPI = usePostAPI(endpoints.removeFromCart, null, reloadCart)
   const CartAddAPI = usePostAPI(endpoints.addToCart, null, reloadCart)
@@ -135,6 +146,7 @@ const CartContextProvider: React.FC<CartContextProps> = ({ children }) => {
         increaseQuantity,
         decreaseQuantity,
         refreshCart,
+        clearCart,
         cart,
         loading: CartAPI.loading,
       }}

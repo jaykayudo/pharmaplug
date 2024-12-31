@@ -1,4 +1,4 @@
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Alert, Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Container, MainContainer } from '../../../components/container'
 import { ThemeMode, ThemeType } from '../../../../types'
 import { useContext, useEffect, useState } from 'react'
@@ -8,13 +8,14 @@ import { AuthContext } from '../../../contexts/AuthContext'
 import { MiniAccordion } from '../../../components/accordion'
 import ProductSummaryBox from '../../cart/components/ProductSummaryBox'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
-import { useGetAPI } from '../../../services/serviceHooks'
+import { useGetAPI, usePostAPI } from '../../../services/serviceHooks'
 import { endpoints } from '../../../services/constants'
 import {
   CONSULTATION_STATUS_ALT,
   ORDER_STATUS,
   ORDER_STATUS_ALT,
 } from '../../../services/serviceEnums'
+import { Paystack } from 'react-native-paystack-webview'
 
 const History = () => {
   const themeContext = useContext(ThemeContext)
@@ -24,6 +25,17 @@ const History = () => {
 
   const [orders, setOrders] = useState([])
   const [consults, setConsults] = useState([])
+  const [pay, setPay] = useState(false)
+  const [billingDetail, setBillingDetail] = useState({
+    billingEmail: "",
+    key:"",
+    amount: 0,
+    ref:"",
+    onSuccessResponse: (ref: string) => {}
+  })
+  const [orderPaymentID, setOrderPaymentID] = useState(null)
+  const [consultPaymentID, setConsultPaymentID] = useState(null)
+
 
   const fetchOrders = (data) => {
     setOrders(data)
@@ -31,19 +43,94 @@ const History = () => {
   const fetchConsults = (data) => {
     setConsults(data)
   }
+  const onOrderPaymentSuccess = (reference: string) =>{
+    console.log("reference: ",reference)
+    orderPayVerifyAPI.sendRequest({
+      ref: reference
+    })
+  }
+  const onOrderPaymentClose = () =>{
+    
+  }
+  const onConsultPaymentSuccess = (reference: string) =>{
+    consultationPayVerifyAPI.sendRequest({
+      ref: reference
+    })
+  }
+  const triggerPaymenGateway = (data) =>{
+    console.log("Triggering Order Payment")
+    setBillingDetail({
+      billingEmail: data.email,
+      key: data.key,
+      amount: Number(data.amount),
+      ref: data.ref,
+      onSuccessResponse: onOrderPaymentSuccess
+    })
+    setPay(true)
+    setOrderPaymentID(null)
+  }
+  const triggerConsutationPaymenGateway = (data) =>{
+    console.log("Triggering Consultation Payment")
+    setBillingDetail({
+      billingEmail: data.email,
+      key: data.key,
+      amount: Number(data.amount),
+      ref: data.ref,
+      onSuccessResponse: onConsultPaymentSuccess
+    })
+    setPay(true)
+    setConsultPaymentID(null)
+  }
+  const verifyOrderPayment = (data) =>{
+    Alert.alert("Order paid successfully")
+    orderListAPI.sendRequest()
+  }
+  const verifyConsulationPayment = (data) =>{
+    Alert.alert("Consultation paid successfully")
+    consultsListAPI.sendRequest()
+  }
+  
+  const onConsultPaymentClose = () =>{}
+   
   const orderListAPI = useGetAPI(endpoints.orderHistory, null, fetchOrders)
   const consultsListAPI = useGetAPI(
     endpoints.consultationHistory,
     null,
     fetchConsults,
   )
+  const orderPayAPI = usePostAPI(endpoints.orderPay, null, triggerPaymenGateway)
+  const orderPayVerifyAPI = usePostAPI(endpoints.orderPayVerify, null, verifyOrderPayment)
+  const consultationPayAPI = usePostAPI(endpoints.consultationPay, null, triggerConsutationPaymenGateway)
+  const consultationPayVerifyAPI = usePostAPI(endpoints.consultationPayVerify, null, verifyConsulationPayment)
   const loadData = () => {
     orderListAPI.sendRequest()
     consultsListAPI.sendRequest()
   }
+  const loadOrderData = () =>{
+    orderListAPI.sendRequest()
+  }
+
+  const loadConsultData = () =>{
+    consultsListAPI.sendRequest()
+  }
+
   useEffect(() => {
     loadData()
   }, [])
+  useEffect(()=>{
+    if(orderPaymentID){
+      orderPayAPI.sendRequest({
+        order: orderPaymentID
+      })
+    }
+  },[orderPaymentID])
+  useEffect(()=>{
+    if(consultPaymentID){
+      consultationPayAPI.sendRequest({
+        consultation: consultPaymentID
+      })
+    }
+  },[consultPaymentID])
 
   return (
     <MainContainer title="History" back onRefresh={loadData}>
@@ -112,7 +199,7 @@ const History = () => {
                       <View
                         style={{ marginVertical: 10, flexDirection: 'row' }}
                       >
-                        <TouchableOpacity style={[styles.normButton]}>
+                        <TouchableOpacity style={[styles.normButton]} onPress={()=>{setOrderPaymentID(value.id)}}>
                           <AltAppText>Pay</AltAppText>
                         </TouchableOpacity>
                       </View>
@@ -224,17 +311,22 @@ const History = () => {
                         </TouchableOpacity>
                       )}
                       {value.status == CONSULTATION_STATUS_ALT.ACCEPTED && (
-                        <TouchableOpacity style={[styles.normButton]}>
+                        <TouchableOpacity style={[styles.normButton]} onPress={()=>{setConsultPaymentID(value.id)}}>
                           <AltAppText>Pay</AltAppText>
                         </TouchableOpacity>
                       )}
+                      {value.status == CONSULTATION_STATUS_ALT.PAID && (
+                        <TouchableOpacity style={[styles.normAltButton]} disabled>
+                          <AltAppText>Paid</AltAppText>
+                        </TouchableOpacity>
+                      )}
                       {value.status == CONSULTATION_STATUS_ALT.ONGOING && (
-                        <TouchableOpacity style={[styles.normButton]} disabled>
+                        <TouchableOpacity style={[styles.normAltButton]} disabled>
                           <AltAppText>Ongoing</AltAppText>
                         </TouchableOpacity>
                       )}
                       {value.status == CONSULTATION_STATUS_ALT.FINISHED && (
-                        <TouchableOpacity style={[styles.normButton]} disabled>
+                        <TouchableOpacity style={[styles.normAltButton]} disabled>
                           <AltAppText>Completed</AltAppText>
                         </TouchableOpacity>
                       )}
@@ -244,13 +336,37 @@ const History = () => {
               </View>
             )}
           </View>
+          
         </View>
+        <View>
+        {pay && (
+            <Paystack
+              paystackKey={billingDetail.key}
+              amount={billingDetail.amount}
+              billingEmail={billingDetail.billingEmail}
+              refNumber={billingDetail.ref}
+              activityIndicatorColor="green"
+              onCancel={(e) => {
+                // handle response here
+                Alert.alert("Message","Transaction Cancelled")
+                setPay(false)
+              }}
+              onSuccess={(response) => {
+                // handle response here
+                billingDetail.onSuccessResponse(response.transactionRef?.reference ?? "")
+                setPay(false)
+              }}
+              autoStart={pay}
+          />
+        )}
+        </View>
+        
       </Container>
     </MainContainer>
   )
 }
 
-export default History
+
 
 const getStyles = (theme: ThemeType, mode: ThemeMode) =>
   StyleSheet.create({
@@ -331,7 +447,14 @@ const getStyles = (theme: ThemeType, mode: ThemeMode) =>
       borderRadius: 10,
       backgroundColor: '#145B7A',
     },
+    normAltButton:{
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 10,
+      backgroundColor: '#2daa5f',
+    },
     disabledButton: {
       backgroundColor: '#F0F2F5',
     },
   })
+  export default History

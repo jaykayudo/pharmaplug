@@ -113,7 +113,11 @@ const Checkout = () => {
         return
       }
     }
-    if (!state || !paymentMethod || !region || !deliveryMethod) {
+    console.log("State: ",state)
+    console.log("Payment Method: ",paymentMethod)
+    console.log("Delivery Method: ",deliveryMethod)
+    console.log("region: ",region)
+    if (!state || isNaN(paymentMethod) || !region || isNaN(deliveryMethod)) {
       message.error({
         content: 'All fields is required',
         duration: 2,
@@ -404,7 +408,7 @@ const Checkout = () => {
               </div>
               <div className="flex-between">
                 <p>Shipping Fee</p>
-                <h3>₦ 200</h3>
+                <h3>₦ {`${cart.price}`}</h3>
               </div>
               <div className="flex-between">
                 <p>Total</p>

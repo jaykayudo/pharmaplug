@@ -489,23 +489,22 @@ class OrderPaymentInitializeAPIView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = serializers.OrderPaymentInitailizeSerializer
 
-    def get(self, request, pk):
-        order = generics.get_object_or_404(models.Order, pk=pk, user=request.user)
-        serializer = self.serializer_class(context={"order": order})
+    def post(self, request):
+        serializer = self.serializer_class(data = request.data, context={"user": request.user})
         serializer.is_valid(raise_exception=True)
         data = serializer.save()
-        return data
+        return Response(data)
 
 
 class OrderPaymentVerifyAPIView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = serializers.OrderPaymentVerfiySerializer
 
-    def get(self, request):
+    def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        data = serializer.save()
+        return Response(data)
 
 
 class ConsultationPayAPIView(generics.GenericAPIView):

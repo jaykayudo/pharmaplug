@@ -20,6 +20,8 @@ import {
   ORDER_STATUS,
   ORDER_STATUS_ALT,
 } from '../../../../services/serviceEnums.js'
+import { usePaystackPayment } from 'react-paystack'
+import { message } from 'antd'
 
 const History = () => {
   const authContext = useContext(AuthContext)
@@ -27,11 +29,70 @@ const History = () => {
   const [activePage, setActivePage] = useState(searchParams.get('active') ?? 1)
   const [orderList, setOrderList] = useState([])
   const [consultationList, setConsultationList] = useState([])
+  const [orderPaymentID, setOrderPaymentID] = useState(null)
+  const [consultPaymentID, setConsultPaymentID] = useState(null)
+
+  const [orderPaymentConfig, setOrderPaymentConfig] = useState({})
+  const initializeOrderPayment = usePaystackPayment(orderPaymentConfig)
+
+  const [consultPaymentConfig, setConsultPaymentConfig] = useState({})
+  const initializeConsultPayment = usePaystackPayment(consultPaymentConfig)
+
   const fetchConsultations = (data) => {
     setConsultationList(data)
   }
   const fetchOrders = (data) => {
     setOrderList(data)
+  }
+  const triggerPaymenGateway = (data) =>{
+    console.log("Triggering Order Payment")
+    setOrderPaymentConfig({
+      reference: data.ref,
+      amount: Number(data.amount) * 100,
+      publicKey: data.key,
+      email: data.email,
+    })
+    setOrderPaymentID(null)
+  }
+  const triggerConsutationPaymenGateway = (data) =>{
+    console.log("Triggering Consultation Payment")
+    setConsultPaymentConfig({
+      reference: data.ref,
+      amount: Number(data.amount) * 100,
+      publicKey: data.key,
+      email: data.email,
+    })
+    setConsultPaymentID(null)
+  }
+  const verifyOrderPayment = (data) =>{
+    message.success({
+      content: "Order Paid successfully",
+      duration: 5
+    })
+    orderAPI.sendRequest()
+  }
+  const verifyConsulationPayment = (data) =>{
+    message.success({
+      content: "Consultation Paid successfully",
+      duration: 5
+    })
+    consultationAPI.sendRequest()
+  }
+  const onOrderPaymentSuccess = (reference) =>{
+    orderPayVerifyAPI.sendRequest({
+      ref: reference
+    })
+  }
+  const onOrderPaymentClose = () =>{
+    
+  }
+  const onConsultPaymentSuccess = (reference) =>{
+    consultationPayVerifyAPI.sendRequest({
+      ref: reference
+    })
+  }
+  const onConsultPaymentClose = () =>{
+    
   }
   const consultationAPI = useGetAPI(
     endpoints.consultationHistory,
@@ -39,10 +100,38 @@ const History = () => {
     fetchConsultations,
   )
   const orderAPI = useGetAPI(endpoints.orderHistory, null, fetchOrders)
+  const orderPayAPI = usePostAPI(endpoints.orderPay, null, triggerPaymenGateway)
+  const orderPayVerifyAPI = usePostAPI(endpoints.orderPayVerify, null, verifyOrderPayment)
+  const consultationPayAPI = usePostAPI(endpoints.consultationPay, null, triggerConsutationPaymenGateway)
+  const consultationPayVerifyAPI = usePostAPI(endpoints.consultationPayVerify, null, verifyConsulationPayment)
   useEffect(() => {
     orderAPI.sendRequest()
     consultationAPI.sendRequest()
   }, [])
+  useEffect(()=>{
+    if(orderPaymentID){
+      orderPayAPI.sendRequest({
+        order: orderPaymentID
+      })
+    }
+  },[orderPaymentID])
+  useEffect(()=>{
+    if(consultPaymentID){
+      consultationPayAPI.sendRequest({
+        consultation: consultPaymentID
+      })
+    }
+  },[consultPaymentID])
+  useEffect(() => {
+    if (orderPaymentConfig.reference && orderPaymentConfig.amount) {
+      initializeOrderPayment(onOrderPaymentSuccess, onOrderPaymentClose)
+    }
+  }, [orderPaymentConfig])
+  useEffect(() => {
+    if (consultPaymentConfig.reference && consultPaymentConfig.amount) {
+      initializeConsultPayment(onConsultPaymentSuccess, onConsultPaymentClose)
+    }
+  }, [consultPaymentConfig])
   return (
     <div className="history-cover">
       <div className="mb-3em">
@@ -111,7 +200,9 @@ const History = () => {
                                 flexDirection: 'row',
                               }}
                             >
-                              <NormalButton>Pay</NormalButton>
+                              <NormalButton onClick={()=>setOrderPaymentID(value.id)}>
+                                Pay
+                              </NormalButton>
                             </div>
                           )}
                         </div>
@@ -191,7 +282,7 @@ const History = () => {
                                 )}
                                 {value.status ==
                                   CONSULTATION_STATUS_ALT.ACCEPTED && (
-                                  <NormalButton>Pay</NormalButton>
+                                  <NormalButton onClick={()=>setConsultPaymentID(value.id)}>Pay</NormalButton>
                                 )}
                                 {value.status > 2 && (
                                   <p className="font-14">

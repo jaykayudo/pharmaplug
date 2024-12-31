@@ -433,7 +433,7 @@ class Cart(BaseModel):
 
     def add_to_cart(self, product: Product):
         cart_item, created = CartItem.objects.get_or_create(cart=self, product=product)
-        if created:
+        if not created:
             cart_item.quantity += 1
             cart_item.save()
         return cart_item

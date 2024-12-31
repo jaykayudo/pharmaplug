@@ -24,6 +24,10 @@ export const endpoints = {
   cartQuantityDecrease: `${host}/cart/decrease-quantity/`,
   checkout: `${host}/checkout/`,
   orderVerify: `${host}/order-verify/`,
+  orderPay: `${host}/orders/pay/`,
+  orderPayVerify: `${host}/orders/pay_verify/`,
+  consultationPay: `${host}/consultations/pay/`,
+  consultationPayVerify: `${host}/consultations/pay_verify/`,
   // auth
   login: `${host}/login/`,
   googleSignIn: `${host}/login/google/`,

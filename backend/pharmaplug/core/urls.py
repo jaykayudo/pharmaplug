@@ -117,7 +117,7 @@ urlpatterns = [
         name="orders_receipt",
     ),
     path(
-        "orders/<uuid:pk>/pay/",
+        "orders/pay/",
         views.OrderPaymentInitializeAPIView.as_view(),
         name="orders_pay_initailize",
     ),

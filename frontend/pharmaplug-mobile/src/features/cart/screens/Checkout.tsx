@@ -16,10 +16,18 @@ import {
   validateEmail,
   validatePhoneNumber,
 } from '../../../infrastructure/utils/validation'
+import SelectDropdown from 'react-native-select-dropdown'
+import { usePostAPI } from '../../../services/serviceHooks'
+import { endpoints } from '../../../services/constants'
+import { LoaderContext } from '../../../contexts/LoaderContext'
+import { Paystack } from 'react-native-paystack-webview'
+import { useNavigation } from '@react-navigation/native'
 
 const Checkout = () => {
   const themeContext = useContext(ThemeContext)
   const cartContext = useContext(CartContext)
+  const loaderContext = useContext(LoaderContext)
+  const navigation = useNavigation()
   const { cart } = cartContext
   const styles = getStyles(themeContext.theme, themeContext.currentMode)
   const statesData = [
@@ -68,7 +76,15 @@ const Checkout = () => {
   const [region, setRegion] = useState('')
   const [address, setAddress] = useState('')
   const [paymentMethod, setPaymentMethod] = useState<number | null>(null)
-  const [deliveryMethod, setDeliveryMethod] = useState('')
+  const [deliveryMethod, setDeliveryMethod] = useState<number | null>(null)
+  const [billingDetail, setBillingDetail] = useState({
+    billingEmail: "",
+    key:"",
+    amount: 0,
+    ref:"",
+    onSuccessResponse: (ref: string) => {}
+  })
+  const [pay, setPay] = useState(false)
   const onPick = () => {}
   const submitOrder = () => {
     if (cart.cart_items.length === 0) return
@@ -87,7 +103,7 @@ const Checkout = () => {
         return
       }
     }
-    if (!state || !paymentMethod || !region) {
+    if (!state || isNaN(paymentMethod) || !region || isNaN(deliveryMethod)) {
       Alert.alert('Validation Error', 'All fields is required')
       return
     }
@@ -99,10 +115,43 @@ const Checkout = () => {
       region,
       address,
       payment_method: paymentMethod,
-      deliveryMethod,
+      delivery_method: deliveryMethod,
       cart: cartContext.cartId,
     }
+    sendRequest(data)
   }
+
+  const onOrderPaymentSuccess = (ref: string) =>{
+    orderVerifyAPI.sendRequest({
+      ref: ref
+    })
+  }
+  const onSuccessCallback = (data) =>{
+    console.log("Triggering Order Payment")
+    setBillingDetail({
+      billingEmail: data.email,
+      key: data.key,
+      amount: Number(data.amount),
+      ref: data.ref,
+      onSuccessResponse: onOrderPaymentSuccess
+    })
+    setPay(true)
+  }
+  const onOrderVerify = (data) =>{
+    Alert.alert("Success","Order Paid successfully")
+    navigation.navigate("Account",{screen:"History"})
+    cartContext.clearCart()
+  }
+  const { sendRequest } = usePostAPI(
+    endpoints.checkout,
+    loaderContext.setLoading,
+    onSuccessCallback,
+  )
+  const orderVerifyAPI = usePostAPI(
+    endpoints.orderPayVerify,
+    loaderContext.setLoading,
+    onOrderVerify,
+  )
   return (
     <MainContainer title="Checkout" back>
       <Container>
@@ -135,22 +184,44 @@ const Checkout = () => {
               </View>
               <View style={styles.formGroup}>
                 <AppText style={{ marginBottom: 10 }}>State</AppText>
-                <RNPickerSelect
-                  items={statesData}
-                  onValueChange={onPick}
-                  // useNativeAndroidPickerStyle={false}
-                  style={{
-                    inputIOS: {
-                      fontSize: 16,
-                      paddingVertical: 12,
-                      paddingHorizontal: 10,
-                      borderWidth: 1,
-                      borderColor: 'gray',
-                      borderRadius: 4,
-                      color: 'black',
-                      backgroundColor: 'white',
-                    },
+                <SelectDropdown
+                  data={statesData}
+                  onSelect={(selectedItem, index)=>{
+                    setState(selectedItem.value)
                   }}
+                  renderItem={(item, index, isSelected)=>(
+                    <View style={{paddingHorizontal: 10, paddingVertical: 5, borderBottomColor: "#1e1e1e", borderBottomWidth: 0.5}}>
+                        <AppText>{item.label}</AppText>
+                    </View>
+                  )
+
+                  }
+                  renderButton={(selectedItem, isOpened)=>(
+                    <View style={[styles.normalInput]}>
+                        {selectedItem?(
+                           <AppText>{selectedItem.label}</AppText>
+                        ):(
+                          <AppText>Select a state</AppText>
+                        )}
+                        
+                    </View>
+                  )}
+                />
+              </View>
+              <View style={styles.formGroup}>
+                <NormalInput
+                  label="Region"
+                  placeholder="region"
+                  value={region}
+                  onChangeText={setRegion}
+                />
+              </View>
+              <View style={styles.formGroup}>
+                <NormalInput
+                  label="Address"
+                  placeholder="address"
+                  value={address}
+                  onChangeText={setAddress}
                 />
               </View>
               <NormalButtton onPress={() => {}}>Save Details</NormalButtton>
@@ -166,9 +237,9 @@ const Checkout = () => {
                   title="Home delivery ($2.7 delivery fee)"
                   value="home"
                   description="You will be redirected at checkout to complete payment"
-                  checked={deliveryMethod === 'home'}
+                  checked={deliveryMethod === 0}
                   onChecked={() => {
-                    setDeliveryMethod('home')
+                    setDeliveryMethod(0)
                   }}
                 />
               </View>
@@ -177,9 +248,9 @@ const Checkout = () => {
                   title="Pick up from pharmacy (no delivery fee))"
                   value="pharmacy"
                   description="You will pay at the point of delivery "
-                  checked={deliveryMethod === 'pharmacy'}
+                  checked={deliveryMethod === 1}
                   onChecked={() => {
-                    setDeliveryMethod('pharmacy')
+                    setDeliveryMethod(1)
                   }}
                 />
               </View>
@@ -259,6 +330,28 @@ const Checkout = () => {
             <NormalButtton onPress={submitOrder}>Pay Now</NormalButtton>
           </View>
         </View>
+        <View>
+        {pay && (
+            <Paystack
+              paystackKey={billingDetail.key}
+              amount={billingDetail.amount}
+              billingEmail={billingDetail.billingEmail}
+              refNumber={billingDetail.ref}
+              activityIndicatorColor="green"
+              onCancel={(e) => {
+                // handle response here
+                Alert.alert("Message","Transaction Cancelled")
+                setPay(false)
+              }}
+              onSuccess={(response) => {
+                // handle response here
+                billingDetail.onSuccessResponse(response.transactionRef?.reference ?? "")
+                setPay(false)
+              }}
+              autoStart={pay}
+          />
+        )}
+        </View>
       </Container>
     </MainContainer>
   )
@@ -280,5 +373,14 @@ const getStyles = (theme: ThemeType, mode: ThemeMode) =>
       flexDirection: 'row',
       justifyContent: 'space-between',
       marginVertical: 10,
+    },
+    normalInput: {
+      borderRadius: theme.size.radius.large,
+      backgroundColor: theme.color[mode].ui.input,
+      borderColor: theme.color[mode].ui.border,
+      borderWidth: 1,
+      borderStyle: 'solid',
+      paddingHorizontal: 10,
+      paddingVertical: 10,
     },
   })
