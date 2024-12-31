@@ -19,7 +19,7 @@ const DoctorList = () => {
   const [categoryList, setCategoryList] = useState([])
   const category_id: string = route.params?.id
   const doctor_name: string = route.params?.name
-  const [doctorNameSearch, setDoctorNameSearch] = useState(doctor_name ?? "")
+  const [doctorNameSearch, setDoctorNameSearch] = useState(doctor_name ?? '')
   const mainSearchVal = useDeferredValue(doctorNameSearch)
   const fetchDoctors = (data: object[]) => {
     setData(data)
@@ -30,10 +30,10 @@ const DoctorList = () => {
     if (category_id) {
       data.category = category_id
     }
-    if(doctorNameSearch){
+    if (doctorNameSearch) {
       data.name = doctorNameSearch
     }
-    
+
     sendRequest(data)
   }
   const navigateToDoctorDetails = (id: string) => {
@@ -56,16 +56,21 @@ const DoctorList = () => {
     loadData()
     categoryListAPI.sendRequest()
   }, [])
-  useEffect(()=>{
-    if(mainSearchVal.length > 3){
+  useEffect(() => {
+    if (mainSearchVal.length > 3) {
       loadData()
-    } 
-  },[mainSearchVal])
+    }
+  }, [mainSearchVal])
   return (
     <MainContainer title="Doctor List" back>
       <Container>
         <View>
-          <SearchInput alt placeholder="Search Doctors" value={doctorNameSearch} onChangeText={setDoctorNameSearch} />
+          <SearchInput
+            alt
+            placeholder="Search Doctors"
+            value={doctorNameSearch}
+            onChangeText={setDoctorNameSearch}
+          />
         </View>
         <View style={{ paddingVertical: 20 }}>
           <AppText style={{ marginBottom: 5, fontSize: 17 }}>

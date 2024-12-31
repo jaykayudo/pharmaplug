@@ -84,7 +84,11 @@ export const DashboardContainer = ({
           </View>
         </View>
         <View>
-          <SearchInput label="Search" value={searchValue} onChangeText={onSearchChangeText} />
+          <SearchInput
+            label="Search"
+            value={searchValue}
+            onChangeText={onSearchChangeText}
+          />
         </View>
       </View>
       <ScrollView

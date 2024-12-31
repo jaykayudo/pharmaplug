@@ -131,8 +131,9 @@ class DrugSearchListAPIView(generics.ListAPIView):
             drugs = drugs.filter(Q(name__icontains=name))
         if sickness:
             if utils.check_uuid_validity(sickness):
-                drugs = drugs.filter(sickness__id=sickness)
-        return drugs.order_by("name").distinct("id")
+                drugs = drugs.filter(sicknesses__id=sickness)
+        # return drugs.order_by("name").distinct("id") # use distinct when using postgres db
+        return drugs.order_by("name")
 
 
 class DrugDetailsAPIView(generics.RetrieveAPIView):
@@ -559,7 +560,7 @@ class NotificationListAPIView(generics.ListAPIView):
 class NotificationReadAPIView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request, pk):
+    def get(self, request, pk):
         notification: models.Notification = generics.get_object_or_404(
             models.Notification, pk=pk, user=request.user
         )
