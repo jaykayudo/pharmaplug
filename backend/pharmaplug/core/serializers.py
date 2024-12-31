@@ -767,11 +767,10 @@ class CheckoutSerializer(serializers.Serializer):
 
 class OrderPaymentInitailizeSerializer(serializers.Serializer):
     order = serializers.UUIDField()
+
     def validate(self, attrs):
         order: models.Order = generics.get_object_or_404(
-            models.Order,
-            id = attrs["order"],
-            user = self.context["user"]
+            models.Order, id=attrs["order"], user=self.context["user"]
         )
         if (
             order.status >= models.OrderStatus.PAID
@@ -779,7 +778,7 @@ class OrderPaymentInitailizeSerializer(serializers.Serializer):
             or order.paid
         ):
             raise serializers.ValidationError({"details": "Cannot Initialize Payment"})
-        self.context['order'] = order
+        self.context["order"] = order
         return attrs
 
     def save(self):
@@ -877,8 +876,7 @@ class ConsultationPaySerializer(serializers.Serializer):
 
     def validate(self, attrs):
         consultation: models.Consultation = generics.get_object_or_404(
-            models.Consultation, id=attrs["consultation"],
-            user = self.context["user"]
+            models.Consultation, id=attrs["consultation"], user=self.context["user"]
         )
         if consultation.status != models.ConsultationStatus.ACCEPTED:
             raise serializers.ValidationError(

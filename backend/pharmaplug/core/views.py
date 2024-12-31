@@ -490,7 +490,9 @@ class OrderPaymentInitializeAPIView(generics.GenericAPIView):
     serializer_class = serializers.OrderPaymentInitailizeSerializer
 
     def post(self, request):
-        serializer = self.serializer_class(data = request.data, context={"user": request.user})
+        serializer = self.serializer_class(
+            data=request.data, context={"user": request.user}
+        )
         serializer.is_valid(raise_exception=True)
         data = serializer.save()
         return Response(data)

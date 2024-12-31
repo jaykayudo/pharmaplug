@@ -27,15 +27,14 @@ const History = () => {
   const [consults, setConsults] = useState([])
   const [pay, setPay] = useState(false)
   const [billingDetail, setBillingDetail] = useState({
-    billingEmail: "",
-    key:"",
+    billingEmail: '',
+    key: '',
     amount: 0,
-    ref:"",
-    onSuccessResponse: (ref: string) => {}
+    ref: '',
+    onSuccessResponse: (ref: string) => {},
   })
   const [orderPaymentID, setOrderPaymentID] = useState(null)
   const [consultPaymentID, setConsultPaymentID] = useState(null)
-
 
   const fetchOrders = (data) => {
     setOrders(data)
@@ -43,55 +42,53 @@ const History = () => {
   const fetchConsults = (data) => {
     setConsults(data)
   }
-  const onOrderPaymentSuccess = (reference: string) =>{
-    console.log("reference: ",reference)
+  const onOrderPaymentSuccess = (reference: string) => {
+    console.log('reference: ', reference)
     orderPayVerifyAPI.sendRequest({
-      ref: reference
+      ref: reference,
     })
   }
-  const onOrderPaymentClose = () =>{
-    
-  }
-  const onConsultPaymentSuccess = (reference: string) =>{
+  const onOrderPaymentClose = () => {}
+  const onConsultPaymentSuccess = (reference: string) => {
     consultationPayVerifyAPI.sendRequest({
-      ref: reference
+      ref: reference,
     })
   }
-  const triggerPaymenGateway = (data) =>{
-    console.log("Triggering Order Payment")
+  const triggerPaymenGateway = (data) => {
+    console.log('Triggering Order Payment')
     setBillingDetail({
       billingEmail: data.email,
       key: data.key,
       amount: Number(data.amount),
       ref: data.ref,
-      onSuccessResponse: onOrderPaymentSuccess
+      onSuccessResponse: onOrderPaymentSuccess,
     })
     setPay(true)
     setOrderPaymentID(null)
   }
-  const triggerConsutationPaymenGateway = (data) =>{
-    console.log("Triggering Consultation Payment")
+  const triggerConsutationPaymenGateway = (data) => {
+    console.log('Triggering Consultation Payment')
     setBillingDetail({
       billingEmail: data.email,
       key: data.key,
       amount: Number(data.amount),
       ref: data.ref,
-      onSuccessResponse: onConsultPaymentSuccess
+      onSuccessResponse: onConsultPaymentSuccess,
     })
     setPay(true)
     setConsultPaymentID(null)
   }
-  const verifyOrderPayment = (data) =>{
-    Alert.alert("Order paid successfully")
+  const verifyOrderPayment = (data) => {
+    Alert.alert('Order paid successfully')
     orderListAPI.sendRequest()
   }
-  const verifyConsulationPayment = (data) =>{
-    Alert.alert("Consultation paid successfully")
+  const verifyConsulationPayment = (data) => {
+    Alert.alert('Consultation paid successfully')
     consultsListAPI.sendRequest()
   }
-  
-  const onConsultPaymentClose = () =>{}
-   
+
+  const onConsultPaymentClose = () => {}
+
   const orderListAPI = useGetAPI(endpoints.orderHistory, null, fetchOrders)
   const consultsListAPI = useGetAPI(
     endpoints.consultationHistory,
@@ -99,38 +96,50 @@ const History = () => {
     fetchConsults,
   )
   const orderPayAPI = usePostAPI(endpoints.orderPay, null, triggerPaymenGateway)
-  const orderPayVerifyAPI = usePostAPI(endpoints.orderPayVerify, null, verifyOrderPayment)
-  const consultationPayAPI = usePostAPI(endpoints.consultationPay, null, triggerConsutationPaymenGateway)
-  const consultationPayVerifyAPI = usePostAPI(endpoints.consultationPayVerify, null, verifyConsulationPayment)
+  const orderPayVerifyAPI = usePostAPI(
+    endpoints.orderPayVerify,
+    null,
+    verifyOrderPayment,
+  )
+  const consultationPayAPI = usePostAPI(
+    endpoints.consultationPay,
+    null,
+    triggerConsutationPaymenGateway,
+  )
+  const consultationPayVerifyAPI = usePostAPI(
+    endpoints.consultationPayVerify,
+    null,
+    verifyConsulationPayment,
+  )
   const loadData = () => {
     orderListAPI.sendRequest()
     consultsListAPI.sendRequest()
   }
-  const loadOrderData = () =>{
+  const loadOrderData = () => {
     orderListAPI.sendRequest()
   }
 
-  const loadConsultData = () =>{
+  const loadConsultData = () => {
     consultsListAPI.sendRequest()
   }
 
   useEffect(() => {
     loadData()
   }, [])
-  useEffect(()=>{
-    if(orderPaymentID){
+  useEffect(() => {
+    if (orderPaymentID) {
       orderPayAPI.sendRequest({
-        order: orderPaymentID
+        order: orderPaymentID,
       })
     }
-  },[orderPaymentID])
-  useEffect(()=>{
-    if(consultPaymentID){
+  }, [orderPaymentID])
+  useEffect(() => {
+    if (consultPaymentID) {
       consultationPayAPI.sendRequest({
-        consultation: consultPaymentID
+        consultation: consultPaymentID,
       })
     }
-  },[consultPaymentID])
+  }, [consultPaymentID])
 
   return (
     <MainContainer title="History" back onRefresh={loadData}>
@@ -199,7 +208,12 @@ const History = () => {
                       <View
                         style={{ marginVertical: 10, flexDirection: 'row' }}
                       >
-                        <TouchableOpacity style={[styles.normButton]} onPress={()=>{setOrderPaymentID(value.id)}}>
+                        <TouchableOpacity
+                          style={[styles.normButton]}
+                          onPress={() => {
+                            setOrderPaymentID(value.id)
+                          }}
+                        >
                           <AltAppText>Pay</AltAppText>
                         </TouchableOpacity>
                       </View>
@@ -311,22 +325,36 @@ const History = () => {
                         </TouchableOpacity>
                       )}
                       {value.status == CONSULTATION_STATUS_ALT.ACCEPTED && (
-                        <TouchableOpacity style={[styles.normButton]} onPress={()=>{setConsultPaymentID(value.id)}}>
+                        <TouchableOpacity
+                          style={[styles.normButton]}
+                          onPress={() => {
+                            setConsultPaymentID(value.id)
+                          }}
+                        >
                           <AltAppText>Pay</AltAppText>
                         </TouchableOpacity>
                       )}
                       {value.status == CONSULTATION_STATUS_ALT.PAID && (
-                        <TouchableOpacity style={[styles.normAltButton]} disabled>
+                        <TouchableOpacity
+                          style={[styles.normAltButton]}
+                          disabled
+                        >
                           <AltAppText>Paid</AltAppText>
                         </TouchableOpacity>
                       )}
                       {value.status == CONSULTATION_STATUS_ALT.ONGOING && (
-                        <TouchableOpacity style={[styles.normAltButton]} disabled>
+                        <TouchableOpacity
+                          style={[styles.normAltButton]}
+                          disabled
+                        >
                           <AltAppText>Ongoing</AltAppText>
                         </TouchableOpacity>
                       )}
                       {value.status == CONSULTATION_STATUS_ALT.FINISHED && (
-                        <TouchableOpacity style={[styles.normAltButton]} disabled>
+                        <TouchableOpacity
+                          style={[styles.normAltButton]}
+                          disabled
+                        >
                           <AltAppText>Completed</AltAppText>
                         </TouchableOpacity>
                       )}
@@ -336,10 +364,9 @@ const History = () => {
               </View>
             )}
           </View>
-          
         </View>
         <View>
-        {pay && (
+          {pay && (
             <Paystack
               paystackKey={billingDetail.key}
               amount={billingDetail.amount}
@@ -348,25 +375,24 @@ const History = () => {
               activityIndicatorColor="green"
               onCancel={(e) => {
                 // handle response here
-                Alert.alert("Message","Transaction Cancelled")
+                Alert.alert('Message', 'Transaction Cancelled')
                 setPay(false)
               }}
               onSuccess={(response) => {
                 // handle response here
-                billingDetail.onSuccessResponse(response.transactionRef?.reference ?? "")
+                billingDetail.onSuccessResponse(
+                  response.transactionRef?.reference ?? '',
+                )
                 setPay(false)
               }}
               autoStart={pay}
-          />
-        )}
+            />
+          )}
         </View>
-        
       </Container>
     </MainContainer>
   )
 }
-
-
 
 const getStyles = (theme: ThemeType, mode: ThemeMode) =>
   StyleSheet.create({
@@ -447,7 +473,7 @@ const getStyles = (theme: ThemeType, mode: ThemeMode) =>
       borderRadius: 10,
       backgroundColor: '#145B7A',
     },
-    normAltButton:{
+    normAltButton: {
       paddingVertical: 10,
       paddingHorizontal: 20,
       borderRadius: 10,
@@ -457,4 +483,4 @@ const getStyles = (theme: ThemeType, mode: ThemeMode) =>
       backgroundColor: '#F0F2F5',
     },
   })
-  export default History
+export default History

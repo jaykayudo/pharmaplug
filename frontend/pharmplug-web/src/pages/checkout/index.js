@@ -113,10 +113,10 @@ const Checkout = () => {
         return
       }
     }
-    console.log("State: ",state)
-    console.log("Payment Method: ",paymentMethod)
-    console.log("Delivery Method: ",deliveryMethod)
-    console.log("region: ",region)
+    console.log('State: ', state)
+    console.log('Payment Method: ', paymentMethod)
+    console.log('Delivery Method: ', deliveryMethod)
+    console.log('region: ', region)
     if (!state || isNaN(paymentMethod) || !region || isNaN(deliveryMethod)) {
       message.error({
         content: 'All fields is required',

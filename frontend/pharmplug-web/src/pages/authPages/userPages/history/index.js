@@ -44,8 +44,8 @@ const History = () => {
   const fetchOrders = (data) => {
     setOrderList(data)
   }
-  const triggerPaymenGateway = (data) =>{
-    console.log("Triggering Order Payment")
+  const triggerPaymenGateway = (data) => {
+    console.log('Triggering Order Payment')
     setOrderPaymentConfig({
       reference: data.ref,
       amount: Number(data.amount) * 100,
@@ -54,8 +54,8 @@ const History = () => {
     })
     setOrderPaymentID(null)
   }
-  const triggerConsutationPaymenGateway = (data) =>{
-    console.log("Triggering Consultation Payment")
+  const triggerConsutationPaymenGateway = (data) => {
+    console.log('Triggering Consultation Payment')
     setConsultPaymentConfig({
       reference: data.ref,
       amount: Number(data.amount) * 100,
@@ -64,36 +64,32 @@ const History = () => {
     })
     setConsultPaymentID(null)
   }
-  const verifyOrderPayment = (data) =>{
+  const verifyOrderPayment = (data) => {
     message.success({
-      content: "Order Paid successfully",
-      duration: 5
+      content: 'Order Paid successfully',
+      duration: 5,
     })
     orderAPI.sendRequest()
   }
-  const verifyConsulationPayment = (data) =>{
+  const verifyConsulationPayment = (data) => {
     message.success({
-      content: "Consultation Paid successfully",
-      duration: 5
+      content: 'Consultation Paid successfully',
+      duration: 5,
     })
     consultationAPI.sendRequest()
   }
-  const onOrderPaymentSuccess = (reference) =>{
+  const onOrderPaymentSuccess = (reference) => {
     orderPayVerifyAPI.sendRequest({
-      ref: reference
+      ref: reference,
     })
   }
-  const onOrderPaymentClose = () =>{
-    
-  }
-  const onConsultPaymentSuccess = (reference) =>{
+  const onOrderPaymentClose = () => {}
+  const onConsultPaymentSuccess = (reference) => {
     consultationPayVerifyAPI.sendRequest({
-      ref: reference
+      ref: reference,
     })
   }
-  const onConsultPaymentClose = () =>{
-    
-  }
+  const onConsultPaymentClose = () => {}
   const consultationAPI = useGetAPI(
     endpoints.consultationHistory,
     null,
@@ -101,27 +97,39 @@ const History = () => {
   )
   const orderAPI = useGetAPI(endpoints.orderHistory, null, fetchOrders)
   const orderPayAPI = usePostAPI(endpoints.orderPay, null, triggerPaymenGateway)
-  const orderPayVerifyAPI = usePostAPI(endpoints.orderPayVerify, null, verifyOrderPayment)
-  const consultationPayAPI = usePostAPI(endpoints.consultationPay, null, triggerConsutationPaymenGateway)
-  const consultationPayVerifyAPI = usePostAPI(endpoints.consultationPayVerify, null, verifyConsulationPayment)
+  const orderPayVerifyAPI = usePostAPI(
+    endpoints.orderPayVerify,
+    null,
+    verifyOrderPayment,
+  )
+  const consultationPayAPI = usePostAPI(
+    endpoints.consultationPay,
+    null,
+    triggerConsutationPaymenGateway,
+  )
+  const consultationPayVerifyAPI = usePostAPI(
+    endpoints.consultationPayVerify,
+    null,
+    verifyConsulationPayment,
+  )
   useEffect(() => {
     orderAPI.sendRequest()
     consultationAPI.sendRequest()
   }, [])
-  useEffect(()=>{
-    if(orderPaymentID){
+  useEffect(() => {
+    if (orderPaymentID) {
       orderPayAPI.sendRequest({
-        order: orderPaymentID
+        order: orderPaymentID,
       })
     }
-  },[orderPaymentID])
-  useEffect(()=>{
-    if(consultPaymentID){
+  }, [orderPaymentID])
+  useEffect(() => {
+    if (consultPaymentID) {
       consultationPayAPI.sendRequest({
-        consultation: consultPaymentID
+        consultation: consultPaymentID,
       })
     }
-  },[consultPaymentID])
+  }, [consultPaymentID])
   useEffect(() => {
     if (orderPaymentConfig.reference && orderPaymentConfig.amount) {
       initializeOrderPayment(onOrderPaymentSuccess, onOrderPaymentClose)
@@ -200,7 +208,9 @@ const History = () => {
                                 flexDirection: 'row',
                               }}
                             >
-                              <NormalButton onClick={()=>setOrderPaymentID(value.id)}>
+                              <NormalButton
+                                onClick={() => setOrderPaymentID(value.id)}
+                              >
                                 Pay
                               </NormalButton>
                             </div>
@@ -282,7 +292,13 @@ const History = () => {
                                 )}
                                 {value.status ==
                                   CONSULTATION_STATUS_ALT.ACCEPTED && (
-                                  <NormalButton onClick={()=>setConsultPaymentID(value.id)}>Pay</NormalButton>
+                                  <NormalButton
+                                    onClick={() =>
+                                      setConsultPaymentID(value.id)
+                                    }
+                                  >
+                                    Pay
+                                  </NormalButton>
                                 )}
                                 {value.status > 2 && (
                                   <p className="font-14">

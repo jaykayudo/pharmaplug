@@ -90,9 +90,9 @@ const CartContextProvider: React.FC<CartContextProps> = ({ children }) => {
       CartAPI.sendRequest()
     }
   }
-  const clearCart = () =>{
+  const clearCart = () => {
     if (!cartId) return
-    if(cart.cart_items.length == 0) return
+    if (cart.cart_items.length == 0) return
     const formObj = new FormData()
     formObj.append('cart', cartId)
     for (const obj of cart.cart_items) {

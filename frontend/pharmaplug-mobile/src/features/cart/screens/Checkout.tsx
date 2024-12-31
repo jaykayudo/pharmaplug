@@ -78,11 +78,11 @@ const Checkout = () => {
   const [paymentMethod, setPaymentMethod] = useState<number | null>(null)
   const [deliveryMethod, setDeliveryMethod] = useState<number | null>(null)
   const [billingDetail, setBillingDetail] = useState({
-    billingEmail: "",
-    key:"",
+    billingEmail: '',
+    key: '',
     amount: 0,
-    ref:"",
-    onSuccessResponse: (ref: string) => {}
+    ref: '',
+    onSuccessResponse: (ref: string) => {},
   })
   const [pay, setPay] = useState(false)
   const onPick = () => {}
@@ -121,25 +121,25 @@ const Checkout = () => {
     sendRequest(data)
   }
 
-  const onOrderPaymentSuccess = (ref: string) =>{
+  const onOrderPaymentSuccess = (ref: string) => {
     orderVerifyAPI.sendRequest({
-      ref: ref
+      ref: ref,
     })
   }
-  const onSuccessCallback = (data) =>{
-    console.log("Triggering Order Payment")
+  const onSuccessCallback = (data) => {
+    console.log('Triggering Order Payment')
     setBillingDetail({
       billingEmail: data.email,
       key: data.key,
       amount: Number(data.amount),
       ref: data.ref,
-      onSuccessResponse: onOrderPaymentSuccess
+      onSuccessResponse: onOrderPaymentSuccess,
     })
     setPay(true)
   }
-  const onOrderVerify = (data) =>{
-    Alert.alert("Success","Order Paid successfully")
-    navigation.navigate("Account",{screen:"History"})
+  const onOrderVerify = (data) => {
+    Alert.alert('Success', 'Order Paid successfully')
+    navigation.navigate('Account', { screen: 'History' })
     cartContext.clearCart()
   }
   const { sendRequest } = usePostAPI(
@@ -186,24 +186,28 @@ const Checkout = () => {
                 <AppText style={{ marginBottom: 10 }}>State</AppText>
                 <SelectDropdown
                   data={statesData}
-                  onSelect={(selectedItem, index)=>{
+                  onSelect={(selectedItem, index) => {
                     setState(selectedItem.value)
                   }}
-                  renderItem={(item, index, isSelected)=>(
-                    <View style={{paddingHorizontal: 10, paddingVertical: 5, borderBottomColor: "#1e1e1e", borderBottomWidth: 0.5}}>
-                        <AppText>{item.label}</AppText>
+                  renderItem={(item, index, isSelected) => (
+                    <View
+                      style={{
+                        paddingHorizontal: 10,
+                        paddingVertical: 5,
+                        borderBottomColor: '#1e1e1e',
+                        borderBottomWidth: 0.5,
+                      }}
+                    >
+                      <AppText>{item.label}</AppText>
                     </View>
-                  )
-
-                  }
-                  renderButton={(selectedItem, isOpened)=>(
+                  )}
+                  renderButton={(selectedItem, isOpened) => (
                     <View style={[styles.normalInput]}>
-                        {selectedItem?(
-                           <AppText>{selectedItem.label}</AppText>
-                        ):(
-                          <AppText>Select a state</AppText>
-                        )}
-                        
+                      {selectedItem ? (
+                        <AppText>{selectedItem.label}</AppText>
+                      ) : (
+                        <AppText>Select a state</AppText>
+                      )}
                     </View>
                   )}
                 />
@@ -331,7 +335,7 @@ const Checkout = () => {
           </View>
         </View>
         <View>
-        {pay && (
+          {pay && (
             <Paystack
               paystackKey={billingDetail.key}
               amount={billingDetail.amount}
@@ -340,17 +344,19 @@ const Checkout = () => {
               activityIndicatorColor="green"
               onCancel={(e) => {
                 // handle response here
-                Alert.alert("Message","Transaction Cancelled")
+                Alert.alert('Message', 'Transaction Cancelled')
                 setPay(false)
               }}
               onSuccess={(response) => {
                 // handle response here
-                billingDetail.onSuccessResponse(response.transactionRef?.reference ?? "")
+                billingDetail.onSuccessResponse(
+                  response.transactionRef?.reference ?? '',
+                )
                 setPay(false)
               }}
               autoStart={pay}
-          />
-        )}
+            />
+          )}
         </View>
       </Container>
     </MainContainer>
